@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DeepDigest</title>
+    <link rel="stylesheet" href="tokens.css">
+    <link rel="stylesheet" href="sidepanel.css">
+</head>
+
+<body>
+    <div id="panel-live-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div id="reading-progress" aria-hidden="true">
+        <div id="reading-progress-bar"></div>
+    </div>
+
+   <main class="layout" id="panel-layout">
+       <section class="panel-shell" id="panel-shell">
+           <header class="hero-card">
+               <div class="hero-title-row">
+                    <div class="brand-lockup"><span class="brand-mark" aria-hidden="true">D</span><div><h1 class="hero-title">DeepDigest</h1><p class="hero-context">Reading workspace</p></div></div>
+                    <p id="panel-status" class="status-badge-compact is-ready">Ready</p>
+               </div>
+               <div class="hero-actions">
+                   <label class="visually-hidden" for="panel-mode">Mode</label>
+                   <select id="panel-mode" aria-label="Summarization mode">
+                       <option value="summarize">Summarize</option>
+                       <option value="analyze">Analyze</option>
+                       <option value="explain">Explain</option>
+                       <option value="debate">Debate</option>
+                       <option value="study">Study</option>
+                       <option value="outline">Outline</option>
+                       <option value="timeline">Timeline</option>
+                       <option value="concepts">Concepts</option>
+                   </select>
+                   <button id="panel-summarize" class="btn-primary" type="button">Generate</button>
+                    <button id="panel-cancel" class="btn-cancel" type="button" hidden>Cancel</button>
+                    <button id="panel-settings" class="btn-ghost btn-icon" type="button" aria-label="Settings" title="Settings">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                        </svg>
+                    </button>
+               </div>
+           </header>
+           <div class="sidepanel-controls-row">
+               <label class="visually-hidden" for="panel-theme">Theme</label>
+               <select id="panel-theme" aria-label="Theme">
+                   <option value="system">System Theme</option>
+                   <option value="light">Light</option>
+                   <option value="dark">Dark</option>
+               </select>
+               <label class="visually-hidden" for="panel-density">Density</label>
+               <select id="panel-density" aria-label="Density">
+                   <option value="comfortable">Comfortable</option>
+                   <option value="compact">Compact</option>
+               </select>
+               <label class="visually-hidden" for="panel-fontScale">Font Size</label>
+               <select id="panel-fontScale" aria-label="Font Size">
+                   <option value="sm">Small Font</option>
+                   <option value="md">Medium Font</option>
+                   <option value="lg">Large Font</option>
+               </select>
+                <label class="visually-hidden" for="panel-summaryLanguage">Output language</label>
+                <select id="panel-summaryLanguage" aria-label="Output language">
+                    <option value="English">English</option>
+                    <option value="Vietnamese">Vietnamese</option>
+                </select>
+           </div>
+
+            <section class="workspace">
+                <div id="empty-state" class="empty-state">
+                    <svg class="empty-illustration" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+                        <rect x="18" y="24" width="84" height="72" rx="14" stroke="currentColor" stroke-width="3" />
+                        <path d="M34 48h52M34 64h40M34 80h28" stroke="currentColor" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle cx="86" cy="80" r="14" fill="currentColor" opacity="0.12" />
+                        <path d="M80 80h12M86 74v12" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                    </svg>
+                    <h2>Ready when you are</h2>
+                    <p>Open a page, video, lesson, or selected passage. DeepDigest will turn it into a structured reading brief.</p>
+                    <ul class="empty-steps" aria-label="How to start">
+                        <li><span class="empty-step-index">1</span><span>Choose a mode</span></li>
+                        <li><span class="empty-step-index">2</span><span>Set output language if needed</span></li>
+                        <li><span class="empty-step-index">3</span><span>Click Generate</span></li>
+                    </ul>
+                </div>
+
+                <div id="summary-content" hidden>
+                    <header class="result-header">
+                        <p class="section-kicker">Current result</p>
+                        <h2 id="panel-title" class="summary-title">Main Summary</h2>
+                    </header>
+
+                    <div class="summary-overview">
+                        <article class="content-card lead-card" aria-labelledby="summary-heading">
+                            <div class="section-head">
+                                <h3 id="summary-heading">Main Summary</h3>
+                            </div>
+                            <div id="panel-summary" class="text-block"></div>
+                        </article>
+
+                        <article class="content-card takeaway-card" aria-labelledby="takeaways-heading">
+                            <div class="section-head">
+                                <h3 id="takeaways-heading">Executive Takeaways</h3>
+                            </div>
+                            <ul id="panel-takeaways" class="takeaways-list"></ul>
+                        </article>
+                    </div>
+
+                    <div id="deep-dive-sections" class="section-stack"></div>
+
+                    <div id="panel-follow-up-questions-wrap" class="content-card" hidden>
+                        <div class="section-head">
+                            <h3 id="follow-up-heading">Suggested questions</h3>
+                        </div>
+                        <div id="panel-follow-up-questions" class="follow-up-grid"></div>
+                    </div>
+
+                    <section id="transcript-section" class="transcript-section" hidden
+                        aria-labelledby="transcript-heading">
+                        <div class="transcript-header">
+                            <div class="transcript-toggle-wrap">
+                                <button id="transcript-toggle" class="transcript-toggle" type="button"
+                                    aria-expanded="false" aria-controls="panel-transcript-content">
+                                    <span class="transcript-toggle-icon" aria-hidden="true">▶</span>
+                                    <span id="transcript-heading" class="transcript-toggle-label">Transcript</span>
+                                    <span class="transcript-toggle-hint" data-collapsed-label="Click to show" data-expanded-label="Click to hide">Click to show</span>
+                                </button>
+                            </div>
+                            <input id="panel-transcript-filter" class="transcript-filter" type="search"
+                                placeholder="Filter lines" aria-label="Filter transcript">
+                        </div>
+                        <pre id="panel-transcript-content" class="transcript-pre" role="log" aria-live="polite" hidden></pre>
+                    </section>
+
+                    <section id="chat-section" class="chat-section" aria-labelledby="chat-heading">
+                        <div class="chat-header">
+                            <h3 id="chat-heading">Follow-up</h3>
+                        </div>
+                        <div id="chat-log" class="chat-log" role="log" aria-live="polite"></div>
+                        <div class="chat-input-row">
+                            <textarea id="chat-input" class="chat-textarea" rows="2"
+                                placeholder="Ask a deeper question. Enter to send, Shift+Enter for a new line."
+                                aria-label="Follow-up question"></textarea>
+                            <button id="chat-send" class="btn-primary" type="button">Send</button>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </section>
+
+    </main>
+
+    <div id="floating-actions" class="floating-action-bar" hidden>
+        <button id="panel-copy" class="fab-btn" type="button">Copy</button>
+        <button id="panel-export-md" class="fab-btn" type="button">Markdown</button>
+        <button id="panel-export-txt" class="fab-btn" type="button">Text</button>
+        <button id="panel-clear" class="fab-btn" type="button">Clear</button>
+        <button id="fab-summarize" class="fab-btn primary" type="button">Generate</button>
+    </div>
+
+    <button id="highlight-tooltip" type="button">Ask about this</button>
+
+    <script src="lib/ui/theme.js"></script>
+    <script src="lib/cleaners.js"></script>
+    <script src="lib/markdown.js"></script>
+    <script src="lib/messages.js"></script>
+    <script src="lib/settings-schema.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="lib/sidepanel/state.js"></script>
+    <script src="lib/sidepanel/render.js"></script>
+    <script src="sidepanel.js"></script>
+</body>
+
+</html>

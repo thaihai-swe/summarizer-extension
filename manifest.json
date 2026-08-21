@@ -1,0 +1,77 @@
+{
+    "manifest_version": 3,
+    "name": "DeepDigest",
+    "description": "Deep, structured summaries of YouTube videos, webpages, courses, and selected text.",
+    "version": "0.1.0",
+    "permissions": [
+        "storage",
+        "tabs",
+        "activeTab",
+        "scripting",
+        "sidePanel",
+        "contextMenus"
+    ],
+    "host_permissions": [
+        "<all_urls>",
+        "https://generativelanguage.googleapis.com/*",
+        "https://api.openai.com/*",
+        "http://127.0.0.1:11434/*",
+        "http://localhost:11434/*",
+        "http://127.0.0.1:1234/*",
+        "http://localhost:1234/*"
+    ],
+    "action": {
+        "default_title": "Open DeepDigest",
+        "default_icon": {
+            "16": "icons/icon-16.png",
+            "48": "icons/icon-48.png",
+            "128": "icons/icon-128.png"
+        }
+    },
+    "icons": {
+        "16": "icons/icon-16.png",
+        "48": "icons/icon-48.png",
+        "128": "icons/icon-128.png"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "side_panel": {
+        "default_path": "sidepanel.html"
+    },
+    "options_page": "options.html",
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "lib/messages.js",
+                "lib/settings-schema.js",
+                "lib/storage.js",
+                "lib/cleaners.js",
+                "lib/debug.js",
+                "lib/markdown.js",
+                "lib/ui/theme.js",
+                "lib/extractors/core.js",
+                "lib/extractors/accessibility-tree.js",
+                "lib/extractors/selected-text.js",
+                "lib/extractors/youtube.js",
+                "lib/extractors/webpage.js",
+                "lib/extractors/course.js",
+                "lib/extractors.js",
+                "content.js"
+            ],
+            "run_at": "document_idle"
+        }
+    ],
+    "commands": {
+        "summarize_page": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+S",
+                "mac": "Command+Shift+S"
+            },
+            "description": "Summarize current page"
+        }
+    }
+}

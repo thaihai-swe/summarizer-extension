@@ -1,0 +1,1732 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DeepDigest — an AI-powered browser extension case study. Transforms YouTube videos, webpages, course lessons, and selected text into deeply structured explanations.">
+  <title>DeepDigest — AI Extension Case Study &amp; Engineering Showcase</title>
+  <link rel="icon" type="image/png" sizes="48x48" href="../icons/icon-48.png">
+  <link rel="apple-touch-icon" href="../icons/icon-128.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="common.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- NAVBAR -->
+  <header class="site-header" role="banner">
+    <nav class="site-nav" role="navigation" aria-label="Main Navigation">
+      <div class="nav-inner">
+        <a class="nav-logo" href="#top" aria-label="DeepDigest Case Study Home">
+          <span class="logo-mark">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+          </span>
+          <span class="logo-text">Deep<span class="logo-accent">Digest</span></span>
+          <span class="nav-version-badge">v1.0 Case Study</span>
+        </a>
+
+        <div class="nav-links" id="nav-links">
+          <a href="#demo" class="nav-link">Demo</a>
+          <a href="#features" class="nav-link">Features</a>
+          <a href="#compare" class="nav-link">Compare</a>
+          <a href="#pipeline" class="nav-link">Pipeline</a>
+          <a href="#install" class="nav-link">Install</a>
+          <a href="#faq" class="nav-link">FAQ</a>
+          <a href="#docs" class="nav-link">Docs</a>
+        </div>
+
+        <div class="nav-actions">
+          <!-- Theme Toggle Button -->
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle Theme">
+            <svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+
+          <a href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer" class="nav-github-btn" aria-label="View source repository on GitHub">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            <span>GitHub</span>
+          </a>
+
+          <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle mobile menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile navigation drawer -->
+      <div class="nav-mobile" id="nav-mobile" hidden>
+        <div class="nav-mobile-inner">
+          <a href="#demo" class="nav-link">Live Simulator</a>
+          <a href="#features" class="nav-link">Features</a>
+          <a href="#compare" class="nav-link">Comparison</a>
+          <a href="#pipeline" class="nav-link">Pipeline &amp; Architecture</a>
+          <a href="#prompts" class="nav-link">Prompt Engineering</a>
+          <a href="#install" class="nav-link">Install</a>
+          <a href="#faq" class="nav-link">FAQ</a>
+          <a href="#docs" class="nav-link">Documentation</a>
+          <a href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer" class="mobile-cta-btn">View GitHub Source ↗</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="top" aria-labelledby="hero-title">
+      <div class="hero-bg-glow" aria-hidden="true"></div>
+      <div class="hero-grid-pattern" aria-hidden="true"></div>
+      
+      <div class="container hero-container">
+        <div class="hero-badges">
+          <span class="hero-badge hero-badge-accent">
+            <span class="pulse-dot" aria-hidden="true"></span>
+            Chrome Extension Case Study
+          </span>
+          <span class="hero-badge">Manifest V3 · Vanilla JS</span>
+          <span class="hero-badge">Zero Build Tooling</span>
+        </div>
+
+        <h1 class="hero-title" id="hero-title">
+          Turn long-form content<br>
+          <span class="gradient-text">into deep understanding.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          A production-grade AI summarizer engineered from first principles in plain JavaScript. Designed as a structured cognitive workspace with source extraction, semantic chunking, prompt envelopes, quality gate self-healing, and per-tab isolation.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#demo" class="btn-action btn-action-primary">
+            <span>Try the interactive demo</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#install" class="btn-action btn-action-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Install free</span>
+          </a>
+          <a href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer" class="btn-action btn-action-ghost">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>View source</span>
+          </a>
+        </div>
+
+        <div class="hero-proof" aria-label="DeepDigest highlights">
+          <div class="proof-item"><span class="proof-mark">01</span><span>Extract YouTube, pages, courses, and selections</span></div>
+          <div class="proof-item"><span class="proof-mark">02</span><span>Enforce structured heading contracts</span></div>
+          <div class="proof-item"><span class="proof-mark">03</span><span>Run cloud or 100% local inference</span></div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="hero-stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon-wrap">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
+            <div class="stat-number">4 Sources</div>
+            <div class="stat-desc">YouTube, Webpages, Courses &amp; Text</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            </div>
+            <div class="stat-number">8 Modes</div>
+            <div class="stat-desc">Summarize, Analyze, Debate, Study &amp; More</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <div class="stat-number">3 Providers</div>
+            <div class="stat-desc">Gemini, OpenAI, Local (Ollama/LM Studio)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+            </div>
+            <div class="stat-number">0 Dependencies</div>
+            <div class="stat-desc">30+ ES modules without bundler or npm</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE SIDE PANEL SIMULATOR -->
+    <section class="section" id="demo" aria-labelledby="demo-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Interactive Product Demo</div>
+          <h2 class="section-title" id="demo-title">Experience the side panel in action.</h2>
+          <p class="section-lead">
+            Choose a reading scenario, then watch the side panel adapt source, mode, and depth. This page does not call model APIs — it mirrors the real workflow with curated sample output.
+          </p>
+        </div>
+
+        <div class="scenario-strip" role="group" aria-label="Choose a demo scenario">
+          <button type="button" class="scenario-btn is-active" data-source="youtube" data-mode="summarize" data-depth="deep">
+            <span class="scenario-tag">YouTube</span>
+            <strong>Karpathy · State of GPT</strong>
+          </button>
+          <button type="button" class="scenario-btn" data-source="webpage" data-mode="analyze" data-depth="deep">
+            <span class="scenario-tag">Article</span>
+            <strong>Data-intensive replication</strong>
+          </button>
+          <button type="button" class="scenario-btn" data-source="course" data-mode="study" data-depth="medium">
+            <span class="scenario-tag">Course</span>
+            <strong>Transformer attention</strong>
+          </button>
+          <button type="button" class="scenario-btn" data-source="selection" data-mode="summarize" data-depth="brief">
+            <span class="scenario-tag">Selection</span>
+            <strong>Raft consensus excerpt</strong>
+          </button>
+          <button type="button" class="scenario-btn" data-source="webpage" data-mode="debate" data-depth="deep">
+            <span class="scenario-tag">Debate</span>
+            <strong>Leader vs leaderless</strong>
+          </button>
+        </div>
+
+        <div class="simulator-layout">
+          <!-- Left: Simulation Controls -->
+          <div class="sim-controls-panel">
+            <h3 class="sim-panel-title">Demo Controls</h3>
+            
+            <div class="control-group">
+              <label for="sim-source-select" class="control-label">Source Feed</label>
+              <select id="sim-source-select" class="custom-select">
+                <option value="youtube" selected>YouTube: Andrej Karpathy - State of GPT</option>
+                <option value="webpage">Webpage: Designing Data-Intensive Applications</option>
+                <option value="course">Course: Coursera - Deep Learning Specialization</option>
+                <option value="selection">Selection: Raft Consensus Algorithm Excerpt</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label for="sim-mode-select" class="control-label">Summary Mode</label>
+              <select id="sim-mode-select" class="custom-select">
+                <option value="summarize" selected>Summarize (Key Takeaways + Timeline)</option>
+                <option value="analyze">Analyze (Claims, Tradeoffs &amp; Evidence)</option>
+                <option value="debate">Debate (Pro, Con &amp; Perspectives)</option>
+                <option value="study">Study (Flashcards &amp; Core Concepts)</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label for="sim-depth-select" class="control-label">Analysis Depth &amp; Length</label>
+              <select id="sim-depth-select" class="custom-select">
+                <option value="medium">Medium Depth · Medium Length</option>
+                <option value="deep" selected>Deep Depth · Long Length (Full Sections)</option>
+                <option value="brief">Brief Depth · Concise Length</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label for="sim-provider-select" class="control-label">Inference Engine</label>
+              <select id="sim-provider-select" class="custom-select">
+                <option value="gemini" selected>Google Gemini 2.0 Flash (Streaming)</option>
+                <option value="openai">OpenAI GPT-4o</option>
+                <option value="local">Local Endpoint (Ollama / Llama 3.3)</option>
+              </select>
+            </div>
+
+            <button id="sim-run-btn" class="btn-action btn-action-primary w-full" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Generate Summary</span>
+            </button>
+
+            <div class="sim-metadata-box">
+              <div class="meta-item">
+                <span class="meta-label">Active Tab ID</span>
+                <span class="meta-val font-mono">tab-49281 (Isolated)</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Extractor Pipeline</span>
+                <span class="meta-val font-mono" id="sim-extractor-tag">YouTube Transcript API</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Quality Score</span>
+                <span class="meta-val font-mono" id="sim-quality-score">98/100 (Validated)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Interactive Chrome Browser & Sidepanel Frame -->
+          <div class="sim-browser-frame">
+            <div class="browser-topbar">
+              <div class="traffic-lights">
+                <span class="light red"></span>
+                <span class="light yellow"></span>
+                <span class="light green"></span>
+              </div>
+              <div class="browser-address-bar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span id="sim-url-display">https://www.youtube.com/watch?v=bZQun8Y4L2W</span>
+              </div>
+              <div class="browser-actions">
+                <span class="browser-ext-icon" title="DeepDigest Extension Active">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/></svg>
+                </span>
+              </div>
+            </div>
+
+            <div class="browser-content-area">
+              <!-- Simulated Webpage / YouTube Content -->
+              <div class="sim-webpage-view">
+                <div class="sim-video-player" id="sim-player-box">
+                  <div class="player-overlay">
+                    <div class="player-play-btn">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                  </div>
+                  <div class="player-title" id="sim-page-title">State of GPT | Build 2023 | Andrej Karpathy</div>
+                </div>
+                <div class="sim-page-skeleton">
+                  <div class="skel-line w-80"></div>
+                  <div class="skel-line w-60"></div>
+                  <div class="skel-card"></div>
+                </div>
+              </div>
+
+              <!-- Simulated Chrome Side Panel Component -->
+              <aside class="sim-sidepanel-view" aria-label="Simulated Extension Side Panel">
+                <div class="panel-header">
+                  <div class="panel-brand">
+                    <span class="panel-logo-dot"></span>
+                    <span class="panel-title-text">DeepDigest</span>
+                    <span class="panel-source-badge" id="panel-badge-source">YouTube</span>
+                  </div>
+                  <div class="panel-header-actions">
+                    <button class="panel-icon-btn" title="Settings" type="button" aria-label="Settings">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="panel-status-bar" id="panel-status" aria-live="polite">
+                  <span class="status-indicator ready"></span>
+                  <span class="status-text" id="panel-status-label">Ready to summarize</span>
+                </div>
+
+                <!-- Structured Rendered Output Container -->
+                <div class="panel-scroll-content" id="sim-output-container">
+                  <!-- Section 1: Core Summary -->
+                  <div class="output-block-item" id="sim-sec-summary">
+                    <button class="output-block-header" type="button" aria-expanded="true" data-target="body-summary">
+                      <span class="header-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        <span>Executive Summary</span>
+                      </span>
+                      <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="output-block-body" id="body-summary">
+                      <p id="sim-text-summary">
+                        Andrej Karpathy outlines the four key training phases of modern Large Language Models: Pre-training (Base Models), Supervised Fine-Tuning (SFT), Reward Modeling, and Reinforcement Learning from Human Feedback (RLHF). He emphasizes that Base Models are document completers, whereas SFT/RLHF models act as helpful conversational assistants.
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Section 2: Key Takeaways -->
+                  <div class="output-block-item" id="sim-sec-takeaways">
+                    <button class="output-block-header" type="button" aria-expanded="true" data-target="body-takeaways">
+                      <span class="header-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        <span>Key Takeaways</span>
+                      </span>
+                      <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="output-block-body" id="body-takeaways">
+                      <ul class="takeaway-list" id="sim-text-takeaways">
+                        <li><strong>Pre-training is compute-heavy:</strong> 99% of GPU hours occur in unsupervised token prediction across trillions of tokens.</li>
+                        <li><strong>RLHF trades entropy for alignment:</strong> Alignment reduces mode hallucination but can narrow output diversity and creative variance.</li>
+                        <li><strong>Prompt engineering matters:</strong> LLMs lack cognitive working memory; Chain-of-Thought prompting provides scratchpad space to compute intermediate reasoning steps.</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <!-- Section 3: Narrative Timeline / Details -->
+                  <div class="output-block-item" id="sim-sec-timeline">
+                    <button class="output-block-header" type="button" aria-expanded="true" data-target="body-timeline">
+                      <span class="header-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                        <span>Narrative Breakdown &amp; Timestamps</span>
+                      </span>
+                      <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="output-block-body" id="body-timeline">
+                      <div class="timeline-entries" id="sim-text-timeline">
+                        <div class="timeline-row">
+                          <span class="time-badge font-mono">[02:15]</span>
+                          <span class="time-desc">Pre-training pipeline: Tokenization byte-pair encodings &amp; loss curves.</span>
+                        </div>
+                        <div class="timeline-row">
+                          <span class="time-badge font-mono">[14:30]</span>
+                          <span class="time-desc">SFT datasets: Replacing raw web scrape with expert human demonstrations.</span>
+                        </div>
+                        <div class="timeline-row">
+                          <span class="time-badge font-mono">[25:40]</span>
+                          <span class="time-desc">RLHF &amp; PPO: Training reward models on comparative human rankings.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Section 4: Connections & Insights -->
+                  <div class="output-block-item" id="sim-sec-insights">
+                    <button class="output-block-header" type="button" aria-expanded="false" data-target="body-insights">
+                      <span class="header-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <span>Connections, Causes &amp; Tradeoffs</span>
+                      </span>
+                      <span class="badge-deep-only">Deep Mode</span>
+                      <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="output-block-body" id="body-insights" hidden>
+                      <p id="sim-text-insights">
+                        The architectural tradeoff of RLHF alignment is the compression of probability tails: models become compliant and safe at the cost of losing some niche domain knowledge stored in the base weights. System 2 thinking (Tree of Thoughts) mitigates linear generation bottlenecks.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel-followup-answer" id="sim-followup-answer" hidden>
+                  <div class="followup-label">Follow-up answer</div>
+                  <p id="sim-followup-text"></p>
+                </div>
+
+                <!-- Follow-up Q&A Footer -->
+                <div class="panel-chat-input-box">
+                  <div class="chat-input-wrapper">
+                    <input type="text" id="sim-chat-input" placeholder="Ask a grounded follow-up..." aria-label="Ask follow up question" value="Why does Karpathy recommend Chain of Thought?">
+                    <button class="chat-send-btn" id="sim-chat-send" type="button" aria-label="Send query">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEM-SOLUTION FEATURE MATRIX -->
+    <section class="section section-bordered" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Designed around real comprehension bottlenecks</div>
+          <h2 class="section-title" id="features-title">One side panel for the work that generic chat leaves unfinished.</h2>
+          <p class="section-lead">
+            Each capability exists to remove a common source of friction: copying a transcript by hand, losing timestamps, getting a three-bullet TLDR, or leaking private pages to a cloud chat tab.
+          </p>
+        </div>
+
+        <div class="benefit-grid">
+          <article class="benefit-card">
+            <span class="benefit-index">A</span>
+            <h3>Heading contracts, not freeform chat</h3>
+            <p>Every mode writes the same markdown sections so the side panel can parse, stream, and repair output. No unnamed blobs of prose.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-index">B</span>
+            <h3>Timestamps that survive extraction</h3>
+            <p>YouTube summaries keep real transcript intervals such as <code>[14:22]</code> instead of inventing a timeline after the fact.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-index">C</span>
+            <h3>Semantic-first page extraction</h3>
+            <p>Mozilla Readability plus an accessibility-tree fallback strips ads, chrome, and boilerplate before the model ever sees the text.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-index">D</span>
+            <h3>Quality gate with one repair pass</h3>
+            <p>Deep and Long runs score section depth, then regenerate only the failing headings — keeping healthy content and cutting token waste.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-index">E</span>
+            <h3>Per-tab cognitive workspace</h3>
+            <p>Summary, conversation, and workflow state are keyed by tab ID. Closing a tab clears that memory. Switching tabs restores the matching snapshot.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-index">F</span>
+            <h3>Cloud or fully local inference</h3>
+            <p>Gemini and OpenAI-compatible endpoints sit next to Ollama and LM Studio. Providers receive one prompt string and stay UI-agnostic.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPETITIVE COMPARISON -->
+    <section class="section" id="compare" aria-labelledby="compare-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Why this instead of another summarizer</div>
+          <h2 class="section-title" id="compare-title">Built to outperform a pile of narrower tools.</h2>
+          <p class="section-lead">
+            Generic chat leaves you to invent the workflow. Basic extensions stop at a shallow TLDR. DeepDigest keeps extraction, structure, repair, and follow-up in one side panel.
+          </p>
+        </div>
+
+        <div class="table-card">
+          <table class="compare-table">
+            <caption class="sr-only">How DeepDigest compares with common alternatives</caption>
+            <thead>
+              <tr>
+                <th scope="col">Need</th>
+                <th scope="col">Generic AI chat in a new tab</th>
+                <th scope="col">Basic summary extensions</th>
+                <th scope="col">DeepDigest</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Stay with the source</th>
+                <td>Copy, paste, context-switch</td>
+                <td>Popup that covers the page</td>
+                <td>Chrome side panel beside the tab</td>
+              </tr>
+              <tr>
+                <th scope="row">YouTube transcripts</th>
+                <td>External grabber or none</td>
+                <td>Unstructured dump</td>
+                <td>Native timestamps, chapters, chunking</td>
+              </tr>
+              <tr>
+                <th scope="row">Output consistency</th>
+                <td>Depends on the prompt you wrote</td>
+                <td>Three-bullet TLDR</td>
+                <td>Heading contract + quality gate</td>
+              </tr>
+              <tr>
+                <th scope="row">Long-form sources</th>
+                <td>Hits the context window</td>
+                <td>Silent truncation</td>
+                <td>Semantic chunks with overlap + synthesis</td>
+              </tr>
+              <tr>
+                <th scope="row">Follow-up questions</th>
+                <td>Ungrounded chat</td>
+                <td>Usually none</td>
+                <td>Grounded in the saved summary and source</td>
+              </tr>
+              <tr>
+                <th scope="row">Local / private inference</th>
+                <td>Vendor account</td>
+                <td>Cloud-only</td>
+                <td>Ollama, LM Studio, or your endpoint</td>
+              </tr>
+              <tr>
+                <th scope="row">Architecture</th>
+                <td>Heavy web app</td>
+                <td>Monolithic content script</td>
+                <td>30+ ES modules, zero npm, Manifest V3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPABILITIES MATRIX -->
+    <section class="section section-bordered" id="capabilities" aria-labelledby="cap-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Feature Suite</div>
+          <h2 class="section-title" id="cap-title">Engineered for depth across any source.</h2>
+          <p class="section-lead">
+            Selectively tuned prompts and custom DOM parsers tailor each summary to the structural strengths of the medium.
+          </p>
+        </div>
+
+        <!-- Interactive Capability Tabs -->
+        <div class="cap-tab-system">
+          <div class="cap-tab-list" role="tablist" aria-label="Capabilities Navigation">
+            <button class="cap-tab-btn is-active" role="tab" aria-selected="true" aria-controls="panel-tab-sources" data-tab="sources" id="tab-btn-sources">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span>Source Handlers</span>
+            </button>
+            <button class="cap-tab-btn" role="tab" aria-selected="false" aria-controls="panel-tab-modes" data-tab="modes" id="tab-btn-modes">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              <span>8 Summary Modes</span>
+            </button>
+            <button class="cap-tab-btn" role="tab" aria-selected="false" aria-controls="panel-tab-sections" data-tab="sections" id="tab-btn-sections">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+              <span>Heading Contracts</span>
+            </button>
+            <button class="cap-tab-btn" role="tab" aria-selected="false" aria-controls="panel-tab-providers" data-tab="providers" id="tab-btn-providers">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              <span>Providers &amp; Local LLM</span>
+            </button>
+          </div>
+
+          <!-- Tab Content 1: Sources -->
+          <div class="cap-panel-content is-active" role="tabpanel" aria-labelledby="tab-btn-sources" id="panel-tab-sources">
+            <div class="feature-grid-4">
+              <div class="feature-card">
+                <div class="feature-icon youtube-color">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </div>
+                <h3>YouTube Videos</h3>
+                <p>Preserves real transcript timestamps, chapter markers, and narrative arc without hallucinating sequence.</p>
+                <div class="feature-pill-row">
+                  <span class="micro-pill">Timestamp safe</span>
+                  <span class="micro-pill">Transcript fallback</span>
+                </div>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon web-color">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
+                <h3>Web Articles</h3>
+                <p>Employs Mozilla Readability heuristics and a DOM accessibility fallback to strip ads, sidebars, and boilerplates.</p>
+                <div class="feature-pill-row">
+                  <span class="micro-pill">Readability API</span>
+                  <span class="micro-pill">Ad-filtered</span>
+                </div>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon course-color">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                </div>
+                <h3>Course Lessons</h3>
+                <p>Specialized DOM extractors for Coursera and Udemy extracting lesson objectives, lecture text, and code snippets.</p>
+                <div class="feature-pill-row">
+                  <span class="micro-pill">Coursera / Udemy</span>
+                  <span class="micro-pill">Curriculum sync</span>
+                </div>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon select-color">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3>Selected Text</h3>
+                <p>Highest priority trigger: isolates exact user selection for analyzing complex paragraphs, formulas, or docs.</p>
+                <div class="feature-pill-row">
+                  <span class="micro-pill">Direct selection</span>
+                  <span class="micro-pill">Immediate context</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content 2: Modes -->
+          <div class="cap-panel-content" role="tabpanel" aria-labelledby="tab-btn-modes" id="panel-tab-modes" hidden>
+            <div class="modes-grid-8">
+              <div class="mode-item">
+                <div class="mode-head">
+                  <span class="mode-name">Summarize</span>
+                  <span class="mode-badge-default">Default</span>
+                </div>
+                <p>Standard structured digest with high-level thesis, key takeaways, and narrative timeline.</p>
+              </div>
+              <div class="mode-item">
+                <div class="mode-head"><span class="mode-name">Analyze</span></div>
+                <p>Dissects core premises, empirical evidence, unstated assumptions, and methodology limits.</p>
+              </div>
+              <div class="mode-item">
+                <div class="mode-head"><span class="mode-name">Explain</span></div>
+                <p>Progressive conceptual ladder translating difficult jargon into intuitive analogies.</p>
+              </div>
+              <div class="mode-item">
+                <div class="mode-head"><span class="mode-name">Debate</span></div>
+                <p>Identifies opposing tensions, counterarguments, and steelmanned viewpoints.</p>
+              </div>
+              <div class="mode-item">
+                <div class="mode-head"><span class="mode-name">Study</span></div>
+                <p>Extracts formal definitions, active recall flashcards, and retention takeaways.</p>
+              </div>
+              <div class="mode-item">
+                <div class="mode-head"><span class="mode-name">Outline</span></div>
+                <p>Hierarchical tree with numbered points and nested sub-headings for quick scanning.</p>
+              </div>
+              <div class="mode-item">
+                <div class="mode-head"><span class="mode-name">Timeline</span></div>
+                <p>Strictly chronological sequence linking developments with source timestamps.</p>
+              </div>
+              <div class="mode-item">
+                <div class="mode-head"><span class="mode-name">Concepts</span></div>
+                <p>Knowledge graph of prerequisite terms, core principles, and domain connections.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content 3: Output Sections -->
+          <div class="cap-panel-content" role="tabpanel" aria-labelledby="tab-btn-sections" id="panel-tab-sections" hidden>
+            <div class="section-contract-grid">
+              <div class="contract-card">
+                <div class="contract-tag font-mono">summary</div>
+                <h4>Executive Summary</h4>
+                <p>Comprehensive overview synthesizing the entire source into 2-3 dense, clear paragraphs.</p>
+              </div>
+              <div class="contract-card">
+                <div class="contract-tag font-mono">keyTakeaways</div>
+                <h4>Key Takeaways</h4>
+                <p>Actionable, bulleted insights formatted with bold anchors for high visual scannability.</p>
+              </div>
+              <div class="contract-card">
+                <div class="contract-tag font-mono">details</div>
+                <h4>Details &amp; Narrative Flow</h4>
+                <p>Sequential walk-through of the argument with exact timestamps (e.g. <code>[12:34]</code>).</p>
+              </div>
+              <div class="contract-card">
+                <div class="contract-tag font-mono">argumentAndInsight</div>
+                <h4>Connections, Causes &amp; Tradeoffs</h4>
+                <p>Deep-tier synthesis linking root causes, second-order effects, and architectural tradeoffs.</p>
+              </div>
+              <div class="contract-card">
+                <div class="contract-tag font-mono">evidenceAndExamples</div>
+                <h4>Evidence &amp; Examples</h4>
+                <p>Concrete benchmarks, empirical experiments, and specific case studies mentioned.</p>
+              </div>
+              <div class="contract-card">
+                <div class="contract-tag font-mono">followUpQuestions</div>
+                <h4>Follow-up Inquiries</h4>
+                <p>Auto-generated questions that prompt the user to explore deeper nuance via chat.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content 4: Providers -->
+          <div class="cap-panel-content" role="tabpanel" aria-labelledby="tab-btn-providers" id="panel-tab-providers" hidden>
+            <div class="providers-triad">
+              <div class="provider-box">
+                <div class="provider-badge">Cloud API</div>
+                <h3>Google Gemini</h3>
+                <p>Native multimodal and YouTube video support with high context windows and streaming chunk tokenization.</p>
+                <div class="provider-specs font-mono">
+                  <span>Models: gemini-2.0-flash, gemini-2.5-pro</span>
+                </div>
+              </div>
+
+              <div class="provider-box">
+                <div class="provider-badge">Cloud Proxy</div>
+                <h3>OpenAI Compatible</h3>
+                <p>Connects to OpenAI GPT-4o, Anthropic via proxies, Groq, or OpenRouter with configurable base URLs.</p>
+                <div class="provider-specs font-mono">
+                  <span>Models: gpt-4o, claude-3-5-sonnet, deepseek-v3</span>
+                </div>
+              </div>
+
+              <div class="provider-box">
+                <div class="provider-badge">Privacy First</div>
+                <h3>Local Models (Ollama)</h3>
+                <p>Runs 100% locally with zero internet access required. Connects to Ollama, LM Studio, or vLLM endpoints.</p>
+                <div class="provider-specs font-mono">
+                  <span>Models: llama3.3:70b, mistral, qwen2.5</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE & PIPELINE WALKTHROUGH -->
+    <section class="section" id="pipeline" aria-labelledby="pipeline-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">System Architecture</div>
+          <h2 class="section-title" id="pipeline-title">From DOM extraction to grounded synthesis.</h2>
+          <p class="section-lead">
+            The processing pipeline is partitioned into distinct, auditable stages. Each module enforces strict input/output contracts to eliminate silent failures.
+          </p>
+        </div>
+
+        <!-- Interactive Architecture Flow Diagram -->
+        <div class="pipeline-visual-container">
+          <div class="pipe-step-card" data-step="1">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <h4>Extraction Layer</h4>
+              <p class="step-desc">Content script queries YouTube transcripts or executes Readability DOM scoring.</p>
+              <div class="step-badge">extractors.js</div>
+            </div>
+          </div>
+
+          <div class="pipe-connector">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+
+          <div class="pipe-step-card" data-step="2">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <h4>Semantic Chunking</h4>
+              <p class="step-desc">Splits large transcripts at timestamp and paragraph boundaries with 1-sentence overlap.</p>
+              <div class="step-badge">chunker.js</div>
+            </div>
+          </div>
+
+          <div class="pipe-connector">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+
+          <div class="pipe-step-card" data-step="3">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <h4>Prompt Envelope</h4>
+              <p class="step-desc">Injects source metadata, depth guidelines, and heading contracts into a unified envelope.</p>
+              <div class="step-badge">builders.js</div>
+            </div>
+          </div>
+
+          <div class="pipe-connector">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+
+          <div class="pipe-step-card" data-step="4">
+            <div class="step-num">04</div>
+            <div class="step-content">
+              <h4>Provider Transport</h4>
+              <p class="step-desc">Streams chunks via <code>AbortController</code> with per-tab request cancellation.</p>
+              <div class="step-badge">provider-registry.js</div>
+            </div>
+          </div>
+
+          <div class="pipe-connector">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+
+          <div class="pipe-step-card" data-step="5">
+            <div class="step-num">05</div>
+            <div class="step-content">
+              <h4>Quality Gate &amp; Repair</h4>
+              <p class="step-desc">Evaluates section coverage scores; triggers targeted single-pass repair if shallow.</p>
+              <div class="step-badge">quality-gate.js</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Architectural Deep Dive Accordions -->
+        <div class="arch-accordion-list">
+          <details class="arch-accordion-item">
+            <summary class="arch-summary">
+              <span class="summary-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Prompt-Agnostic Provider Contract</span>
+              </span>
+              <span class="summary-icon">+</span>
+            </summary>
+            <div class="arch-content-body">
+              <p>
+                Every provider implements the normalized method signature <code>generateText(prompt, settings, onChunk?)</code>. The provider has zero knowledge of tab IDs, user interface state, or section parsing. If a provider fails or the user cancels generation, an <code>AbortController</code> signal cleanly terminates in-flight fetch streams without leaking worker memory.
+              </p>
+            </div>
+          </details>
+
+          <details class="arch-accordion-item">
+            <summary class="arch-summary">
+              <span class="summary-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+                <span>Semantic Chunking with Timestamp Integrity</span>
+              </span>
+              <span class="summary-icon">+</span>
+            </summary>
+            <div class="arch-content-body">
+              <p>
+                Unlike basic character chunking that cuts sentences mid-word, DeepDigest splits content based on structural hierarchy: <strong>timestamp segment boundaries → paragraph breaks → sentence delimiters → clause commas</strong>. Each chunk retains 1 sentence of rolling overlap to ensure continuity during final multi-chunk synthesis.
+              </p>
+            </div>
+          </details>
+
+          <details class="arch-accordion-item">
+            <summary class="arch-summary">
+              <span class="summary-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                <span>Quality Gate &amp; Targeted Partial Repair</span>
+              </span>
+              <span class="summary-icon">+</span>
+            </summary>
+            <div class="arch-content-body">
+              <p>
+                When generating in <em>Deep</em> or <em>Long</em> modes, the quality gate inspects the parsed AST for section depth, minimum bullet counts, and placeholder avoidance. If a specific section (e.g. <em>Perspectives and Uncertainty</em>) falls below the threshold, a targeted repair prompt regenerates only that section — preserving healthy content and saving 80% of token compute.
+              </p>
+            </div>
+          </details>
+
+          <details class="arch-accordion-item">
+            <summary class="arch-summary">
+              <span class="summary-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                <span>Per-Tab State Isolation in Chrome Side Panel</span>
+              </span>
+              <span class="summary-icon">+</span>
+            </summary>
+            <div class="arch-content-body">
+              <p>
+                Because the Chrome side panel remains mounted when a user switches browser tabs, all caches, ongoing workflows, and follow-up conversation histories are keyed by <code>tabId</code>. Switching tabs instantaneously pulls that tab's stored snapshot from an in-memory cache and <code>chrome.storage.local</code>, ignoring cross-talk from background tabs.
+              </p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROMPT ENGINEERING & ENVELOPE INSPECTOR -->
+    <section class="section section-bordered" id="prompts" aria-labelledby="prompts-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Prompt Architecture</div>
+          <h2 class="section-title" id="prompts-title">One unified envelope, zero prompt drift.</h2>
+          <p class="section-lead">
+            Explore how prompt templates are assembled dynamically. A shared outer envelope enforces system directives, language injection, and the strict markdown heading contract.
+          </p>
+        </div>
+
+        <div class="prompt-inspector-card">
+          <div class="inspector-header">
+            <div class="inspector-tabs">
+              <button class="inspect-tab is-active" type="button" data-prompt="envelope">Shared Envelope</button>
+              <button class="inspect-tab" type="button" data-prompt="youtube">YouTube Template</button>
+              <button class="inspect-tab" type="button" data-prompt="repair">Quality Repair Prompt</button>
+              <button class="inspect-tab" type="button" data-prompt="followup">Follow-up Q&amp;A Prompt</button>
+            </div>
+            <button class="copy-prompt-btn" id="copy-prompt-btn" type="button" aria-label="Copy prompt snippet">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Copy Code</span>
+            </button>
+          </div>
+
+          <div class="inspector-code-body">
+            <pre class="code-view"><code class="language-markdown" id="prompt-code-display"># SHARED ENVELOPE (lib/prompts/common.js)
+You are an expert analytical research assistant. Your task is to transform the provided source content into an exceptionally well-structured, authoritative, and grounded synthesis.
+
+## CORE DIRECTIVES:
+1. Grounding: Rely strictly on the provided source content. Do not extrapolate unsupported claims.
+2. Structure: Follow the mandatory section headings exactly as specified.
+3. Language: Respond in the requested output language: {outputLanguage}.
+4. Tone: Analytical, concise, objective, and dense with actionable insight.
+
+## MANDATORY HEADING CONTRACT:
+## Summary
+## Key Takeaways
+## Details of the Video / Content
+## Connections, Causes & Tradeoffs (for Deep depth)
+## Evidence and Examples
+## Perspectives and Uncertainty
+## Follow-up Questions
+
+{sourceSpecificTemplate}</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECHNICAL DECISIONS LOG -->
+    <section class="section" id="decisions" aria-labelledby="decisions-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Engineering Tradeoffs</div>
+          <h2 class="section-title" id="decisions-title">Deliberate choices and trade-offs.</h2>
+          <p class="section-lead">
+            Every technical architectural decision was made to balance UX responsiveness, maintainability, and resource utilization.
+          </p>
+        </div>
+
+        <div class="decisions-masonry">
+          <div class="decision-box">
+            <div class="decision-num">01</div>
+            <h3>Vanilla JavaScript vs Framework Bundling</h3>
+            <p><strong>Decision:</strong> Avoided React/Vite/Webpack; wrote the extension in pure ES2020+ modules.</p>
+            <p><strong>Rationale:</strong> Chrome extensions with MV3 service workers and side panels run lighter without hydration overhead. Instant reload during development and zero dependency vulnerability churn.</p>
+            <div class="decision-pills">
+              <span class="dpill green">Zero build step</span>
+              <span class="dpill">Sub-millisecond init</span>
+            </div>
+          </div>
+
+          <div class="decision-box">
+            <div class="decision-num">02</div>
+            <h3>Heading Alias Contract vs JSON Mode</h3>
+            <p><strong>Decision:</strong> Used markdown headings (<code>## Key Takeaways</code>) instead of JSON Schema generation.</p>
+            <p><strong>Rationale:</strong> Allows incremental streaming rendering to the user within 300ms. JSON requires buffering the full payload before parsing, which degrades perceived performance.</p>
+            <div class="decision-pills">
+              <span class="dpill green">Streaming friendly</span>
+              <span class="dpill">Fallback tolerant</span>
+            </div>
+          </div>
+
+          <div class="decision-box">
+            <div class="decision-num">03</div>
+            <h3>Targeted Section Repair vs Full Regeneration</h3>
+            <p><strong>Decision:</strong> Repaired only failing sections (1 pass maximum) instead of re-running the prompt.</p>
+            <p><strong>Rationale:</strong> Avoids discarding already well-generated sections and cuts token usage and user latency by 75% on edge-case summaries.</p>
+            <div class="decision-pills">
+              <span class="dpill green">75% Token savings</span>
+              <span class="dpill">Deterministic</span>
+            </div>
+          </div>
+
+          <div class="decision-box">
+            <div class="decision-num">04</div>
+            <h3>Settings Schema as Single Source of Truth</h3>
+            <p><strong>Decision:</strong> Centralized all defaults, bounds, and normalizations into <code>settings-schema.js</code>.</p>
+            <p><strong>Rationale:</strong> Both the side panel and the options page consume the same schema, preventing migration bugs and guaranteeing forward compatibility.</p>
+            <div class="decision-pills">
+              <span class="dpill green">Type-safe schema</span>
+              <span class="dpill">Cross-view parity</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRIVACY, SECURITY & DATA SOVEREIGNTY -->
+    <section class="section section-bordered" id="security" aria-labelledby="security-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Privacy and control are product features</div>
+          <h2 class="section-title" id="security-title">You decide what is sent, where it goes, and what stays on this device.</h2>
+          <p class="section-lead">
+            Extraction runs only after an explicit action. Credentials stay in the service worker. Local providers never leave the machine.
+          </p>
+        </div>
+
+        <div class="security-grid">
+          <article class="security-card">
+            <div class="sec-badge sec-badge-success">Local credentials</div>
+            <h3>Keys stay in chrome.storage.local</h3>
+            <p>Provider API keys never enter the content script or the page DOM. The background worker is the only process that reads them.</p>
+          </article>
+          <article class="security-card">
+            <div class="sec-badge sec-badge-info">Offline path</div>
+            <h3>Ollama and LM Studio are first-class</h3>
+            <p>Point the local provider at <code>127.0.0.1</code>. Internal docs and selections can be summarized without a cloud round-trip.</p>
+          </article>
+          <article class="security-card">
+            <div class="sec-badge sec-badge-warning">Explicit trigger</div>
+            <h3>No background scraping</h3>
+            <p>Nothing is extracted until you click Generate, use the context menu, or press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</p>
+          </article>
+          <article class="security-card">
+            <div class="sec-badge sec-badge-success">Transient memory</div>
+            <h3>Tab close wipes that tab</h3>
+            <p>Results, follow-up chat, and workflow phase are keyed by tab ID and cleared when the tab goes away. No hidden reading history.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOCAL INSTALLATION -->
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Free to load unpacked · no store listing yet</div>
+          <h2 class="section-title" id="install-title">Load DeepDigest locally in Chrome in a few minutes.</h2>
+          <p class="section-lead">
+            Open source, vanilla JavaScript, no build step. Clone the repo, enable Developer mode, and load the folder that contains <code>manifest.json</code>.
+          </p>
+        </div>
+
+        <ol class="install-steps">
+          <li class="install-step">
+            <span class="install-num">1</span>
+            <div>
+              <h3>Get the source</h3>
+              <p>Clone the repository or download the ZIP, then open the <code>summarizer-extension</code> folder.</p>
+              <div class="install-code-row">
+                <pre class="install-code"><code id="install-clone-cmd">git clone https://github.com/thaihai-swe/browser-extensions.git</code></pre>
+                <button class="copy-prompt-btn" id="copy-clone-btn" type="button" aria-label="Copy clone command">
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+          </li>
+          <li class="install-step">
+            <span class="install-num">2</span>
+            <div>
+              <h3>Open Chrome extensions</h3>
+              <p>Go to <code>chrome://extensions</code> and turn on <strong>Developer mode</strong> in the top-right corner.</p>
+            </div>
+          </li>
+          <li class="install-step">
+            <span class="install-num">3</span>
+            <div>
+              <h3>Load unpacked</h3>
+              <p>Click <strong>Load unpacked</strong> and select the <code>summarizer-extension</code> directory — the one that contains <code>manifest.json</code>.</p>
+            </div>
+          </li>
+          <li class="install-step">
+            <span class="install-num">4</span>
+            <div>
+              <h3>Summarize a real page</h3>
+              <p>Open a YouTube video or article, then press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> on macOS) or use the context menu.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="install-actions">
+          <a class="btn-action btn-action-primary" href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer">View source on GitHub</a>
+          <a class="btn-action btn-action-secondary" href="https://github.com/thaihai-swe/browser-extensions/archive/refs/heads/main.zip">Download ZIP</a>
+          <a class="btn-action btn-action-ghost" href="../docs/SETUP.md">Full setup guide</a>
+        </div>
+        <p class="install-note">Gemini, OpenAI, or a local endpoint needs configuration in Options. Local models run without a cloud key. Provider usage may incur charges from that provider, not from this project.</p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section section-bordered" id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Before you install</div>
+          <h2 class="section-title" id="faq-title">Common questions about DeepDigest.</h2>
+          <p class="section-lead">Short answers for setup, privacy, long videos, and what the extension does — and does not — do.</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary>Do I need a paid API key?</summary>
+            <p>No. You can use a Gemini key from Google AI Studio, an OpenAI-compatible endpoint, or a fully local model through Ollama or LM Studio. There is no Chrome Web Store fee and no account on this project.</p>
+          </details>
+          <details class="faq-item">
+            <summary>How does DeepDigest handle long YouTube videos?</summary>
+            <p>Typical pages use one provider request. Long transcripts can be split into up to four semantic chunks with sentence overlap, then synthesized. Deep and Long modes may run one targeted repair pass if a section is too shallow.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Can I summarize private docs, intranet pages, or selections?</summary>
+            <p>Yes. Selected text has priority over YouTube, course, and webpage extractors. Pair selection mode with a local provider if the content should never leave the machine.</p>
+          </details>
+          <details class="faq-item">
+            <summary>What keyboard shortcuts and launch paths exist?</summary>
+            <p><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> (or <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) opens the side panel and starts a summary. You can also click the toolbar icon or right-click <strong>Summarize with DeepDigest</strong>.</p>
+          </details>
+          <details class="faq-item">
+            <summary>How do custom prompt presets work?</summary>
+            <p>Named presets live in Options. They keep DeepDigest’s heading contract and grounding rules while adding your instructions. Placeholders such as <code>__CONTENT__</code> and <code>__LANG__</code> are supported.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Is browsing history recorded or sent anywhere?</summary>
+            <p>No analytics and no hidden scrape. Content is sent to the provider you configured, and only after you generate. Closing a tab clears that tab’s result, conversation, and workflow state.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOCUMENTATION & VERIFICATION REPOSITORY -->
+    <section class="section section-bordered" id="docs" aria-labelledby="docs-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Documentation Suite</div>
+          <h2 class="section-title" id="docs-title">Comprehensive documentation for production readiness.</h2>
+          <p class="section-lead">
+            The project includes 14 dedicated documentation guides covering every subsystem from content pipelines to test matrices.
+          </p>
+        </div>
+
+        <div class="docs-directory-grid">
+          <a href="../docs/ARCHITECTURE.md" class="doc-link-card">
+            <div class="doc-file-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="doc-info">
+              <div class="doc-name">ARCHITECTURE.md</div>
+              <div class="doc-desc">Component topology, messaging contracts &amp; storage isolation.</div>
+            </div>
+            <span class="doc-arrow">↗</span>
+          </a>
+
+          <a href="../docs/WORKFLOW.md" class="doc-link-card">
+            <div class="doc-file-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="doc-info">
+              <div class="doc-name">WORKFLOW.md</div>
+              <div class="doc-desc">End-to-end lifecycle flow from user click to side panel rendering.</div>
+            </div>
+            <span class="doc-arrow">↗</span>
+          </a>
+
+          <a href="../docs/PROMPTS.md" class="doc-link-card">
+            <div class="doc-file-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="doc-info">
+              <div class="doc-name">PROMPTS.md</div>
+              <div class="doc-desc">Full prompt inventory, envelope schema, and heading definitions.</div>
+            </div>
+            <span class="doc-arrow">↗</span>
+          </a>
+
+          <a href="../docs/PROVIDERS.md" class="doc-link-card">
+            <div class="doc-file-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="doc-info">
+              <div class="doc-name">PROVIDERS.md</div>
+              <div class="doc-desc">Provider contract specifications, error normalization, and streaming hooks.</div>
+            </div>
+            <span class="doc-arrow">↗</span>
+          </a>
+
+          <a href="../docs/CONTENT_PIPELINE.md" class="doc-link-card">
+            <div class="doc-file-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="doc-info">
+              <div class="doc-name">CONTENT_PIPELINE.md</div>
+              <div class="doc-desc">Multi-source extraction logic and fallback strategies.</div>
+            </div>
+            <span class="doc-arrow">↗</span>
+          </a>
+
+          <a href="../docs/USER_GUIDE.md" class="doc-link-card">
+            <div class="doc-file-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="doc-info">
+              <div class="doc-name">USER_GUIDE.md</div>
+              <div class="doc-desc">User-facing manual for settings, keyboard shortcuts, and export options.</div>
+            </div>
+            <span class="doc-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CALL TO ACTION / OWNERSHIP SUMMARY -->
+    <section class="section cta-highlight-section" id="ownership" aria-labelledby="cta-title">
+      <div class="container text-center">
+        <div class="section-tag center">Engineering Summary</div>
+        <h2 class="section-title cta-title" id="cta-title">Crafted with deliberate architectural focus.</h2>
+        <p class="section-lead mx-auto">
+          DeepDigest showcases how product design, AI prompt engineering, and clean systems architecture combine to create a reliable cognitive companion for developers and researchers.
+        </p>
+
+        <div class="cta-actions-row">
+          <a href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer" class="btn-action btn-action-primary btn-action-lg">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>Explore GitHub Repository</span>
+          </a>
+          <a href="#top" class="btn-action btn-action-secondary btn-action-lg">
+            <span>Back to Top</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-container">
+      <div class="footer-left">
+        <div class="footer-logo">
+          <span class="logo-mark small">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+          </span>
+          <span class="logo-text">Deep<span class="logo-accent">Digest</span></span>
+        </div>
+        <p class="footer-subtext">Engineered for Chrome Side Panel · Pure JavaScript</p>
+      </div>
+
+      <div class="footer-nav">
+        <div class="footer-col">
+          <span class="footer-heading">Architecture</span>
+          <a href="../docs/ARCHITECTURE.md">System Design</a>
+          <a href="../docs/WORKFLOW.md">State Pipeline</a>
+          <a href="../docs/CONTENT_PIPELINE.md">Extraction</a>
+        </div>
+        <div class="footer-col">
+          <span class="footer-heading">Prompts &amp; AI</span>
+          <a href="../docs/PROMPTS.md">Prompt Envelopes</a>
+          <a href="../docs/PROVIDERS.md">Provider Registry</a>
+          <a href="../docs/TESTING.md">Quality Gates</a>
+        </div>
+        <div class="footer-col">
+          <span class="footer-heading">Project</span>
+          <a href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer">GitHub Repository</a>
+          <a href="../docs/USER_GUIDE.md">User Guide</a>
+          <a href="#top">Back to Top</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <span>&copy; DeepDigest Extension Case Study. Open source educational work.</span>
+        <span>Vanilla JS · Zero NPM Dependencies</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      // 1. Theme Toggle Logic
+      var themeToggleBtn = document.getElementById('theme-toggle');
+      var htmlEl = document.documentElement;
+      
+      // Check saved theme or system preference
+      var savedTheme = localStorage.getItem('deepdigest-theme');
+      if (savedTheme) {
+        htmlEl.setAttribute('data-theme', savedTheme);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        htmlEl.setAttribute('data-theme', 'light');
+      }
+
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', function() {
+          var current = htmlEl.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+          var next = current === 'light' ? 'dark' : 'light';
+          htmlEl.setAttribute('data-theme', next);
+          localStorage.setItem('deepdigest-theme', next);
+        });
+      }
+
+      // 2. Mobile Nav Toggle
+      var navToggle = document.getElementById('nav-toggle');
+      var navMobile = document.getElementById('nav-mobile');
+      if (navToggle && navMobile) {
+        navToggle.addEventListener('click', function() {
+          var isOpen = navToggle.getAttribute('aria-expanded') === 'true';
+          navToggle.setAttribute('aria-expanded', String(!isOpen));
+          navMobile.hidden = isOpen;
+        });
+
+        // Close on link click
+        navMobile.querySelectorAll('a').forEach(function(link) {
+          link.addEventListener('click', function() {
+            navToggle.setAttribute('aria-expanded', 'false');
+            navMobile.hidden = true;
+          });
+        });
+      }
+
+      // 3. Capabilities Tabs Logic
+      var capTabs = document.querySelectorAll('.cap-tab-btn');
+      var capPanels = {
+        sources: document.getElementById('panel-tab-sources'),
+        modes: document.getElementById('panel-tab-modes'),
+        sections: document.getElementById('panel-tab-sections'),
+        providers: document.getElementById('panel-tab-providers')
+      };
+
+      capTabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          var targetTab = tab.getAttribute('data-tab');
+          capTabs.forEach(function(t) {
+            t.classList.remove('is-active');
+            t.setAttribute('aria-selected', 'false');
+          });
+          tab.classList.add('is-active');
+          tab.setAttribute('aria-selected', 'true');
+
+          Object.keys(capPanels).forEach(function(key) {
+            if (capPanels[key]) {
+              if (key === targetTab) {
+                capPanels[key].classList.add('is-active');
+                capPanels[key].removeAttribute('hidden');
+              } else {
+                capPanels[key].classList.remove('is-active');
+                capPanels[key].setAttribute('hidden', 'true');
+              }
+            }
+          });
+        });
+      });
+
+      // 4. Interactive Sidepanel Simulator Data & Logic
+      var demoData = {
+        youtube: {
+          title: "State of GPT | Build 2023 | Andrej Karpathy",
+          url: "https://www.youtube.com/watch?v=bZQun8Y4L2W",
+          badge: "YouTube",
+          extractor: "YouTube Transcript API",
+          score: "98/100 (Validated)",
+          summary: "Andrej Karpathy outlines the four key training phases of modern Large Language Models: Pre-training (Base Models), Supervised Fine-Tuning (SFT), Reward Modeling, and Reinforcement Learning from Human Feedback (RLHF). He emphasizes that Base Models are document completers, whereas SFT/RLHF models act as helpful conversational assistants.",
+          takeaways: [
+            "<strong>Pre-training is compute-heavy:</strong> 99% of GPU hours occur in unsupervised token prediction across trillions of tokens.",
+            "<strong>RLHF trades entropy for alignment:</strong> Alignment reduces mode hallucination but can narrow output diversity and creative variance.",
+            "<strong>Prompt engineering matters:</strong> LLMs lack cognitive working memory; Chain-of-Thought prompting provides scratchpad space to compute intermediate reasoning steps."
+          ],
+          timeline: [
+            { time: "[02:15]", desc: "Pre-training pipeline: Tokenization byte-pair encodings & loss curves." },
+            { time: "[14:30]", desc: "SFT datasets: Replacing raw web scrape with expert human demonstrations." },
+            { time: "[25:40]", desc: "RLHF & PPO: Training reward models on comparative human rankings." }
+          ],
+          insights: "The architectural tradeoff of RLHF alignment is the compression of probability tails: models become compliant and safe at the cost of losing some niche domain knowledge stored in the base weights. System 2 thinking (Tree of Thoughts) mitigates linear generation bottlenecks."
+        },
+        webpage: {
+          title: "Designing Data-Intensive Applications | Chapter 5: Replication",
+          url: "https://dataintensive.net/chapters/replication",
+          badge: "Webpage",
+          extractor: "Readability DOM Scorer",
+          score: "96/100 (Validated)",
+          summary: "Martin Kleppmann examines fundamental replication models in distributed databases: single-leader, multi-leader, and leaderless setups. It details replication lag phenomena, read-after-write consistency guarantees, monotonic reads, and conflict resolution mechanisms under partitioned network conditions.",
+          takeaways: [
+            "<strong>Leaderless replication (Dynamo-style):</strong> Relies on Quorum reads/writes (w + r > n) and anti-entropy background gossip processes.",
+            "<strong>Replication lag challenges:</strong> Asynchronous replication yields eventual consistency but requires client-side monotonic read routing.",
+            "<strong>Conflict resolution strategies:</strong> Last-Write-Wins (LWW) causes silent data loss; version vectors preserve causal concurrency."
+          ],
+          timeline: [
+            { time: "Section 1", desc: "Leader vs Follower architecture & synchronous vs asynchronous durability." },
+            { time: "Section 2", desc: "Failover mechanics: Split-brain prevention through fencing tokens." },
+            { time: "Section 3", desc: "Multi-datacenter replication topologies & concurrent write resolution." }
+          ],
+          insights: "Single-leader architectures simplify serializability at the cost of write scalability. Multi-leader setups introduce cross-datacenter complexity that mandates explicit conflict handling or CRDT structures."
+        },
+        course: {
+          title: "Coursera: Deep Learning Specialization | Transformer Attention",
+          url: "https://www.coursera.org/learn/nlp-sequence-models/lecture/transformers",
+          badge: "Course Lesson",
+          extractor: "Coursera DOM Parser",
+          score: "99/100 (Validated)",
+          summary: "Andrew Ng covers Multi-Head Scaled Dot-Product Attention mechanisms. Explains Queries (Q), Keys (K), and Values (V) matrix multiplications, positional encoding sinusoidal functions, and residual layer normalization across encoder-decoder stacks.",
+          takeaways: [
+            "<strong>Scaled Dot-Product formula:</strong> Softmax(QK^T / sqrt(d_k))V scales variance to prevent softmax gradient saturation.",
+            "<strong>Multi-Head projection:</strong> Allows models to jointly attend to information from distinct representation subspaces at different positions.",
+            "<strong>Masked Self-Attention:</strong> Prevents leftward information leakage during autoregressive decoding."
+          ],
+          timeline: [
+            { time: "Step 01", desc: "Motivation: Why RNN sequential bottlenecks necessitated parallel attention." },
+            { time: "Step 02", desc: "Mathematical derivation of Queries, Keys, and Values projection matrices." },
+            { time: "Step 03", desc: "Positional embeddings: Injecting sequence order without recurrence." }
+          ],
+          insights: "The computational complexity of standard self-attention scales quadratically O(N^2) with sequence length, motivating flash attention kernel fusions and sparse attention patterns for long-context workloads."
+        },
+        selection: {
+          title: "Selected Excerpt: In Search of an Understandable Consensus (Raft)",
+          url: "selection://active-tab-highlight",
+          badge: "Selected Text",
+          extractor: "Direct DOM Selection API",
+          score: "100/100 (Validated)",
+          summary: "Selected paragraph explaining Raft's Leader Election and Log Replication subproblems. Raft decomposes consensus into leader election, log replication, and safety invariants, achieving equivalence with Paxos with vastly superior pedagogical understandability.",
+          takeaways: [
+            "<strong>Term numbers act as logical clocks:</strong> Detects stale leaders and supersedes split-vote candidate terms.",
+            "<strong>Leader completeness invariant:</strong> If a log entry is committed in a given term, it will be present in logs of leaders for all higher terms."
+          ],
+          timeline: [
+            { time: "Paragraph 1", desc: "Decomposition into independent subproblems for verification simplicity." },
+            { time: "Paragraph 2", desc: "Heartbeat timers (150-300ms randomized) resolving split-vote deadlocks." }
+          ],
+          insights: "Randomized election timeouts represent a pragmatic design choice that eliminates complex deterministic leader negotiation protocols."
+        }
+      };
+
+      var sourceSelect = document.getElementById('sim-source-select');
+      var modeSelect = document.getElementById('sim-mode-select');
+      var depthSelect = document.getElementById('sim-depth-select');
+      var scenarioButtons = document.querySelectorAll('.scenario-btn');
+      var runBtn = document.getElementById('sim-run-btn');
+      var panelStatus = document.getElementById('panel-status');
+      var panelStatusLabel = document.getElementById('panel-status-label');
+      var simUrlDisplay = document.getElementById('sim-url-display');
+      var simPageTitle = document.getElementById('sim-page-title');
+      var panelBadgeSource = document.getElementById('panel-badge-source');
+      var simExtractorTag = document.getElementById('sim-extractor-tag');
+      var simQualityScore = document.getElementById('sim-quality-score');
+
+      var textSummary = document.getElementById('sim-text-summary');
+      var textTakeaways = document.getElementById('sim-text-takeaways');
+      var textTimeline = document.getElementById('sim-text-timeline');
+      var textInsights = document.getElementById('sim-text-insights');
+
+      function updateSimulation(sourceKey, isAnimated) {
+        var data = demoData[sourceKey] || demoData.youtube;
+        
+        if (simUrlDisplay) simUrlDisplay.textContent = data.url;
+        if (simPageTitle) simPageTitle.textContent = data.title;
+        if (panelBadgeSource) panelBadgeSource.textContent = data.badge;
+        if (simExtractorTag) simExtractorTag.textContent = data.extractor;
+        if (simQualityScore) simQualityScore.textContent = data.score;
+
+        if (isAnimated) {
+          if (panelStatusLabel) panelStatusLabel.textContent = "Extracting & streaming summary...";
+          if (panelStatus && panelStatus.querySelector('.status-indicator')) {
+            panelStatus.querySelector('.status-indicator').className = "status-indicator running";
+          }
+          if (textSummary) textSummary.textContent = "Streaming tokens...";
+          if (textTakeaways) textTakeaways.innerHTML = "<li>Analyzing key takeaways...</li>";
+          
+          setTimeout(function() {
+            renderData(data);
+            if (panelStatusLabel) panelStatusLabel.textContent = "Summary complete (Quality Validated)";
+            if (panelStatus && panelStatus.querySelector('.status-indicator')) {
+              panelStatus.querySelector('.status-indicator').className = "status-indicator ready";
+            }
+          }, 450);
+        } else {
+          renderData(data);
+          if (panelStatusLabel) panelStatusLabel.textContent = "Ready to summarize";
+          if (panelStatus && panelStatus.querySelector('.status-indicator')) {
+            panelStatus.querySelector('.status-indicator').className = "status-indicator ready";
+          }
+        }
+      }
+
+      function renderData(data) {
+        if (textSummary) textSummary.textContent = data.summary;
+        
+        if (textTakeaways) {
+          var takeawaysHtml = data.takeaways.map(function(item) {
+            return "<li>" + item + "</li>";
+          }).join("");
+          textTakeaways.innerHTML = takeawaysHtml;
+        }
+
+        if (textTimeline) {
+          var timelineHtml = data.timeline.map(function(t) {
+            return '<div class="timeline-row"><span class="time-badge font-mono">' + t.time + '</span><span class="time-desc">' + t.desc + '</span></div>';
+          }).join("");
+          textTimeline.innerHTML = timelineHtml;
+        }
+
+        if (textInsights) textInsights.textContent = data.insights;
+      }
+
+      // Scenario quick buttons
+      scenarioButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var src = btn.getAttribute('data-source');
+          var mode = btn.getAttribute('data-mode');
+          var depth = btn.getAttribute('data-depth');
+
+          scenarioButtons.forEach(function(b) { b.classList.remove('is-active'); });
+          btn.classList.add('is-active');
+
+          if (sourceSelect && src) sourceSelect.value = src;
+          if (modeSelect && mode) modeSelect.value = mode;
+          if (depthSelect && depth) depthSelect.value = depth;
+
+          updateSimulation(src, true);
+        });
+      });
+
+      if (sourceSelect) {
+        sourceSelect.addEventListener('change', function() {
+          var currentVal = sourceSelect.value;
+          scenarioButtons.forEach(function(b) {
+            if (b.getAttribute('data-source') === currentVal) {
+              b.classList.add('is-active');
+            } else {
+              b.classList.remove('is-active');
+            }
+          });
+          updateSimulation(currentVal, true);
+        });
+      }
+
+      if (runBtn) {
+        runBtn.addEventListener('click', function() {
+          if (sourceSelect) {
+            updateSimulation(sourceSelect.value, true);
+          }
+        });
+      }
+
+      // Accordion toggle inside simulator
+      document.querySelectorAll('.output-block-header').forEach(function(header) {
+        header.addEventListener('click', function() {
+          var targetId = header.getAttribute('data-target');
+          var body = document.getElementById(targetId);
+          var isExpanded = header.getAttribute('aria-expanded') === 'true';
+          
+          header.setAttribute('aria-expanded', String(!isExpanded));
+          if (body) {
+            body.hidden = isExpanded;
+          }
+        });
+      });
+
+      // Copy clone command in install section
+      var copyCloneBtn = document.getElementById('copy-clone-btn');
+      var cloneCmd = document.getElementById('install-clone-cmd');
+      if (copyCloneBtn && cloneCmd) {
+        copyCloneBtn.addEventListener('click', function() {
+          navigator.clipboard.writeText(cloneCmd.textContent).then(function() {
+            var label = copyCloneBtn.querySelector('span');
+            if (label) {
+              var old = label.textContent;
+              label.textContent = "Copied!";
+              setTimeout(function() { label.textContent = old; }, 2000);
+            }
+          });
+        });
+      }
+
+      // 5. Prompt Inspector Snippet Switcher
+      var promptSnippets = {
+        envelope: `# SHARED ENVELOPE (lib/prompts/common.js)
+You are an expert analytical research assistant. Your task is to transform the provided source content into an exceptionally well-structured, authoritative, and grounded synthesis.
+
+## CORE DIRECTIVES:
+1. Grounding: Rely strictly on the provided source content. Do not extrapolate unsupported claims.
+2. Structure: Follow the mandatory section headings exactly as specified.
+3. Language: Respond in the requested output language: {outputLanguage}.
+4. Tone: Analytical, concise, objective, and dense with actionable insight.
+
+## MANDATORY HEADING CONTRACT:
+## Summary
+## Key Takeaways
+## Details of the Video / Content
+## Connections, Causes & Tradeoffs (for Deep depth)
+## Evidence and Examples
+## Perspectives and Uncertainty
+## Follow-up Questions
+
+{sourceSpecificTemplate}`,
+        youtube: `# YOUTUBE TEMPLATE (lib/prompts/templates/youtube.js)
+The source content is a transcript from YouTube titled "{title}" ({url}).
+
+INSTRUCTIONS:
+1. Use real transcript timestamps in [mm:ss] format for the Details section.
+2. Preserve narrative sequence: walkthrough in chronological order.
+3. Identify speaker claims, experimental demos, or code examples.
+
+TRANSCRIPT:
+{formattedTranscriptWithTimestamps}`,
+        repair: `# QUALITY GATE REPAIR PROMPT (lib/prompts/templates/repair.js)
+The initial generation had shallow sections that failed quality thresholds:
+Failing Sections: {failingSectionNames}
+
+INSTRUCTIONS:
+1. Re-generate ONLY the failing sections listed above.
+2. Expand empirical detail, add concrete examples, and remove superficial filler.
+3. Maintain exact heading markdown syntax.
+
+SOURCE EXCERPT:
+{sourceExcerpt}`,
+        followup: `# FOLLOW-UP Q&A PROMPT (lib/prompts/templates/followup.js)
+You are answering a user follow-up question grounded in the previous summary and source content.
+
+SAVED SUMMARY:
+{savedSummaryText}
+
+RECENT CONVERSATION:
+{conversationHistory}
+
+USER QUESTION:
+{userQuery}
+
+ANSWER DIRECTIVES:
+- Answer directly and factually.
+- Cite relevant source points or timestamps where applicable.
+- If the source lacks information to answer, state so clearly.`
+      };
+
+      var promptTabs = document.querySelectorAll('[data-prompt]');
+      var promptDisplay = document.getElementById('prompt-code-display');
+      var copyPromptBtn = document.getElementById('copy-prompt-btn');
+
+      promptTabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          var key = tab.getAttribute('data-prompt');
+          promptTabs.forEach(function(t) { t.classList.remove('is-active'); });
+          tab.classList.add('is-active');
+          if (promptDisplay && promptSnippets[key]) {
+            promptDisplay.textContent = promptSnippets[key];
+          }
+        });
+      });
+
+      if (copyPromptBtn && promptDisplay) {
+        copyPromptBtn.addEventListener('click', function() {
+          navigator.clipboard.writeText(promptDisplay.textContent).then(function() {
+            var label = copyPromptBtn.querySelector('span');
+            if (label) {
+              var old = label.textContent;
+              label.textContent = "Copied!";
+              setTimeout(function() { label.textContent = old; }, 2000);
+            }
+          });
+        });
+      }
+
+      // Arrow key navigation for capability tabs (WCAG Tablist pattern)
+      var tabList = document.querySelector('.cap-tab-list');
+      if (tabList) {
+        tabList.addEventListener('keydown', function(e) {
+          var tabsArr = Array.from(capTabs);
+          var currentIndex = tabsArr.indexOf(document.activeElement);
+          if (currentIndex === -1) return;
+          var nextIndex = -1;
+          if (e.key === 'ArrowRight') {
+            nextIndex = (currentIndex + 1) % tabsArr.length;
+          } else if (e.key === 'ArrowLeft') {
+            nextIndex = (currentIndex - 1 + tabsArr.length) % tabsArr.length;
+          } else if (e.key === 'Home') {
+            nextIndex = 0;
+          } else if (e.key === 'End') {
+            nextIndex = tabsArr.length - 1;
+          }
+          if (nextIndex !== -1) {
+            e.preventDefault();
+            tabsArr[nextIndex].focus();
+            tabsArr[nextIndex].click();
+          }
+        });
+      }
+
+      // Interactive Follow-up Chat response inside simulator
+      var chatInput = document.getElementById('sim-chat-input');
+      var chatSend = document.getElementById('sim-chat-send');
+      var followupBox = document.getElementById('sim-followup-answer');
+      var followupText = document.getElementById('sim-followup-text');
+      if (chatSend && chatInput) {
+        function handleChatSubmit() {
+          var query = chatInput.value.trim();
+          if (!query) return;
+          panelStatusLabel.textContent = "Processing follow-up inquiry...";
+          panelStatus.querySelector('.status-indicator').className = "status-indicator running";
+          chatInput.value = "";
+          setTimeout(function() {
+            panelStatusLabel.textContent = "Answered: Grounded in source transcript";
+            panelStatus.querySelector('.status-indicator').className = "status-indicator ready";
+            if (followupBox && followupText) {
+              followupText.textContent = "Karpathy highlights Chain-of-Thought prompting because autoregressive transformers process one token per forward pass. Intermediate scratchpad tokens give the model computational cycles to work through complex logic before predicting the final conclusion.";
+              followupBox.hidden = false;
+            }
+          }, 400);
+        }
+        chatSend.addEventListener('click', handleChatSubmit);
+        chatInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') handleChatSubmit();
+        });
+      }
+
+      // Smooth scrolling for in-page anchors
+      document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+          var targetId = anchor.getAttribute('href');
+          if (targetId === '#' || targetId === '#top') {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+          }
+          var el = document.querySelector(targetId);
+          if (el) {
+            e.preventDefault();
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            history.replaceState(null, '', targetId);
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>

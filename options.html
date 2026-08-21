@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeepDigest Settings</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+
+<body>
+  <main class="layout" data-page="options">
+    <!-- Header -->
+    <header class="settings-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Settings</p>
+        <h1>Configure how you summarize</h1>
+        <p class="subtitle">Provider, prompts, tone, and reading experience—tuned for a premium, high-signal workflow.
+        </p>
+      </div>
+      <div class="hero-illustration" aria-hidden="true">
+        <svg viewBox="0 0 120 120" fill="none" class="hero-art">
+          <rect x="14" y="18" width="92" height="84" rx="16" stroke="currentColor" stroke-width="2.5" opacity="0.15" />
+          <path d="M30 42h60M30 58h48M30 74h36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            opacity="0.2" />
+          <circle cx="82" cy="78" r="12" fill="currentColor" opacity="0.12" />
+          <path d="M76 78h12M82 72v12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.2" />
+        </svg>
+      </div>
+    </header>
+
+    <!-- Tab navigation -->
+    <nav class="tabs-nav" aria-label="Settings sections" role="tablist">
+      <button class="tab-btn active" id="tab-general-label" role="tab" aria-selected="true" aria-controls="tab-general"
+        data-tab="general" type="button">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="14" rx="2" />
+          <path d="M8 21h8M12 17v4" />
+        </svg>
+        General
+      </button>
+      <button class="tab-btn" id="tab-providers-label" role="tab" aria-selected="false" aria-controls="tab-providers"
+        data-tab="providers" type="button">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="14" rx="2" />
+          <path d="M6 17h12M12 17v4" />
+        </svg>
+        Providers
+      </button>
+      <button class="tab-btn" id="tab-prompts-label" role="tab" aria-selected="false" aria-controls="tab-prompts"
+        data-tab="prompts" type="button">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+        </svg>
+        Prompts
+      </button>
+      <button class="tab-btn" id="tab-display-label" role="tab" aria-selected="false" aria-controls="tab-display"
+        data-tab="display" type="button">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="14" rx="2" />
+          <line x1="8" y1="21" x2="16" y2="21" />
+          <line x1="12" y1="17" x2="12" y2="21" />
+        </svg>
+        Display
+      </button>
+      <!-- Active indicator -->
+      <span class="tab-indicator" aria-hidden="true"></span>
+    </nav>
+
+    <!-- Tab panels -->
+    <section class="tab-panel active" id="tab-general" role="tabpanel" tabindex="0" aria-labelledby="tab-general-label">
+      <div class="panel-grid">
+        <article class="section-card">
+          <header class="section-header">
+            <p class="section-kicker">Defaults</p>
+            <h2>Core Behavior</h2>
+          </header>
+          <div class="settings-grid">
+            <label class="settings-field">
+              <span class="field-label">Active Provider</span>
+              <span class="field-hint">Engine used for new summaries</span>
+              <select id="provider">
+                <option value="gemini">Gemini</option>
+                <option value="openai">OpenAI</option>
+                <option value="local">Local LLM</option>
+              </select>
+            </label>
+
+            <label class="settings-field">
+              <span class="field-label">Default Mode</span>
+              <span class="field-hint">First mode shown in the side panel</span>
+              <select id="promptMode">
+                <option value="summarize">Summarize</option>
+                <option value="analyze">Analyze</option>
+                <option value="explain">Explain</option>
+                <option value="debate">Debate</option>
+                <option value="study">Study</option>
+                <option value="outline">Outline</option>
+                <option value="timeline">Timeline</option>
+                <option value="concepts">Concepts</option>
+              </select>
+            </label>
+
+            <label class="settings-field">
+              <span class="field-label">Summary Tone</span>
+              <span class="field-hint">Voice and depth of the response</span>
+              <select id="summaryTone">
+                <option>Simple</option>
+                <option>Concise</option>
+                <option>Friendly</option>
+                <option>Expert</option>
+                <option>Professional</option>
+                <option>Academic</option>
+                <option>Critical</option>
+                <option>Witty</option>
+                <option>Roast</option>
+              </select>
+            </label>
+
+            <label class="settings-field">
+              <span class="field-label">Summary Size</span>
+              <span class="field-hint">How expansive the answer should be</span>
+              <select id="summarySize">
+                <option>Brief</option>
+                <option selected>Medium</option>
+                <option>Deep</option>
+              </select>
+            </label>
+
+            <label class="settings-field">
+              <span class="field-label">Summary Length</span>
+              <span class="field-hint">Output detail level</span>
+              <select id="summaryLength">
+                <option>Short</option>
+                <option>Medium</option>
+                <option selected>Long</option>
+              </select>
+            </label>
+
+            <label class="settings-field full-width">
+              <span class="field-label">Custom Languages</span>
+              <span class="field-hint">Comma-separated additional languages (e.g. Japanese, French, Spanish)</span>
+              <input id="customLanguages" type="text" placeholder="e.g. Japanese, French, Spanish" />
+            </label>
+            <label class="settings-field full-width">
+              <span class="field-label">Summary Language</span>
+              <span class="field-hint">Output language</span>
+              <select id="summaryLanguage">
+                <option value="English">English</option>
+                <option value="Vietnamese">Vietnamese</option>
+              </select>
+            </label>
+          </div>
+        </article>
+
+        <article class="section-card">
+          <header class="section-header">
+            <p class="section-kicker">Advanced</p>
+            <h2>Custom Instructions</h2>
+          </header>
+          <div class="settings-grid">
+            <section class="settings-field full-width preset-manager" aria-labelledby="preset-manager-title">
+              <span class="field-label" id="preset-manager-title">Custom Prompt Presets</span>
+              <span class="field-hint">Save reusable instructions and select them from the side panel.</span>
+              <div id="prompt-presets-list" class="prompt-presets-list"></div>
+              <div class="preset-editor" role="group" aria-label="Preset Editor">
+                <input id="preset-name" type="text" placeholder="Preset name, e.g. Executive Brief">
+                <textarea id="preset-system" rows="2" placeholder="Optional system emphasis"></textarea>
+                <textarea id="preset-user" rows="3"
+                  placeholder="User instructions; placeholders such as __CONTENT__ and __LANG__ are supported"></textarea>
+                <button id="preset-add" class="btn-ghost" type="button">Add preset</button>
+              </div>
+            </section>
+
+            <label class="settings-field full-width">
+              <span class="field-label">Custom Prompt Instructions</span>
+              <span class="field-hint">Appended to every generated prompt</span>
+              <textarea id="customPromptInstructions" rows="4"
+                placeholder="e.g. Always include a TL;DR section at the top…"></textarea>
+            </label>
+
+            <label class="settings-field full-width">
+              <span class="field-label">Custom System Instructions</span>
+              <span class="field-hint">System-level guidance for the model</span>
+              <textarea id="customSystemInstructions" rows="3"
+                placeholder="e.g. You are a concise technical summarizer…"></textarea>
+            </label>
+          </div>
+
+          <section class="prompt-reference prompt-reference-compact" aria-labelledby="prompt-reference-title-general">
+            <div class="prompt-reference-header">
+              <div>
+                <p class="section-kicker">Reference</p>
+                <h3 id="prompt-reference-title-general">Current System Prompt</h3>
+                <p class="field-hint">Live full prompt from the real builder. Source content below is only a placeholder
+                  so you can inspect the complete system instructions, section contract, and your customizations.</p>
+              </div>
+              <div class="prompt-reference-actions">
+                <label class="prompt-reference-source" for="promptReferenceSource">
+                  <span class="visually-hidden">Preview source type</span>
+                  <select id="promptReferenceSource">
+                    <option value="webpage">Webpage</option>
+                    <option value="youtube">YouTube</option>
+                    <option value="course">Course</option>
+                    <option value="selectedText">Selected text</option>
+                  </select>
+                </label>
+                <button class="btn-ghost btn-copy copy-current-prompt" type="button">Copy full prompt</button>
+              </div>
+            </div>
+            <pre class="current-prompt" data-prompt-preview tabindex="0"
+              aria-live="polite">Loading full system prompt…</pre>
+          </section>
+        </article>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-providers" role="tabpanel" tabindex="0" aria-labelledby="tab-providers-label">
+      <div class="panel-grid">
+        <article class="section-card" id="providers-list" aria-label="Provider cards">
+          <header class="section-header">
+            <p class="section-kicker">LLM Engines</p>
+            <h2>Configure Providers</h2>
+            <p class="section-description">Select the active provider above, then enter credentials below. The active
+              provider is highlighted.</p>
+          </header>
+
+          <div class="providers-grid">
+            <!-- Gemini -->
+            <div class="provider-card" data-provider="gemini">
+              <div class="provider-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="currentColor">
+                  <path
+                    d="M16 2C8.3 2 2 8.3 2 16s6.3 14 14 14 14-6.3 14-14S23.7 2 16 2zm0 26C10.5 28 6 23.5 6 16S10.5 4 16 4s10 4.5 10 10-4.5 10-10 10zm5.5-13H10v-2h11.5V15z" />
+                </svg>
+              </div>
+              <h3 class="provider-name">Gemini</h3>
+              <p class="provider-hint">Google&rsquo;s generative models</p>
+              <span class="provider-badge" aria-hidden="true"></span>
+            </div>
+
+            <!-- OpenAI -->
+            <div class="provider-card" data-provider="openai">
+              <div class="provider-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="currentColor">
+                  <path
+                    d="M14.5 2.5c2.7 0 5.5.9 7.3 2.8-1.9 2.7-4.9 4.5-7.3 5.2v5.5h-4.7v4.6h4.7v11.3h5.1v-11.3h4.7v-4.6h-4.7V7c0-4.3-3.7-7.8-8.1-7.8-4.5 0-8.2 3.5-8.2 7.8v12.3h5.1V18.2h-5.1v-5.1c0-.9.4-1.7 1.2-2.3.8-.6 1.9-.9 3.2-.9 1.4 0 2.6.4 3.5 1.2v4.7h-3.2c-1.7 0-2.8 1-2.8 2.2v2.5h5.3l-.7 4.6h-4.6v11.3H4.5V4.6c0-4.3 3.7-7.8 8.2-7.8 2.2 0 4.1.8 5.6 2.1L14.5 2.5z" />
+                </svg>
+              </div>
+              <h3 class="provider-name">OpenAI</h3>
+              <p class="provider-hint">GPT models via OpenAI API</p>
+              <span class="provider-badge" aria-hidden="true"></span>
+            </div>
+
+            <!-- Local LLM -->
+            <div class="provider-card" data-provider="local">
+              <div class="provider-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="currentColor">
+                  <path
+                    d="M16 2C8.3 2 2 8.3 2 16s6.3 14 14 14 14-6.3 14-14S23.7 2 16 2zm0 26C10.5 28 6 23.5 6 16S10.5 4 16 4s10 4.5 10 10-4.5 10-10 10zm2-12v-2h-4v2h-2v-4h6v4h-2z" />
+                </svg>
+              </div>
+              <h3 class="provider-name">Local LLM</h3>
+              <p class="provider-hint">Ollama / LM Studio compatible</p>
+              <span class="provider-badge" aria-hidden="true"></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card provider-form-card" id="provider-forms">
+          <header class="section-header">
+            <p class="section-kicker" id="form-provider-label">Configuration</p>
+            <h2 id="form-provider-name">Gemini</h2>
+            <span class="provider-link" id="provider-doc-link" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              Docs
+            </span>
+          </header>
+
+          <!-- Gemini Form -->
+          <form id="form-gemini" class="provider-form active" data-provider="gemini">
+            <div class="settings-grid">
+              <label class="settings-field full-width">
+                <span class="field-label">API Key</span>
+                <span class="field-hint">Get one at <a href="https://aistudio.google.com/app/apikey" target="_blank"
+                    rel="noopener">Google AI Studio</a></span>
+                <div class="input-with-actions">
+                  <input id="geminiApiKey" type="password" placeholder="Enter your Gemini API key"
+                    autocomplete="new-password">
+                  <button type="button" class="btn-ghost btn-icon toggle-visibility" data-target="geminiApiKey"
+                    aria-label="Show/hide key">
+                    <svg class="icon-eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <svg class="icon-eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      hidden>
+                      <path
+                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  </button>
+                </div>
+              </label>
+
+              <label class="settings-field full-width">
+                <span class="field-label">Model</span>
+                <span class="field-hint">Model identifier (e.g. gemini-3.5-flash-lite)</span>
+                <input id="geminiModel" type="text" placeholder="gemini-3.5-flash-lite" autocomplete="off">
+              </label>
+
+              <label class="checkbox-field">
+                <input id="geminiUseDirectVideo" type="checkbox">
+                <span>
+                  <span class="checkbox-label">Use Gemini direct video understanding</span>
+                  <span class="field-hint">Send YouTube URL directly to Gemini (no transcript needed)</span>
+                </span>
+              </label>
+            </div>
+
+          </form>
+
+          <!-- OpenAI Form -->
+          <form id="form-openai" class="provider-form" data-provider="openai">
+            <div class="settings-grid">
+              <label class="settings-field full-width">
+                <span class="field-label">API Key</span>
+                <span class="field-hint">Get one at <a href="https://platform.openai.com/api-keys" target="_blank"
+                    rel="noopener">OpenAI Platform</a></span>
+                <div class="input-with-actions">
+                  <input id="openaiApiKey" type="password" placeholder="Enter your OpenAI API key"
+                    autocomplete="new-password">
+                  <button type="button" class="btn-ghost btn-icon toggle-visibility" data-target="openaiApiKey"
+                    aria-label="Show/hide key">
+                    <svg class="icon-eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <svg class="icon-eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      hidden>
+                      <path
+                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  </button>
+                </div>
+              </label>
+
+              <label class="settings-field">
+                <span class="field-label">Base URL</span>
+                <span class="field-hint">Custom endpoint (optional)</span>
+                <input id="openaiBaseUrl" type="text" placeholder="https://api.openai.com/v1" autocomplete="off">
+              </label>
+
+              <label class="settings-field">
+                <span class="field-label">Model</span>
+                <span class="field-hint">Model identifier</span>
+                <input id="openaiModel" type="text" placeholder="gpt-4o-mini" autocomplete="off">
+              </label>
+            </div>
+
+          </form>
+
+          <!-- Local Form -->
+          <form id="form-local" class="provider-form" data-provider="local">
+            <div class="settings-grid">
+              <label class="settings-field full-width">
+                <span class="field-label">Endpoint Type</span>
+                <span class="field-hint">Select your local server flavor</span>
+                <select id="localEndpointType">
+                  <option value="ollama">Ollama</option>
+                  <option value="openai">LM Studio / OpenAI-compatible</option>
+                </select>
+              </label>
+
+              <label class="settings-field full-width">
+                <span class="field-label">Base URL</span>
+                <span class="field-hint">Local server address</span>
+                <input id="localBaseUrl" type="text" placeholder="http://127.0.0.1:11434" autocomplete="off">
+              </label>
+
+              <label class="settings-field full-width">
+                <span class="field-label">Model</span>
+                <span class="field-hint">Installed model name</span>
+                <input id="localModel" type="text" placeholder="llama3.1" autocomplete="off">
+              </label>
+            </div>
+
+          </form>
+        </article>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-prompts" role="tabpanel" tabindex="0" aria-labelledby="tab-prompts-label">
+      <article class="section-card prompt-reference-card">
+        <header class="section-header prompt-reference-header">
+          <div>
+            <p class="section-kicker">Live System Prompt</p>
+            <h2 id="prompt-reference-title">Full Current Prompt</h2>
+            <p class="section-description">Exact prompt text our runtime builder sends to the model for the selected
+              source type and your current settings (mode, tone, size, language, custom instructions, and prompt hints).
+              Sample source content is included only so the prompt is complete and realistic.</p>
+          </div>
+          <div class="prompt-reference-actions">
+            <label class="prompt-reference-source" for="promptReferenceSourcePrompts">
+              <span class="visually-hidden">Preview source type</span>
+              <select id="promptReferenceSourcePrompts" data-prompt-source-sync>
+                <option value="webpage">Webpage</option>
+                <option value="youtube">YouTube</option>
+                <option value="course">Course</option>
+                <option value="selectedText">Selected text</option>
+              </select>
+            </label>
+            <button class="btn-ghost btn-copy copy-current-prompt" type="button">Copy full prompt</button>
+          </div>
+        </header>
+        <div class="prompt-meta" id="prompt-meta" aria-live="polite"></div>
+        <pre class="current-prompt current-prompt-full" data-prompt-preview
+          tabindex="0">Loading full system prompt…</pre>
+      </article>
+
+      <div class="panel-grid">
+        <article class="section-card">
+          <header class="section-header">
+            <p class="section-kicker">Global Overrides</p>
+            <h2>Prompt Hints</h2>
+            <p class="section-description">Edit the built-in prompt guidance for each source type directly. Leave blank
+              to use the default runtime baseline. The full assembled prompt is shown in the card above.</p>
+          </header>
+          <div class="prompt-stack">
+            <div class="prompt-hint-block" data-source-prompt="youtube">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">YouTube</span>
+                  <span class="field-hint">Source-specific guidance for video transcripts</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="youtubePromptHint" class="prompt-baseline-input" rows="14" spellcheck="false"></textarea>
+              </label>
+            </div>
+
+            <div class="prompt-hint-block" data-source-prompt="webpage">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Webpage</span>
+                  <span class="field-hint">Source-specific guidance for article extraction</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="webpagePromptHint" class="prompt-baseline-input" rows="14" spellcheck="false"></textarea>
+              </label>
+            </div>
+
+            <div class="prompt-hint-block" data-source-prompt="course">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Course / Lesson</span>
+                  <span class="field-hint">Source-specific guidance for lesson pages</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="coursePromptHint" class="prompt-baseline-input" rows="14" spellcheck="false"></textarea>
+              </label>
+            </div>
+
+            <div class="prompt-hint-block" data-source-prompt="selectedText">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Selected Text</span>
+                  <span class="field-hint">Source-specific guidance for highlighted passages</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="selectedTextPromptHint" class="prompt-baseline-input" rows="14"
+                  spellcheck="false"></textarea>
+              </label>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card">
+          <header class="section-header">
+            <p class="section-kicker">Mode-Specific</p>
+            <h2>Analyze / Explain / Debate / Study / Outline / Timeline</h2>
+            <p class="section-description">Edit the built-in mode prompt guidance directly. Leave blank to use the
+              default mode baseline. The full assembled prompt is shown in the card above.</p>
+          </header>
+          <div class="prompt-stack">
+            <div class="prompt-hint-block" data-mode-prompt="analyze">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Analyze</span>
+                  <span class="field-hint">Mode prompt</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="analyzePromptHint" class="prompt-baseline-input" rows="14" spellcheck="false"></textarea>
+              </label>
+            </div>
+            <div class="prompt-hint-block" data-mode-prompt="explain">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Explain</span>
+                  <span class="field-hint">Mode prompt</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="explainPromptHint" class="prompt-baseline-input" rows="14" spellcheck="false"></textarea>
+              </label>
+            </div>
+            <div class="prompt-hint-block" data-mode-prompt="debate">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Debate</span>
+                  <span class="field-hint">Mode prompt</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="debatePromptHint" class="prompt-baseline-input" rows="14" spellcheck="false"></textarea>
+              </label>
+            </div>
+            <div class="prompt-hint-block" data-mode-prompt="study">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Study</span>
+                  <span class="field-hint">Mode prompt</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="studyPromptHint" class="prompt-baseline-input" rows="14" spellcheck="false"></textarea>
+              </label>
+            </div>
+            <div class="prompt-hint-block" data-mode-prompt="outline">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Outline</span>
+                  <span class="field-hint">Mode prompt</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="outlinePromptHint" class="prompt-baseline-input" rows="14" spellcheck="false"></textarea>
+              </label>
+            </div>
+            <div class="prompt-hint-block" data-mode-prompt="timeline">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Timeline</span>
+                  <span class="field-hint">Mode prompt</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="timelinePromptHint" class="prompt-baseline-input" rows="14" spellcheck="false"></textarea>
+              </label>
+            </div>
+            <div class="prompt-hint-block" data-mode-prompt="concepts">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Concepts</span>
+                  <span class="field-hint">Mode prompt</span>
+                </div>
+              </div>
+              <label class="settings-field full-width">
+                <span class="baseline-label">Built-in prompt</span>
+                <textarea id="conceptsPromptHint" class="prompt-baseline-input" rows="14" spellcheck="false"></textarea>
+              </label>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card">
+          <header class="section-header">
+            <p class="section-kicker">Advanced Mode</p>
+            <h2>Full Prompt Override</h2>
+            <p class="section-description">Replace the built-in system and user prompts per source type. Safety
+              guardrails and required section contracts are always enforced.</p>
+          </header>
+          <div class="prompt-stack" id="advanced-prompt-stack">
+            <!-- youtube -->
+            <div class="prompt-hint-block advanced-prompt-block" data-advanced-source="youtube">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">YouTube</span>
+                  <span class="field-hint">Full system + user prompt override</span>
+                </div>
+                <label class="checkbox-field compact">
+                  <input id="advancedModeYoutube" type="checkbox" data-advanced-toggle="youtube">
+                  <span class="checkbox-label">Enable</span>
+                </label>
+              </div>
+              <div class="advanced-prompt-fields" data-advanced-fields="youtube" hidden>
+                <label class="settings-field full-width">
+                  <span class="baseline-label">System Prompt</span>
+                  <textarea id="customSystemPromptYoutube" class="prompt-baseline-input" rows="6" spellcheck="false"
+                    placeholder="System role and instructions…"></textarea>
+                </label>
+                <label class="settings-field full-width">
+                  <span class="baseline-label">User Prompt</span>
+                  <textarea id="customUserPromptYoutube" class="prompt-baseline-input" rows="10" spellcheck="false"
+                    placeholder="User task template. Use __CONTENT__ and __LANG__ placeholders."></textarea>
+                </label>
+                <div class="prompt-reference-actions">
+                  <button class="btn-ghost btn-enhance" type="button"
+                    data-enhance-target="customUserPromptYoutube">Enhance Prompt</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- webpage -->
+            <div class="prompt-hint-block advanced-prompt-block" data-advanced-source="webpage">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Webpage</span>
+                  <span class="field-hint">Full system + user prompt override</span>
+                </div>
+                <label class="checkbox-field compact">
+                  <input id="advancedModeWebpage" type="checkbox" data-advanced-toggle="webpage">
+                  <span class="checkbox-label">Enable</span>
+                </label>
+              </div>
+              <div class="advanced-prompt-fields" data-advanced-fields="webpage" hidden>
+                <label class="settings-field full-width">
+                  <span class="baseline-label">System Prompt</span>
+                  <textarea id="customSystemPromptWebpage" class="prompt-baseline-input" rows="6" spellcheck="false"
+                    placeholder="System role and instructions…"></textarea>
+                </label>
+                <label class="settings-field full-width">
+                  <span class="baseline-label">User Prompt</span>
+                  <textarea id="customUserPromptWebpage" class="prompt-baseline-input" rows="10" spellcheck="false"
+                    placeholder="User task template. Use __CONTENT__ and __LANG__ placeholders."></textarea>
+                </label>
+                <div class="prompt-reference-actions">
+                  <button class="btn-ghost btn-enhance" type="button"
+                    data-enhance-target="customUserPromptWebpage">Enhance Prompt</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- course -->
+            <div class="prompt-hint-block advanced-prompt-block" data-advanced-source="course">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Course</span>
+                  <span class="field-hint">Full system + user prompt override</span>
+                </div>
+                <label class="checkbox-field compact">
+                  <input id="advancedModeCourse" type="checkbox" data-advanced-toggle="course">
+                  <span class="checkbox-label">Enable</span>
+                </label>
+              </div>
+              <div class="advanced-prompt-fields" data-advanced-fields="course" hidden>
+                <label class="settings-field full-width">
+                  <span class="baseline-label">System Prompt</span>
+                  <textarea id="customSystemPromptCourse" class="prompt-baseline-input" rows="6" spellcheck="false"
+                    placeholder="System role and instructions…"></textarea>
+                </label>
+                <label class="settings-field full-width">
+                  <span class="baseline-label">User Prompt</span>
+                  <textarea id="customUserPromptCourse" class="prompt-baseline-input" rows="10" spellcheck="false"
+                    placeholder="User task template. Use __CONTENT__ and __LANG__ placeholders."></textarea>
+                </label>
+                <div class="prompt-reference-actions">
+                  <button class="btn-ghost btn-enhance" type="button"
+                    data-enhance-target="customUserPromptCourse">Enhance Prompt</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- selectedText -->
+            <div class="prompt-hint-block advanced-prompt-block" data-advanced-source="selectedText">
+              <div class="prompt-hint-heading">
+                <div>
+                  <span class="field-label">Selected Text</span>
+                  <span class="field-hint">Full system + user prompt override</span>
+                </div>
+                <label class="checkbox-field compact">
+                  <input id="advancedModeSelectedText" type="checkbox" data-advanced-toggle="selectedText">
+                  <span class="checkbox-label">Enable</span>
+                </label>
+              </div>
+              <div class="advanced-prompt-fields" data-advanced-fields="selectedText" hidden>
+                <label class="settings-field full-width">
+                  <span class="baseline-label">System Prompt</span>
+                  <textarea id="customSystemPromptSelectedText" class="prompt-baseline-input" rows="6"
+                    spellcheck="false" placeholder="System role and instructions…"></textarea>
+                </label>
+                <label class="settings-field full-width">
+                  <span class="baseline-label">User Prompt</span>
+                  <textarea id="customUserPromptSelectedText" class="prompt-baseline-input" rows="10" spellcheck="false"
+                    placeholder="User task template. Use __CONTENT__ and __LANG__ placeholders."></textarea>
+                </label>
+                <div class="prompt-reference-actions">
+                  <button class="btn-ghost btn-enhance" type="button"
+                    data-enhance-target="customUserPromptSelectedText">Enhance Prompt</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card">
+          <header class="section-header">
+            <p class="section-kicker">Backup</p>
+            <h2>Export / Import Settings</h2>
+            <p class="section-description">Backup or restore all settings and custom prompts as a JSON file.</p>
+          </header>
+          <div class="prompt-reference-actions" style="justify-content:flex-start;gap:12px;">
+            <button class="btn-ghost" id="exportSettingsBtn" type="button">Export Settings</button>
+            <button class="btn-ghost" id="importSettingsBtn" type="button">Import Settings</button>
+            <input id="importSettingsFile" type="file" accept="application/json,.json" hidden>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-display" role="tabpanel" tabindex="0" aria-labelledby="tab-display-label">
+      <div class="panel-grid">
+        <article class="section-card">
+          <header class="section-header">
+            <p class="section-kicker">Interface</p>
+            <h2>Display & Behavior</h2>
+            <p class="section-description">Control how the side panel and in-page UI look and feel.</p>
+          </header>
+
+          <div class="checkbox-group">
+            <label class="checkbox-field">
+              <input id="showFloatingUi" type="checkbox">
+              <span>
+                <span class="checkbox-label">Enable floating in-page button</span>
+                <span class="field-hint">Quick-launch entry point on web pages</span>
+              </span>
+            </label>
+
+            <label class="checkbox-field">
+              <input id="generateFollowUpQuestions" type="checkbox">
+              <span>
+                <span class="checkbox-label">Auto-generate follow-up questions</span>
+                <span class="field-hint">Suggest useful prompts after every summary</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="settings-grid">
+            <label class="settings-field">
+              <span class="field-label">Color Theme</span>
+              <span class="field-hint">Match OS or force a mode</span>
+              <select id="theme">
+                <option value="system">System Default</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </label>
+
+            <label class="settings-field">
+              <span class="field-label">Reading Density</span>
+              <span class="field-hint">Compact or comfortable rhythm</span>
+              <select id="density">
+                <option value="comfortable">Comfortable</option>
+                <option value="compact">Compact</option>
+              </select>
+            </label>
+
+            <label class="settings-field">
+              <span class="field-label">Font Size</span>
+              <span class="field-hint">Scale reading text independently</span>
+              <select id="fontScale">
+                <option value="sm">Small</option>
+                <option value="md">Medium</option>
+                <option value="lg">Large</option>
+              </select>
+            </label>
+          </div>
+        </article>
+
+        <!-- Live Preview Card -->
+        <article class="section-card preview-card">
+          <header class="section-header">
+            <p class="section-kicker">Preview</p>
+            <h2>Reading Experience</h2>
+            <p class="section-description">Live preview of how the side panel will render with your current density and
+              font settings.</p>
+          </header>
+          <div class="preview-frame" id="preview-frame">
+            <div class="preview-header">
+              <div class="preview-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="preview-title">DeepDigest Side Panel</span>
+            </div>
+            <div class="preview-content" id="preview-content">
+              <div class="preview-section">
+                <h3 class="preview-heading">Summary</h3>
+                <p class="preview-text">This is a preview of the summary text rendering. The font size, line height, and
+                  spacing will update live as you adjust the density and font scale controls above.</p>
+              </div>
+              <div class="preview-section">
+                <h3 class="preview-heading">Key Takeaways</h3>
+                <ul class="preview-list">
+                  <li class="preview-list-item">First key takeaway from the content</li>
+                  <li class="preview-list-item">Second important point to remember</li>
+                  <li class="preview-list-item">Third actionable insight for later</li>
+                </ul>
+              </div>
+              <div class="preview-section">
+                <h3 class="preview-heading">Detailed Breakdown</h3>
+                <p class="preview-text muted">Additional sections appear here based on the mode you select. The spacing
+                  and typography adapt to your density preference.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Sticky footer with save -->
+    <footer class="settings-footer">
+      <div class="footer-left">
+        <p class="section-kicker">Persist</p>
+        <p class="footer-copy">Settings are stored locally. Changes apply on the next summary run.</p>
+      </div>
+      <div class="save-section">
+        <span id="save-status" class="save-status" aria-live="polite"></span>
+        <button id="save-settings" class="btn-save" type="button">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+          </svg>
+          Save Settings
+        </button>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Toast container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="lib/ui/theme.js"></script>
+  <script src="lib/messages.js"></script>
+  <script src="lib/settings-schema.js"></script>
+  <script src="lib/storage.js"></script>
+  <script src="lib/prompts/common.js"></script>
+  <script src="lib/prompts/templates/youtube.js"></script>
+  <script src="lib/prompts/templates/webpage.js"></script>
+  <script src="lib/prompts/templates/course.js"></script>
+  <script src="lib/prompts/templates/selected-text.js"></script>
+  <script src="lib/prompts/templates/prompt-enhance.js"></script>
+  <script src="lib/prompts/builders.js"></script>
+  <script src="options.js"></script>
+</body>
+
+</html>

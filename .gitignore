@@ -1,0 +1,4 @@
+.DS_Store
+*.diff
+.hallmark/
+_site/

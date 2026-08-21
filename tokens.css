@@ -1,0 +1,48 @@
+:root {
+  --color-paper: oklch(98.5% 0.005 240);
+  --color-paper-2: oklch(96% 0.008 240);
+  --color-paper-elevated: oklch(100% 0 0);
+  --color-ink: oklch(18% 0.02 240);
+  --color-ink-2: oklch(42% 0.02 240);
+  --color-ink-tertiary: oklch(58% 0.015 240);
+  --color-rule: oklch(90% 0.01 240);
+  --color-rule-strong: oklch(82% 0.015 240);
+  --color-accent: oklch(58% 0.22 260);
+  --color-accent-hover: oklch(52% 0.24 260);
+  --color-accent-light: oklch(95% 0.04 260);
+  --color-focus: oklch(62% 0.22 260);
+  --color-success: oklch(62% 0.17 155);
+  --color-success-light: oklch(96% 0.04 155);
+  --color-warning: oklch(75% 0.16 75);
+  --color-warning-light: oklch(96% 0.04 75);
+  --color-error: oklch(60% 0.22 25);
+  --color-error-light: oklch(95% 0.04 25);
+  --font-display: "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 18px; --radius-full: 999px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 150ms; --dur-base: 250ms;
+}
+:root[data-theme="dark"] {
+  --color-paper: oklch(14% 0.01 240);
+  --color-paper-2: oklch(18% 0.015 240);
+  --color-paper-elevated: oklch(21% 0.018 240);
+  --color-ink: oklch(98% 0.005 240);
+  --color-ink-2: oklch(78% 0.01 240);
+  --color-ink-tertiary: oklch(60% 0.01 240);
+  --color-rule: oklch(26% 0.015 240);
+  --color-rule-strong: oklch(34% 0.02 240);
+  --color-accent: oklch(68% 0.20 260);
+  --color-accent-hover: oklch(74% 0.18 260);
+  --color-accent-light: oklch(26% 0.08 260);
+  --color-focus: oklch(72% 0.20 260);
+  --color-success: oklch(72% 0.16 155);
+  --color-success-light: oklch(24% 0.06 155);
+  --color-warning: oklch(80% 0.15 75);
+  --color-warning-light: oklch(26% 0.06 75);
+  --color-error: oklch(70% 0.20 25);
+  --color-error-light: oklch(26% 0.08 25);
+}
