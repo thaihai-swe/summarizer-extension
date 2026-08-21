@@ -520,27 +520,120 @@ input::placeholder, textarea::placeholder { color: color-mix(in srgb, var(--text
 html, body { overflow-x: clip; background: var(--color-paper); }
 body { font-family: var(--font-body); letter-spacing: -0.005em; }
 h1, h2, h3, h4, .settings-hero h1 { font-family: var(--font-display); font-style: normal; letter-spacing: -0.035em; }
-.settings-hero { min-height: 180px; border-color: var(--color-rule); border-radius: var(--radius-lg); background: var(--color-paper-elevated); box-shadow: 0 1px 0 color-mix(in oklab, var(--color-ink) 4%, transparent); }
+
+.settings-hero {
+  min-height: 180px;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper-elevated);
+  box-shadow: var(--shadow-sm);
+}
 .settings-hero::after { display: none; }
-.eyebrow, .section-kicker { color: var(--color-accent); font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; }
-.settings-hero h1 { font-size: clamp(26px, 3.5vw, 40px); overflow-wrap: anywhere; }
+.eyebrow, .section-kicker { color: var(--color-accent); font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .08em; }
+.settings-hero h1 { font-size: clamp(26px, 3.5vw, 40px); overflow-wrap: anywhere; color: var(--color-ink); }
 .subtitle { color: var(--color-ink-2); font-size: 15px; }
-.hero-illustration { width: 100px; color: var(--color-accent); opacity: .8; }
-.tabs-nav { border-color: var(--color-rule); border-radius: var(--radius-md); background: var(--color-paper-elevated); box-shadow: none; }
-.tab-btn { border-radius: var(--radius-sm); font-family: var(--font-display); font-size: 13px; font-weight: 650; }
+.hero-illustration { width: 90px; color: var(--color-accent); opacity: .85; }
+
+.tabs-nav {
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  background: var(--color-paper-elevated);
+  box-shadow: var(--shadow-xs);
+}
+.tab-btn {
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-ink-2);
+}
+.tab-btn:hover { color: var(--color-ink); }
 .tab-btn.active { color: var(--color-accent); }
-.tab-indicator { border-color: var(--color-accent); border-radius: var(--radius-sm); background: var(--color-accent-light); }
-.section-card, .prompt-reference, .preset-manager, .provider-card, .provider-form-card { border: 1px solid var(--color-rule); border-radius: var(--radius-md); background: var(--color-paper-elevated); box-shadow: 0 1px 0 color-mix(in oklab, var(--color-ink) 4%, transparent); }
-.section-header h2 { font-family: var(--font-display); font-size: 18px; }
-.field-label { font-family: var(--font-display); font-size: 13px; font-weight: 650; }
+.tab-indicator {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-light);
+}
+
+.section-card, .prompt-reference, .preset-manager, .provider-card, .provider-form-card {
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  background: var(--color-paper-elevated);
+  box-shadow: var(--shadow-xs);
+  transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.section-card:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 24%, var(--color-rule));
+  box-shadow: var(--shadow-sm);
+}
+.section-header h2 { font-family: var(--font-display); font-size: 18px; color: var(--color-ink); }
+.field-label { font-family: var(--font-display); font-size: 13px; font-weight: 650; color: var(--color-ink); }
 .field-hint { color: var(--color-ink-tertiary); font-size: 12px; }
-input[type="text"], input[type="password"], input[type="search"], select, textarea { border: 1px solid var(--color-rule); border-radius: var(--radius-sm); background: var(--color-paper-elevated); color: var(--color-ink); }
-.btn-save, .btn-primary { border-radius: var(--radius-sm); background: var(--color-accent); color: var(--color-paper-elevated); font-family: var(--font-display); font-weight: 700; box-shadow: none; }
-.btn-save:hover:not(:disabled), .btn-primary:hover:not(:disabled) { background: var(--color-accent-hover); transform: translateY(-1px); }
-.btn-ghost { border: 1px solid var(--color-rule); border-radius: var(--radius-sm); background: var(--color-paper-elevated); font-family: var(--font-display); font-weight: 650; }
-.btn-ghost:hover { border-color: var(--color-rule-strong); background: var(--color-paper-2); }
-.settings-footer { border-color: var(--color-rule); background: color-mix(in oklab, var(--color-paper) 95%, transparent); }
+
+input[type="text"], input[type="password"], input[type="search"], select, textarea {
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+  background: var(--color-paper-elevated);
+  color: var(--color-ink);
+  font-size: 13px;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: var(--focus-ring);
+  outline: none;
+}
+
+.provider-card {
+  border-color: var(--color-rule);
+  background: var(--color-paper-elevated);
+}
+.provider-card:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-rule));
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+.provider-card.active {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent-subtle) 85%, var(--color-paper-elevated));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 25%, transparent);
+}
+
+.btn-save, .btn-primary {
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+.btn-save:hover:not(:disabled), .btn-primary:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-accent) 40%, transparent);
+  transform: translateY(-1px);
+}
+.btn-ghost {
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+  background: var(--color-paper-elevated);
+  color: var(--color-ink-2);
+  font-family: var(--font-display);
+  font-weight: 650;
+}
+.btn-ghost:hover {
+  border-color: var(--color-rule-strong);
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+}
+
+.settings-footer {
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--color-paper-elevated) 92%, transparent);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(14px);
+}
 .settings-hero, .settings-hero > *, .section-card, .section-card > *, .settings-field, .settings-field > *, .settings-footer, .footer-copy, .save-section { min-width: 0; max-width: 100%; }
+
 @media (max-width: 768px) {
   .layout { width: calc(100% - 24px); padding-block: 24px 28px; }
   .settings-hero { flex-direction: column; align-items: flex-start; padding: 24px; }
@@ -556,7 +649,7 @@ input[type="text"], input[type="password"], input[type="search"], select, textar
   .btn-save { min-width: 0; white-space: nowrap; }
 }
 
-/* Narrow-options safety: the persistent save bar must never widen the page. */
+/* Narrow-options safety */
 @media (max-width: 768px) {
   .settings-footer { align-items: stretch; flex-direction: column; gap: var(--space-2); }
   .save-section { justify-content: space-between; width: 100%; min-width: 0; }

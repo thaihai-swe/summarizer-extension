@@ -1,10 +1,13 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DeepDigest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="tokens.css">
     <link rel="stylesheet" href="sidepanel.css">
 </head>
@@ -19,7 +22,7 @@
        <section class="panel-shell" id="panel-shell">
            <header class="hero-card">
                <div class="hero-title-row">
-                    <div class="brand-lockup"><span class="brand-mark" aria-hidden="true">D</span><div><h1 class="hero-title">DeepDigest</h1><p class="hero-context">Reading workspace</p></div></div>
+                    <div class="brand-lockup"><span class="brand-mark" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg></span><div><h1 class="hero-title">DeepDigest</h1><p class="hero-context">Reading workspace</p></div></div>
                     <p id="panel-status" class="status-badge-compact is-ready">Ready</p>
                </div>
                <div class="hero-actions">
@@ -78,11 +81,12 @@
                         <circle cx="86" cy="80" r="14" fill="currentColor" opacity="0.12" />
                         <path d="M80 80h12M86 74v12" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
                     </svg>
+                    <p class="empty-kicker">Side panel workbench</p>
                     <h2>Ready when you are</h2>
                     <p>Open a page, video, lesson, or selected passage. DeepDigest will turn it into a structured reading brief.</p>
                     <ul class="empty-steps" aria-label="How to start">
                         <li><span class="empty-step-index">1</span><span>Choose a mode</span></li>
-                        <li><span class="empty-step-index">2</span><span>Set output language if needed</span></li>
+                        <li><span class="empty-step-index">2</span><span>Set language if needed</span></li>
                         <li><span class="empty-step-index">3</span><span>Click Generate</span></li>
                     </ul>
                 </div>
@@ -135,9 +139,10 @@
                         <pre id="panel-transcript-content" class="transcript-pre" role="log" aria-live="polite" hidden></pre>
                     </section>
 
-                    <section id="chat-section" class="chat-section" aria-labelledby="chat-heading">
+                    <section id="chat-section" class="chat-section content-card" aria-labelledby="chat-heading">
                         <div class="chat-header">
                             <h3 id="chat-heading">Follow-up</h3>
+                            <p class="chat-hint">Grounded in this tab’s summary</p>
                         </div>
                         <div id="chat-log" class="chat-log" role="log" aria-live="polite"></div>
                         <div class="chat-input-row">
