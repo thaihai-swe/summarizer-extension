@@ -55,6 +55,7 @@ Use this file as the working contract for Codex-style agents making changes in t
 - Results, conversations, and workflow state are stored per tab ID.
 - Closing a tab clears that tab's saved result, conversation, and workflow state.
 - New summaries clear prior follow-up conversation for the same tab.
+- Follow-up chat supports Source (default, grounded) and General (open knowledge) modes. Suggested chips and highlight-to-ask stay Source.
 - Typical webpage and short YouTube summaries use a single provider request.
 - Long YouTube transcripts may use chunking plus synthesis.
 

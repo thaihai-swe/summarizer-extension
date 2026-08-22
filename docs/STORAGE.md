@@ -103,6 +103,7 @@ Results contain source metadata, content snapshots, parsed standard sections, an
 
 ## Lifecycle
 
+- Follow-up conversation entries store `{ question, answer, type: "user-question", grounding: "source" | "open", timestamp }`. Older entries without `grounding` are treated as source-grounded.
 - A new summary clears the follow-up conversation for that tab.
 - Closing a tab clears its result, conversation, workflow, and in-memory cache.
 - Switching tabs restores cached data. Results and conversations are isolated by tab ID.

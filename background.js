@@ -215,7 +215,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             case MSG.DEEP_DIVE_ACTIVE_TAB: {
                 const tabId =
                     message.tabId || (sender.tab && sender.tab.id) || (await SummarizerTabManager.getActiveTab()).id;
-                const result = await SummarizerSummaryService.answerFollowUp(tabId, message.question || "");
+                const grounding = message.grounding === "open" ? "open" : "source";
+                const result = await SummarizerSummaryService.answerFollowUp(tabId, message.question || "", { grounding });
                 sendResponse({ ok: true, result });
                 return;
             }

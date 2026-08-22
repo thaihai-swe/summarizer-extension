@@ -5,6 +5,12 @@
     let refreshSequence = 0;
     let workflowPollTimer = null;
     let isStreaming = false;
+    let currentGroundingMode = "source";
+
+    const SOURCE_CHAT_HINT = "Grounded in this tab’s summary";
+    const OPEN_CHAT_HINT = "Not limited to this source";
+    const SOURCE_CHAT_PLACEHOLDER = "Ask a deeper question about this source. Enter to send, Shift+Enter for a new line.";
+    const OPEN_CHAT_PLACEHOLDER = "Ask anything. This answer will not use the page. Enter to send, Shift+Enter for a new line.";
 
     const elements = {
         status: document.getElementById("panel-status"),
@@ -34,6 +40,10 @@
         transcriptSection: document.getElementById("transcript-section"),
         followUpQuestionsSection: document.getElementById("panel-follow-up-questions-wrap"),
         highlightTooltip: document.getElementById("highlight-tooltip"),
+        chatHint: document.getElementById("chat-hint"),
+        chatSection: document.getElementById("chat-section"),
+        groundingSourceBtn: document.getElementById("grounding-source-btn"),
+        groundingOpenBtn: document.getElementById("grounding-open-btn"),
         shell: document.getElementById("panel-shell"),
         panelTheme: document.getElementById("panel-theme"),
         panelDensity: document.getElementById("panel-density"),
@@ -157,10 +167,49 @@
         if (workflowPollTimer) { clearInterval(workflowPollTimer); workflowPollTimer = null; }
     }
 
-    function appendChatEntry(role, text) {
+    function normalizeGrounding(value) {
+        return value === "open" ? "open" : "source";
+    }
+
+    function setGroundingMode(mode) {
+        currentGroundingMode = normalizeGrounding(mode);
+        const isOpen = currentGroundingMode === "open";
+        if (elements.groundingSourceBtn) {
+            elements.groundingSourceBtn.classList.toggle("is-active", !isOpen);
+            elements.groundingSourceBtn.setAttribute("aria-checked", String(!isOpen));
+        }
+        if (elements.groundingOpenBtn) {
+            elements.groundingOpenBtn.classList.toggle("is-active", isOpen);
+            elements.groundingOpenBtn.setAttribute("aria-checked", String(isOpen));
+        }
+        if (elements.chatHint) {
+            elements.chatHint.textContent = isOpen ? OPEN_CHAT_HINT : SOURCE_CHAT_HINT;
+        }
+        if (elements.chatInput) {
+            elements.chatInput.placeholder = isOpen ? OPEN_CHAT_PLACEHOLDER : SOURCE_CHAT_PLACEHOLDER;
+        }
+        if (elements.chatSection) {
+            elements.chatSection.classList.toggle("is-open-grounding", isOpen);
+        }
+    }
+
+    function appendChatEntry(role, text, grounding) {
         const div = document.createElement("div");
-        div.className = "chat-entry " + (role === "user" || role === "question" ? "user" : "assistant");
-        div.innerHTML = SummarizerMarkdown.renderMarkdown(text);
+        const isUser = role === "user" || role === "question";
+        div.className = "chat-entry " + (isUser ? "user" : "assistant");
+
+        if (!isUser) {
+            const badge = document.createElement("span");
+            const mode = normalizeGrounding(grounding);
+            badge.className = "chat-badge " + (mode === "open" ? "is-open" : "is-source");
+            badge.textContent = mode === "open" ? "General" : "Source";
+            div.appendChild(badge);
+        }
+
+        const body = document.createElement("div");
+        body.className = "chat-entry-body";
+        body.innerHTML = SummarizerMarkdown.renderMarkdown(text);
+        div.appendChild(body);
 
         const copyBtn = document.createElement("button");
         copyBtn.className = "copy-msg";
@@ -251,23 +300,28 @@
         if (elements.fabSummarize) setButtonBusy(elements.fabSummarize, false, "Running...", "Generate");
     }
 
-    async function askFollowUp() {
+    async function askFollowUp(forcedGrounding) {
         const question = elements.chatInput.value.trim();
         if (!question) return;
 
+        const grounding = normalizeGrounding(forcedGrounding || currentGroundingMode);
         elements.chatInput.value = "";
-        appendChatEntry("user", question);
-        setStatus("Asking...", "busy");
+        appendChatEntry("user", question, grounding);
+        setStatus(grounding === "open" ? "Asking (general)..." : "Asking...", "busy");
         setButtonBusy(elements.chatSend, true, "...", "Send");
 
-        const response = await sendRuntimeMessage({ type: MSG.DEEP_DIVE_ACTIVE_TAB, question });
+        const response = await sendRuntimeMessage({ type: MSG.DEEP_DIVE_ACTIVE_TAB, question, grounding });
         if (!response || !response.ok) {
             setStatus((response && response.error) || "Follow-up failed.", "error");
             setButtonBusy(elements.chatSend, false, "...", "Send");
             return;
         }
 
-        appendChatEntry("assistant", (response.result && response.result.answer) || response.answer || "No response.");
+        appendChatEntry(
+            "assistant",
+            (response.result && response.result.answer) || response.answer || "No response.",
+            (response.result && response.result.grounding) || grounding
+        );
         setStatus("Answer received.", "ready");
         setButtonBusy(elements.chatSend, false, "...", "Send");
     }
@@ -368,9 +422,10 @@
                 tooltip.style.top = (rect.top - shellRect.top + shell.scrollTop - 4) + "px";
                 tooltip.style.display = "block";
                 tooltip.onclick = () => {
-                    elements.chatInput.value = `Tell me more about: "${text}"\n\n`;
+                    elements.chatInput.value = `Tell me more about: "${text}"`;
                     elements.chatInput.focus();
                     tooltip.style.display = "none";
+                    askFollowUp("source");
                 };
             } else {
                 tooltip.style.display = "none";
@@ -434,10 +489,16 @@
     elements.clearBtn?.addEventListener("click", clearCurrentTabData);
     elements.settingsBtn?.addEventListener("click", () => chrome.runtime.openOptionsPage());
 
-    elements.chatSend.addEventListener("click", askFollowUp);
+    elements.chatSend.addEventListener("click", () => askFollowUp());
     elements.chatInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); askFollowUp(); }
     });
+    if (elements.groundingSourceBtn) {
+        elements.groundingSourceBtn.addEventListener("click", () => setGroundingMode("source"));
+    }
+    if (elements.groundingOpenBtn) {
+        elements.groundingOpenBtn.addEventListener("click", () => setGroundingMode("open"));
+    }
 
     chrome.runtime.onMessage.addListener((message) => {
         if (message.type === MSG.SUMMARY_UPDATED) {
@@ -572,6 +633,7 @@
     }
 
     // Init
+    setGroundingMode("source");
     setupReadingProgress();
     setupDisplayControls();
     setupHighlightToAsk();

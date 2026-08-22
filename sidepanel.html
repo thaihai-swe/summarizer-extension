@@ -214,13 +214,19 @@
 
                     <section id="chat-section" class="chat-section content-card" aria-labelledby="chat-heading">
                         <div class="chat-header">
-                            <h3 id="chat-heading">Follow-up</h3>
-                            <p class="chat-hint">Grounded in this tab’s summary</p>
+                            <div class="chat-header-copy">
+                                <h3 id="chat-heading">Follow-up</h3>
+                                <p id="chat-hint" class="chat-hint">Grounded in this tab’s summary</p>
+                            </div>
+                            <div class="chat-grounding-toggle" role="radiogroup" aria-label="Follow-up grounding mode">
+                                <button type="button" id="grounding-source-btn" class="grounding-toggle-btn is-active" role="radio" aria-checked="true">Source</button>
+                                <button type="button" id="grounding-open-btn" class="grounding-toggle-btn" role="radio" aria-checked="false">General</button>
+                            </div>
                         </div>
                         <div id="chat-log" class="chat-log" role="log" aria-live="polite"></div>
                         <div class="chat-input-row">
                             <textarea id="chat-input" class="chat-textarea" rows="2"
-                                placeholder="Ask a deeper question. Enter to send, Shift+Enter for a new line."
+                                placeholder="Ask a deeper question about this source. Enter to send, Shift+Enter for a new line."
                                 aria-label="Follow-up question"></textarea>
                             <button id="chat-send" class="btn-primary" type="button">Send</button>
                         </div>

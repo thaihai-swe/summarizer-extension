@@ -91,9 +91,10 @@ All providers receive one final string through `generateText(prompt, providerSet
 1. `buildSummaryPrompt()` selects the source template.
 2. Long content uses `buildChunkSummaryPrompt()` repeatedly via the semantic chunker.
 3. Chunk outputs are merged by `buildSynthesisPrompt()`.
-4. Follow-up questions use `buildDeepDivePrompt()`.
-5. Every template calls `buildPromptEnvelope()`.
-6. Deep/Long quality failures may trigger one targeted repair prompt from `lib/summary-quality.js`.
+4. Source-grounded follow-up questions use `buildDeepDivePrompt()`.
+5. General-knowledge follow-up questions use `buildOpenFollowUpPrompt()`.
+6. Every template calls `buildPromptEnvelope()`.
+7. Deep/Long quality failures may trigger one targeted repair prompt from `lib/summary-quality.js`.
 
 The envelope applies safety rules, settings (including output language), source grounding, anti-hallucination rules, mode rules, section contracts, and source content. See `docs/PROMPTS.md` for the complete inventory.
 

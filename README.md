@@ -14,7 +14,7 @@ Browser extension for summarizing YouTube videos, webpages, selected text, PDFs,
 - Summarizes course lessons:
   - Udemy lesson pages
   - Coursera lesson and supplement pages
-- Supports follow-up Q&A using the saved summary plus prior conversation history
+- Supports follow-up Q&A in Source mode (grounded in the saved summary) or General mode (open knowledge, not limited to the page)
 - Exports summaries as Markdown or plain text
 - Creates reusable Custom Prompt Presets from the Options page
 - Starts summaries from the page context menu or `Ctrl+Shift+S` (`Cmd+Shift+S` on macOS)

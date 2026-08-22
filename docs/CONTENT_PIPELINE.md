@@ -56,6 +56,7 @@ Chunks carry metadata such as `index`, `text`, `startTimestamp`, `endTimestamp`,
 - `buildChunkSummaryPrompt()` → source chunk template
 - `buildSynthesisPrompt()` → sequential synthesis of chunk outputs
 - `buildDeepDivePrompt()` → follow-up question grounded in the saved summary and source
+- `buildOpenFollowUpPrompt()` → general-knowledge follow-up that omits summary and source content
 
 `lib/prompts/common.js` supplies the shared envelope, output language, mode instructions, section contract, grounding rules, and custom prompt guidance.
 

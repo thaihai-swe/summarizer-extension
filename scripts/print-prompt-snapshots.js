@@ -102,7 +102,8 @@ const youtubeContext = {
     sourceContent: "[00:00] Intro to transactions...",
     sourceContentRaw: "[00:00] Intro to transactions...",
     conversationHistory: [
-        { question: "Why does isolation matter?", answer: "It prevents anomalies under concurrent access." }
+        { question: "Why does isolation matter?", answer: "It prevents anomalies under concurrent access.", grounding: "source" },
+        { question: "What is ACID in databases generally?", answer: "Atomicity, Consistency, Isolation, and Durability.", grounding: "open" }
     ]
 };
 
@@ -158,5 +159,13 @@ printBlock(
         youtubeContext,
         "What tradeoffs does the speaker highlight between strict isolation and throughput?",
         { ...baseSettings, promptMode: "analyze", customPromptInstructions: "Prefer practical engineering implications." }
+    )
+);
+printBlock(
+    "Open Follow-up Prompt",
+    builders.buildOpenFollowUpPrompt(
+        "What is the capital of France?",
+        { ...baseSettings, promptMode: "summarize" },
+        youtubeContext.conversationHistory
     )
 );

@@ -18,7 +18,7 @@ GET_ACTIVE_TAB_WORKFLOW // Side panel → background: request workflow phase
 CANCEL_SUMMARIZE        // Side panel → background: abort active request
 CLEAR_TAB_DATA          // Cleanup on tab close
 OPEN_SIDE_PANEL         // Extension icon click → open side panel
-DEEP_DIVE_ACTIVE_TAB    // Side panel → background: send follow-up question
+DEEP_DIVE_ACTIVE_TAB    // Side panel → background: send follow-up question ({ question, grounding: "source" | "open" })
 SETTINGS_UPDATED        // Options page → background: settings changed
 ```
 
@@ -42,6 +42,31 @@ When the provider supports streaming and the request is the final pass (not an i
 The side panel renders incrementally by re-parsing `chunkText` on each event. When `done` is true, the panel waits for the final `SUMMARY_UPDATED` message to overlay quality metadata and expansion state.
 
 Cancellation (`CANCEL_SUMMARIZE`) aborts the provider request via an `AbortController` scoped to the tab job and discards any partial result.
+
+## Follow-Up Message & Conversation Schema
+
+`DEEP_DIVE_ACTIVE_TAB` payload:
+
+```js
+{
+  type: "DEEP_DIVE_ACTIVE_TAB",
+  question: string,
+  grounding?: "source" | "open",  // default "source"
+  tabId?: number
+}
+```
+
+Conversation history items stored in `chrome.storage.local` under `summarizerConversationsByTab[tabId]`:
+
+```js
+{
+  question: string,
+  answer: string,
+  type: "user-question",
+  grounding: "source" | "open",   // default "source"
+  timestamp: string               // ISO string
+}
+```
 
 ## Normalized Extraction Object
 

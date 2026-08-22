@@ -123,7 +123,12 @@ Select a language (`English` or `Vietnamese`) in the side-panel language dropdow
 
 ## Follow-Up Questions
 
-Ask questions in the side panel after a summary completes. The extension uses the saved summary, relevant excerpts, recent conversation, and source content to answer. A new summary clears prior follow-up history for that tab.
+Ask questions in the side panel after a summary completes. Use the toggle in the Follow-up header to choose between two modes:
+
+- **Source (default)**: Answers are strictly grounded in the saved summary, relevant excerpts, recent conversation, and source content.
+- **General**: Answers leverage the model's broader knowledge base without requiring or referencing the tab's source content.
+
+Clicking suggested question chips or using the text selection "Ask about this" tooltip always submits in **Source** mode. A new summary clears prior follow-up history for that tab.
 
 ## Providers
 

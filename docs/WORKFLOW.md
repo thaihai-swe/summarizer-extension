@@ -65,7 +65,12 @@ Settings are normalized by `lib/settings-schema.js` and read through `lib/storag
 
 ## Follow-Up Questions
 
-`DEEP_DIVE_ACTIVE_TAB` builds a deep-dive prompt from the saved summary, available Deep fields, recent conversation, relevant source excerpts, and up to 6,000 characters of source content. Conversation history is capped to six turns. A new summary clears prior follow-up history for that tab.
+`DEEP_DIVE_ACTIVE_TAB` supports dual grounding modes selected via the side-panel chat toggle:
+
+- **Source (default)**: `buildDeepDivePrompt()` constructs a source-grounded prompt containing the saved summary, Deep sections, recent conversation, relevant excerpts (up to 8,000 characters), and source content (up to 6,000 characters).
+- **General**: `buildOpenFollowUpPrompt()` constructs a general-knowledge prompt omitting the summary and source content so the user can ask broad, open-domain questions in the same conversation thread without being constrained to the current tab.
+
+Conversation history is capped to six turns. Turns are tagged with `(Source-Grounded)` or `(General Knowledge)` in the prompt transcript so subsequent source queries do not hallucinate general answers as page evidence. A new summary clears prior follow-up history for that tab.
 
 ## Cancellation
 

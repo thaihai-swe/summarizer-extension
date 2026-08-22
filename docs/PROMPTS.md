@@ -69,14 +69,27 @@ Behavior:
 - Synthesizes up to four individual chunk summaries into a single cohesive output.
 - Instructs the model to preserve timestamps, resolve duplicate topics sequentially, and maintain structural flow without inventing transitions.
 
-### 4. Deep-dive prompt
+### 4. Deep-dive and Follow-up prompts
 
+#### A. Source-Grounded Deep Dive
 Entry:
 - `lib/prompts/builders.js` → `buildDeepDivePrompt(context, question, settings)`
 
 Behavior:
 - Grounds follow-up answers in the saved summary, Deep fields, conversation history, and relevant source context.
-- instruct the model to refuse queries unrelated to the source or summary.
+- Instructs the model to refuse queries unrelated to the source or summary.
+- Sections: `Answer`, `Evidence From Source`, `Caveats / Open Questions`.
+
+#### B. General-Knowledge Follow-up
+Entry:
+- `lib/prompts/builders.js` → `buildOpenFollowUpPrompt(question, settings, conversationHistory)`
+
+Behavior:
+- Used when the side-panel follow-up toggle is set to **General**.
+- Allows the model to use its full internal knowledge base to answer questions not restricted to the page or document.
+- Excludes summary sections, relevant excerpts, and raw source text from the prompt envelope.
+- Applies output language and tone settings while explicitly forbidding the model from claiming the answer comes from the summarized page.
+- Sections: `Answer`, `Caveats / Considerations`.
 
 ### 5. Quality repair prompt
 

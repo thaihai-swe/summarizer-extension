@@ -56,7 +56,11 @@ Verify all modes:
 
 ## Follow-Up and Lifecycle Coverage
 
-- Ask a follow-up and verify source-grounded output
+- Ask a follow-up in **Source** mode and verify source-grounded output with `Source` badge
+- Switch toggle to **General** mode, ask an out-of-domain question, and verify output does not cite the source and displays `General` badge
+- Switch back to **Source** mode and verify subsequent questions remain strictly source-grounded
+- Click a suggested question chip and verify it executes in **Source** mode regardless of toggle position
+- Use highlight tooltip "Ask about this" and verify it executes in **Source** mode
 - Generate a new summary and verify old conversation clears
 - Open multiple tabs and verify saved results remain isolated
 - Close a summarized tab and verify its state clears
