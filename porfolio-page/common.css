@@ -1,25 +1,3 @@
-/**
- * ========================================
- * DESIGN.md IMPLEMENTATION
- * ========================================
- *
- * Premium SaaS/Developer Tool Design System
- * Based on DESIGN.md specifications
- *
- * Design Philosophy:
- * - Clarity first - every screen makes the next action obvious
- * - Whitespace is structure - spacing guides attention
- * - Surfaces layer gently - borders and soft shadows before heavy fills
- * - Color signals meaning - accent colors are rare and purposeful
- * - Premium but approachable, minimal but not empty
- *
- * ========================================
- */
-
-/* ========================================
-   DESIGN TOKENS - THEME SYSTEM
-   ======================================== */
-
 :root {
     color-scheme: light;
 
@@ -1982,8 +1960,14 @@ html[data-theme] h1 {
     color: var(--text-primary);
 }
 
-.w-full { width: 100%; }
-.font-mono { font-family: var(--font-mono); }
+.w-full {
+    width: 100%;
+}
+
+.font-mono {
+    font-family: var(--font-mono);
+}
+
 .sr-only {
     position: absolute;
     width: 1px;
@@ -2003,14 +1987,22 @@ html[data-theme] h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
-    .pulse-dot { animation: none; }
+
+    .pulse-dot {
+        animation: none;
+    }
 }
 
 .skip-link {
@@ -2153,10 +2145,21 @@ html[data-theme] h1 {
     border-color: var(--border-strong);
 }
 
-[data-theme="dark"] .theme-icon-sun { display: block; }
-[data-theme="dark"] .theme-icon-moon { display: none; }
-[data-theme="light"] .theme-icon-sun { display: none; }
-[data-theme="light"] .theme-icon-moon { display: block; }
+[data-theme="dark"] .theme-icon-sun {
+    display: block;
+}
+
+[data-theme="dark"] .theme-icon-moon {
+    display: none;
+}
+
+[data-theme="light"] .theme-icon-sun {
+    display: none;
+}
+
+[data-theme="light"] .theme-icon-moon {
+    display: block;
+}
 
 .nav-github-btn {
     display: inline-flex;
@@ -2247,7 +2250,7 @@ html[data-theme] h1 {
     position: absolute;
     inset: 0;
     background-image: linear-gradient(to right, color-mix(in srgb, var(--border) 25%, transparent) 1px, transparent 1px),
-                      linear-gradient(to bottom, color-mix(in srgb, var(--border) 25%, transparent) 1px, transparent 1px);
+        linear-gradient(to bottom, color-mix(in srgb, var(--border) 25%, transparent) 1px, transparent 1px);
     background-size: 40px 40px;
     mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 100%);
     -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 100%);
@@ -2302,7 +2305,9 @@ html[data-theme] h1 {
 }
 
 @keyframes pulseGlow {
-    to { box-shadow: 0 0 0 8px transparent; }
+    to {
+        box-shadow: 0 0 0 8px transparent;
+    }
 }
 
 .hero-title {
@@ -2553,9 +2558,20 @@ button,
     place-items: center;
 }
 
-.color-recruiter { background: color-mix(in srgb, #635BFF 14%, transparent); color: #635BFF; }
-.color-engineer { background: color-mix(in srgb, #06B6D4 14%, transparent); color: #06B6D4; }
-.color-product { background: color-mix(in srgb, #10B981 14%, transparent); color: #10B981; }
+.color-recruiter {
+    background: color-mix(in srgb, #635BFF 14%, transparent);
+    color: #635BFF;
+}
+
+.color-engineer {
+    background: color-mix(in srgb, #06B6D4 14%, transparent);
+    color: #06B6D4;
+}
+
+.color-product {
+    background: color-mix(in srgb, #10B981 14%, transparent);
+    color: #10B981;
+}
 
 .audience-role {
     font-size: 19px;
@@ -2718,9 +2734,17 @@ button,
     border-radius: 50%;
 }
 
-.light.red { background: #FF5F56; }
-.light.yellow { background: #FFBD2E; }
-.light.green { background: #27C93F; }
+.light.red {
+    background: #FF5F56;
+}
+
+.light.yellow {
+    background: #FFBD2E;
+}
+
+.light.green {
+    background: #27C93F;
+}
 
 .browser-address-bar {
     flex: 1;
@@ -2786,7 +2810,7 @@ button,
     inset: 0;
     display: grid;
     place-items: center;
-    background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
 }
 
 .player-play-btn {
@@ -2797,7 +2821,7 @@ button,
     color: #FFFFFF;
     display: grid;
     place-items: center;
-    box-shadow: 0 4px 16px rgba(255,0,0,0.4);
+    box-shadow: 0 4px 16px rgba(255, 0, 0, 0.4);
 }
 
 .player-title {
@@ -2806,7 +2830,7 @@ button,
     color: #FFFFFF;
     font-size: 14px;
     font-weight: 600;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 .sim-page-skeleton {
@@ -2821,8 +2845,13 @@ button,
     border-radius: var(--radius-xs);
 }
 
-.skel-line.w-80 { width: 80%; }
-.skel-line.w-60 { width: 60%; }
+.skel-line.w-80 {
+    width: 80%;
+}
+
+.skel-line.w-60 {
+    width: 60%;
+}
 
 .skel-card {
     height: 80px;
@@ -2914,7 +2943,10 @@ button,
     border-radius: 50%;
 }
 
-.status-indicator.ready { background: var(--success); }
+.status-indicator.ready {
+    background: var(--success);
+}
+
 .status-indicator.running {
     background: var(--warning);
     animation: pulseGlow 1s infinite alternate;
@@ -3162,8 +3194,15 @@ button,
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .feature-grid-4 {
@@ -3197,10 +3236,25 @@ button,
     place-items: center;
 }
 
-.youtube-color { background: rgba(255, 0, 0, 0.12); color: #FF0000; }
-.web-color { background: rgba(6, 182, 212, 0.12); color: #06B6D4; }
-.course-color { background: rgba(139, 92, 246, 0.12); color: #8B5CF6; }
-.select-color { background: rgba(16, 185, 129, 0.12); color: #10B981; }
+.youtube-color {
+    background: rgba(255, 0, 0, 0.12);
+    color: #FF0000;
+}
+
+.web-color {
+    background: rgba(6, 182, 212, 0.12);
+    color: #06B6D4;
+}
+
+.course-color {
+    background: rgba(139, 92, 246, 0.12);
+    color: #8B5CF6;
+}
+
+.select-color {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10B981;
+}
 
 .feature-card h3 {
     font-size: 16px;
@@ -3838,7 +3892,7 @@ button,
     .simulator-layout {
         grid-template-columns: 1fr;
     }
-    
+
     .sim-browser-frame {
         min-height: auto;
     }
@@ -4418,9 +4472,11 @@ html[data-theme="light"] .benefit-card:hover {
     .benefit-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .security-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .install-steps {
         grid-template-columns: 1fr;
     }
@@ -4430,19 +4486,22 @@ html[data-theme="light"] .benefit-card:hover {
     .benefit-grid {
         grid-template-columns: 1fr;
     }
+
     .security-grid {
         grid-template-columns: 1fr;
     }
+
     .scenario-strip {
         flex-direction: column;
     }
+
     .scenario-btn {
         width: 100%;
         justify-content: space-between;
     }
+
     .hero-proof {
         flex-direction: column;
         gap: 12px;
     }
 }
-
