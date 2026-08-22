@@ -149,4 +149,21 @@ Follow-up retrieval uses up to five relevant passage matches with two neighborin
 
 ## Dynamic summary sizing
 
-Each summary prompt receives a source-length-aware word target appended to the `Main Summary` instruction. The target is computed from `getSummarySizeInstructionsForSource()` in `lib/prompts/common.js` using a multiplier per size tier (deep: 0.12, medium: 0.08, brief: 0.05) and a length multiplier (long: 1.35, short: 0.7). The target is clamped to 60–1500 words. Mode-specific guidance (e.g. analyze, explain, study) is prepended alongside the size-aware coverage instruction so both the analytical focus and the dynamic word target are conveyed.
+Each summary prompt receives a source-length-aware word target appended to the `Main Summary` instruction. The target is computed from `getSummarySizeInstructionsForSource()` in `lib/prompts/common.js` using:
+
+$$\text{Target Words} = \text{clamp}\left(\text{minTarget},\, \text{maxTarget},\, \text{round}\left(\frac{\text{sourceLength}}{\text{charsPerWord}} \times \text{sizeMultiplier} \times \text{lengthMultiplier}\right)\right)$$
+
+### Canonical Defaults
+- **Size Multipliers (`sizeMultiplier`):** `Brief: 0.05`, `Medium: 0.08`, `Deep: 0.12`
+- **Length Multipliers (`lengthMultiplier`):** `Short: 0.7`, `Medium: 1.0`, `Long: 1.35`
+- **Character-to-word ratio (`charsPerWord`):** `5`
+- **Clamps (`minTargetWords` / `maxTargetWords`):** `60` to `1500` words
+
+### User Overrides & Settings Exposure
+Users can inspect, simulate, and override every parameter of this formula directly from the **Options page** (`options.html` under General → Dynamic Word Target):
+- Toggle custom formula calculations via `customFormulaEnabled`.
+- Customize individual Brief / Medium / Deep and Short / Medium / Long multipliers.
+- Adjust minimum clamp, maximum clamp, and characters-per-word ratio.
+- Supply an optional `customTargetTemplate` string supporting `{targetWords}`, `{sourceChars}`, and `{sourceWords}` placeholders.
+- Test formula output live with the interactive slider simulator.
+- Reset to built-in defaults with a single click. Mode-specific guidance (e.g. analyze, explain, study) is prepended alongside the size-aware coverage instruction so both the analytical focus and the dynamic word target are conveyed.

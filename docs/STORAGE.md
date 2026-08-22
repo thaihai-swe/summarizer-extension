@@ -18,6 +18,7 @@ The extension uses `chrome.storage.local` through `lib/storage.js` for persisten
 The settings object includes the following prompt and output controls:
 
 - `promptMode`, `summarySize`, and `summaryLength` select the summary strategy and depth.
+- `customFormulaEnabled`, `sizeMultiplierBrief`, `sizeMultiplierMedium`, `sizeMultiplierDeep`, `lengthMultiplierShort`, `lengthMultiplierMedium`, `lengthMultiplierLong`, `charsPerWord`, `minTargetWords`, `maxTargetWords`, and `customTargetTemplate` configure the source-aware word-target formula.
 - `summaryLanguage` controls the output language (defaults to "English"). Additional languages can be added via `customLanguages`.
 - `summaryTone` controls writing style.
 - `customPromptPresets` stores named `{ id, name, systemPrompt, userPrompt, createdAt, updatedAt }` entries.
@@ -56,6 +57,17 @@ Full schema-normalized settings layout:
   promptMode: "summarize" | "analyze" | "explain" | "debate" | "study" | "outline" | "timeline" | "concepts",
   summarySize: "Brief" | "Medium" | "Deep",
   summaryLength: "Short" | "Medium" | "Long",
+  customFormulaEnabled: boolean,
+  sizeMultiplierBrief: number,
+  sizeMultiplierMedium: number,
+  sizeMultiplierDeep: number,
+  lengthMultiplierShort: number,
+  lengthMultiplierMedium: number,
+  lengthMultiplierLong: number,
+  charsPerWord: number,
+  minTargetWords: number,
+  maxTargetWords: number,
+  customTargetTemplate: string,
   summaryLanguage: string,
   customLanguages: string,
   summaryTone: "Simple" | "Expert" | "Academic" | "Professional" | "Friendly",

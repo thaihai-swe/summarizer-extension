@@ -7,7 +7,7 @@
     <title>DeepDigest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="tokens.css">
     <link rel="stylesheet" href="sidepanel.css">
 </head>
@@ -18,26 +18,37 @@
         <div id="reading-progress-bar"></div>
     </div>
 
-   <main class="layout" id="panel-layout">
-       <section class="panel-shell" id="panel-shell">
-           <header class="hero-card">
-               <div class="hero-title-row">
-                    <div class="brand-lockup"><span class="brand-mark" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg></span><div><h1 class="hero-title">DeepDigest</h1><p class="hero-context">Reading workspace</p></div></div>
+    <main class="layout" id="panel-layout">
+        <section class="panel-shell" id="panel-shell">
+            <header class="hero-card">
+                <div class="hero-title-row">
+                    <div class="brand-lockup">
+                        <span class="brand-mark" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                                <circle cx="12" cy="12" r="4"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <h1 class="hero-title">DeepDigest</h1>
+                            <p class="hero-context">Reading studio</p>
+                        </div>
+                    </div>
                     <p id="panel-status" class="status-badge-compact is-ready">Ready</p>
-               </div>
-               <div class="hero-actions">
-                   <label class="visually-hidden" for="panel-mode">Mode</label>
-                   <select id="panel-mode" aria-label="Summarization mode">
-                       <option value="summarize">Summarize</option>
-                       <option value="analyze">Analyze</option>
-                       <option value="explain">Explain</option>
-                       <option value="debate">Debate</option>
-                       <option value="study">Study</option>
-                       <option value="outline">Outline</option>
-                       <option value="timeline">Timeline</option>
-                       <option value="concepts">Concepts</option>
-                   </select>
-                   <button id="panel-summarize" class="btn-primary" type="button">Generate</button>
+                </div>
+                <div class="hero-actions">
+                    <label class="visually-hidden" for="panel-mode">Mode</label>
+                    <select id="panel-mode" aria-label="Summarization mode">
+                        <option value="summarize">Summarize</option>
+                        <option value="analyze">Analyze</option>
+                        <option value="explain">Explain</option>
+                        <option value="debate">Debate</option>
+                        <option value="study">Study</option>
+                        <option value="outline">Outline</option>
+                        <option value="timeline">Timeline</option>
+                        <option value="concepts">Concepts</option>
+                    </select>
+                    <button id="panel-summarize" class="btn-primary" type="button">Generate</button>
                     <button id="panel-cancel" class="btn-cancel" type="button" hidden>Cancel</button>
                     <button id="panel-settings" class="btn-ghost btn-icon" type="button" aria-label="Settings" title="Settings">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -45,32 +56,40 @@
                             <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
                         </svg>
                     </button>
-               </div>
-           </header>
-           <div class="sidepanel-controls-row">
-               <label class="visually-hidden" for="panel-theme">Theme</label>
-               <select id="panel-theme" aria-label="Theme">
-                   <option value="system">System Theme</option>
-                   <option value="light">Light</option>
-                   <option value="dark">Dark</option>
-               </select>
-               <label class="visually-hidden" for="panel-density">Density</label>
-               <select id="panel-density" aria-label="Density">
-                   <option value="comfortable">Comfortable</option>
-                   <option value="compact">Compact</option>
-               </select>
-               <label class="visually-hidden" for="panel-fontScale">Font Size</label>
-               <select id="panel-fontScale" aria-label="Font Size">
-                   <option value="sm">Small Font</option>
-                   <option value="md">Medium Font</option>
-                   <option value="lg">Large Font</option>
-               </select>
-                <label class="visually-hidden" for="panel-summaryLanguage">Output language</label>
-                <select id="panel-summaryLanguage" aria-label="Output language">
-                    <option value="English">English</option>
-                    <option value="Vietnamese">Vietnamese</option>
-                </select>
-           </div>
+                </div>
+            </header>
+            <div class="sidepanel-controls-row">
+                <div class="control-chip">
+                    <label class="control-chip-label" for="panel-theme">Theme</label>
+                    <select id="panel-theme" aria-label="Theme">
+                        <option value="system">System</option>
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+                <div class="control-chip">
+                    <label class="control-chip-label" for="panel-density">Density</label>
+                    <select id="panel-density" aria-label="Density">
+                        <option value="comfortable">Comfortable</option>
+                        <option value="compact">Compact</option>
+                    </select>
+                </div>
+                <div class="control-chip">
+                    <label class="control-chip-label" for="panel-fontScale">Type</label>
+                    <select id="panel-fontScale" aria-label="Font Size">
+                        <option value="sm">Small</option>
+                        <option value="md">Medium</option>
+                        <option value="lg">Large</option>
+                    </select>
+                </div>
+                <div class="control-chip">
+                    <label class="control-chip-label" for="panel-summaryLanguage">Language</label>
+                    <select id="panel-summaryLanguage" aria-label="Output language">
+                        <option value="English">English</option>
+                        <option value="Vietnamese">Vietnamese</option>
+                    </select>
+                </div>
+            </div>
 
             <section class="workspace">
                 <div id="empty-state" class="empty-state">
@@ -81,7 +100,7 @@
                         <circle cx="86" cy="80" r="14" fill="currentColor" opacity="0.12" />
                         <path d="M80 80h12M86 74v12" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
                     </svg>
-                    <p class="empty-kicker">Side panel workbench</p>
+                    <p class="empty-kicker">Precision studio</p>
                     <h2>Ready when you are</h2>
                     <p>Open a page, video, lesson, or selected passage. DeepDigest will turn it into a structured reading brief.</p>
                     <ul class="empty-steps" aria-label="How to start">

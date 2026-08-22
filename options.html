@@ -7,7 +7,7 @@
   <title>DeepDigest Settings</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="tokens.css">
   <link rel="stylesheet" href="options.css">
 </head>
@@ -17,9 +17,9 @@
     <!-- Header -->
     <header class="settings-hero">
       <div class="hero-copy">
-        <p class="eyebrow">Settings</p>
+        <p class="eyebrow">Studio settings</p>
         <h1>Configure how you summarize</h1>
-        <p class="subtitle">Provider, prompts, tone, and reading experience—tuned for a premium, high-signal workflow.
+        <p class="subtitle">Providers, prompts, tone, and reading experience — tuned for high-signal comprehension without changing how the engine works.
         </p>
       </div>
       <div class="hero-illustration" aria-hidden="true">
@@ -154,6 +154,98 @@
                 <option value="Vietnamese">Vietnamese</option>
               </select>
             </label>
+          </div>
+        </article>
+
+        <article class="section-card formula-card-wrap">
+          <header class="section-header">
+            <p class="section-kicker">Sizing Engine</p>
+            <h2>Dynamic Word Target</h2>
+            <p class="section-description">Inspect and override the source-aware word-target formula used in every Main Summary prompt. Saved values apply on the next generate.</p>
+          </header>
+
+          <label class="checkbox-field compact" for="customFormulaEnabled">
+            <input id="customFormulaEnabled" type="checkbox">
+            <span>
+              <span class="checkbox-label">Use custom formula values</span>
+              <span class="field-hint">When off, DeepDigest still shows the live formula but runtime uses the built-in defaults.</span>
+            </span>
+          </label>
+
+          <div class="formula-card" id="word-target-formula">
+            <div class="formula-display" aria-label="Word target formula">
+              <span class="formula-code">target = clamp(min, max, round((sourceChars / charsPerWord) × sizeMultiplier × lengthMultiplier))</span>
+            </div>
+
+            <div class="formula-matrix">
+              <div class="formula-group">
+                <p class="formula-group-title">Size multipliers</p>
+                <label class="settings-field">
+                  <span class="field-label">Brief</span>
+                  <input id="sizeMultiplierBrief" type="number" min="0.01" max="1" step="0.01" value="0.05">
+                </label>
+                <label class="settings-field">
+                  <span class="field-label">Medium</span>
+                  <input id="sizeMultiplierMedium" type="number" min="0.01" max="1" step="0.01" value="0.08">
+                </label>
+                <label class="settings-field">
+                  <span class="field-label">Deep</span>
+                  <input id="sizeMultiplierDeep" type="number" min="0.01" max="1" step="0.01" value="0.12">
+                </label>
+              </div>
+              <div class="formula-group">
+                <p class="formula-group-title">Length multipliers</p>
+                <label class="settings-field">
+                  <span class="field-label">Short</span>
+                  <input id="lengthMultiplierShort" type="number" min="0.1" max="5" step="0.05" value="0.7">
+                </label>
+                <label class="settings-field">
+                  <span class="field-label">Medium</span>
+                  <input id="lengthMultiplierMedium" type="number" min="0.1" max="5" step="0.05" value="1">
+                </label>
+                <label class="settings-field">
+                  <span class="field-label">Long</span>
+                  <input id="lengthMultiplierLong" type="number" min="0.1" max="5" step="0.05" value="1.35">
+                </label>
+              </div>
+              <div class="formula-group">
+                <p class="formula-group-title">Clamps &amp; ratio</p>
+                <label class="settings-field">
+                  <span class="field-label">Chars / word</span>
+                  <input id="charsPerWord" type="number" min="1" max="20" step="1" value="5">
+                </label>
+                <label class="settings-field">
+                  <span class="field-label">Min words</span>
+                  <input id="minTargetWords" type="number" min="10" max="5000" step="10" value="60">
+                </label>
+                <label class="settings-field">
+                  <span class="field-label">Max words</span>
+                  <input id="maxTargetWords" type="number" min="50" max="20000" step="50" value="1500">
+                </label>
+              </div>
+            </div>
+
+            <label class="settings-field full-width" style="margin-top: 14px;">
+              <span class="field-label">Custom target sentence</span>
+              <span class="field-hint">Optional. Placeholders: <code>{targetWords}</code>, <code>{sourceChars}</code>, <code>{sourceWords}</code>. Leave blank for the built-in sentence.</span>
+              <textarea id="customTargetTemplate" rows="2" placeholder="Target approximately {targetWords} words based on the source length ({sourceChars} characters); scale coverage to the source rather than a fixed limit."></textarea>
+            </label>
+
+            <div class="formula-sim" aria-live="polite">
+              <div class="formula-sim-header">
+                <label class="settings-field" style="flex: 1; min-width: 0;">
+                  <span class="field-label">Simulate source length</span>
+                  <input id="formulaSimChars" type="range" min="500" max="120000" step="500" value="12000">
+                </label>
+                <span class="formula-sim-result" id="formulaSimBadge">~192 words</span>
+              </div>
+              <p class="formula-sim-preview" id="formulaSimPreview">Target approximately 192 words based on the source length (12000 characters); scale coverage to the source rather than a fixed limit.</p>
+              <p class="field-hint" id="formulaSimMeta">Using Medium size × Medium length on 12,000 characters.</p>
+            </div>
+
+            <div class="formula-actions">
+              <button id="resetFormulaDefaults" class="btn-secondary" type="button">Reset formula defaults</button>
+            </div>
           </div>
         </article>
 

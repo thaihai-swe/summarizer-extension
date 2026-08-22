@@ -138,6 +138,17 @@ Full settings object after schema normalization (see `lib/settings-schema.js`):
   promptMode: "summarize" | "analyze" | "explain" | "debate" | "study" | "outline" | "timeline" | "concepts",
   summarySize: "Brief" | "Medium" | "Deep",
   summaryLength: "Short" | "Medium" | "Long",
+  customFormulaEnabled: boolean,
+  sizeMultiplierBrief: number,
+  sizeMultiplierMedium: number,
+  sizeMultiplierDeep: number,
+  lengthMultiplierShort: number,
+  lengthMultiplierMedium: number,
+  lengthMultiplierLong: number,
+  charsPerWord: number,
+  minTargetWords: number,
+  maxTargetWords: number,
+  customTargetTemplate: string,
   summaryLanguage: string, // Output language (default "English", configurable with customLanguages)
   customLanguages: string, // Comma-separated list of additional languages
   summaryTone: "Simple" | "Expert" | "Academic" | "Professional" | "Friendly",

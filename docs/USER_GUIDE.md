@@ -1,6 +1,6 @@
 # User Guide
 
-DeepDigest creates structured summaries from webpages, YouTube videos, course lessons, and selected text. The side panel is the primary interface. Both the side panel and settings page use a modern, accessible interface with keyboard-navigable tabs and reduced-motion support.
+DeepDigest creates structured summaries from webpages, YouTube videos, course lessons, and selected text. The side panel is the primary interface. Both the side panel and settings page use a high-density reading studio design with keyboard-navigable tabs, visible focus, and reduced-motion support.
 
 ## Custom Prompt Presets
 
@@ -59,6 +59,22 @@ Selected text has priority over all other source types. When no selection exists
 - **Short**: concise output
 - **Medium**: balanced length
 - **Long**: expanded sections covering all content segments
+
+## Dynamic Word Target (Options)
+
+Open **Settings → General → Dynamic Word Target** to inspect the live formula and optionally override it.
+
+- **Use custom formula values**: when enabled, your multipliers and clamps replace the built-in defaults on the next Generate.
+- **Size multipliers**: Brief `0.05`, Medium `0.08`, Deep `0.12` by default.
+- **Length multipliers**: Short `0.7`, Medium `1.0`, Long `1.35` by default.
+- **Chars / word**, **Min words**, and **Max words** control the character-to-word ratio and the 60–1500 clamp.
+- **Custom target sentence**: optional prompt sentence. Placeholders `{targetWords}`, `{sourceChars}`, and `{sourceWords}` are replaced at generate time.
+- **Simulate source length**: drag the slider to preview the resulting word target before you save.
+- **Reset formula defaults**: restore the shipped values without changing Size or Length.
+
+The formula is:
+
+`target = clamp(min, max, round((sourceChars / charsPerWord) × sizeMultiplier × lengthMultiplier))`
 
 ## Output Sections
 

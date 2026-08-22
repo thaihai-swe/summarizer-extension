@@ -226,30 +226,29 @@
         ${sharedTokens}
         :host { all: initial; font-family: var(--font-sans); }
         .fab {
-          background: var(--accent-primary, oklch(58% 0.22 260));
+          background: var(--accent-primary, #EA580C);
           color: #fff;
           border: 1px solid transparent;
           border-radius: 999px;
-          padding: 12px 18px;
+          padding: 9px 15px;
           cursor: pointer;
-          box-shadow: var(--elevation-2, 0 8px 22px color-mix(in oklab, var(--color-ink, #1a1a1a) 16%, transparent));
-          font: 650 13px/1.2 var(--font-display, var(--font-sans));
+          box-shadow: 0 4px 14px rgba(234, 88, 12, 0.32);
+          font: 600 12.5px/1.2 var(--font-display, var(--font-sans));
           display: inline-flex;
           align-items: center;
-          gap: 8px;
-          transition: background var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease);
+          gap: 7px;
+          transition: background var(--duration-fast, 140ms) ease, transform var(--duration-fast, 140ms) ease, box-shadow var(--duration-fast, 140ms) ease;
         }
-        .fab:hover:not(:disabled) { background: var(--accent-secondary, oklch(52% 0.24 260)); }
         .fab:hover:not(:disabled) {
-          transform: translateY(-1px) scale(1.03);
-          box-shadow: var(--elevation-3);
-          filter: saturate(1.1);
+          background: var(--accent-secondary, #C2410C);
+          transform: translateY(-1px) scale(1.02);
+          box-shadow: 0 6px 18px rgba(234, 88, 12, 0.42);
         }
         .fab:active:not(:disabled) {
-          transform: scale(0.97);
+          transform: scale(0.98);
         }
         .fab:focus-visible {
-          outline: var(--focus-ring);
+          outline: 3px solid var(--color-focus, #EA580C);
           outline-offset: 2px;
         }
         .fab.loading {
@@ -261,7 +260,7 @@
         }
         .fab-icon {
           display: inline-flex;
-          transition: transform var(--motion-normal) var(--motion-ease);
+          transition: transform var(--duration-base, 220ms) ease;
         }
         .panel {
           display: none;
@@ -269,18 +268,18 @@
           max-height: calc(100vh - 80px);
           overflow: auto;
           margin-top: 10px;
-          background: var(--surface, #fff);
-          color: var(--text, #111);
-          border: 1px solid var(--border, oklch(90% 0.01 240));
-          border-radius: 12px;
-          padding: 18px;
-          box-shadow: var(--elevation-3, 0 20px 48px color-mix(in oklab, var(--color-ink, #111) 18%, transparent));
-          font: 14px/1.6 var(--font-body, var(--font-sans));
-          animation: panel-in var(--motion-normal) var(--motion-ease);
+          background: var(--surface, #FFFFFF);
+          color: var(--text, #18181B);
+          border: 1px solid var(--border, #E4E4E7);
+          border-radius: var(--radius-md, 10px);
+          padding: 16px;
+          box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
+          font: 13.5px/1.55 var(--font-body, var(--font-sans));
+          animation: panel-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
         }
         .panel.visible { display: block; }
         @keyframes panel-in {
-          from { opacity: 0; transform: translateY(12px) scale(0.97); }
+          from { opacity: 0; transform: translateY(8px) scale(0.98); }
           to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .head {
@@ -291,46 +290,47 @@
           margin-bottom: 8px;
         }
         .close-btn, .actions button {
-          border: 1px solid var(--border);
-          background: var(--surface-muted);
-          color: var(--text);
+          border: 1px solid var(--border, #E4E4E7);
+          background: var(--surface-muted, #F3F3F0);
+          color: var(--text, #18181B);
           border-radius: 999px;
-          padding: 8px 10px;
+          padding: 6px 10px;
           cursor: pointer;
           font: inherit;
-          transition: all var(--motion-fast) var(--motion-ease);
+          font-size: 12px;
+          transition: all 140ms ease;
         }
         .close-btn:hover, .actions button:hover:not(:disabled) {
-          border-color: var(--accent-primary);
-          background: var(--surface-hover);
+          border-color: var(--accent-primary, #EA580C);
+          background: var(--surface-hover, #FFF7ED);
         }
         .actions {
           display: flex;
           flex-wrap: wrap;
-          gap: 8px;
+          gap: 6px;
           margin-top: 12px;
         }
         .actions .btn-primary {
-          background: var(--accent-primary, oklch(58% 0.22 260));
+          background: var(--accent-primary, #EA580C);
           border-color: transparent;
           color: #fff;
-          font-weight: 650;
+          font-weight: 600;
           font-family: var(--font-display, var(--font-sans));
         }
         h4 {
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 700;
           margin: 16px 0 8px;
           text-transform: uppercase;
           letter-spacing: 0.08em;
-          color: var(--text-tertiary);
+          color: var(--text-tertiary, #71717A);
         }
         .summary { white-space: pre-wrap; word-break: break-word; }
         ul { padding-left: 18px; margin: 0; }
-        .meta { color: var(--text-tertiary); margin: 0 0 12px; font-size: 12px; }
-        .error { color: var(--error); background: var(--error-light); padding: 12px; border-radius: 8px; font-size: 13px; margin: 12px 0; border: 1px solid color-mix(in srgb, var(--error) 20%, transparent); }
+        .meta { color: var(--text-tertiary, #71717A); margin: 0 0 12px; font-size: 12px; }
+        .error { color: var(--error, #DC2626); background: #FEE2E2; padding: 12px; border-radius: 8px; font-size: 13px; margin: 12px 0; border: 1px solid rgba(220, 38, 38, 0.2); }
         *:focus-visible {
-          outline: var(--focus-ring);
+          outline: 3px solid var(--color-focus, #EA580C);
           outline-offset: 2px;
         }
         @media (prefers-reduced-motion: reduce) {

@@ -59,7 +59,23 @@
         presetName: document.getElementById("preset-name"),
         presetSystem: document.getElementById("preset-system"),
         presetUser: document.getElementById("preset-user"),
-        presetAdd: document.getElementById("preset-add")
+        presetAdd: document.getElementById("preset-add"),
+        customFormulaEnabled: document.getElementById("customFormulaEnabled"),
+        sizeMultiplierBrief: document.getElementById("sizeMultiplierBrief"),
+        sizeMultiplierMedium: document.getElementById("sizeMultiplierMedium"),
+        sizeMultiplierDeep: document.getElementById("sizeMultiplierDeep"),
+        lengthMultiplierShort: document.getElementById("lengthMultiplierShort"),
+        lengthMultiplierMedium: document.getElementById("lengthMultiplierMedium"),
+        lengthMultiplierLong: document.getElementById("lengthMultiplierLong"),
+        charsPerWord: document.getElementById("charsPerWord"),
+        minTargetWords: document.getElementById("minTargetWords"),
+        maxTargetWords: document.getElementById("maxTargetWords"),
+        customTargetTemplate: document.getElementById("customTargetTemplate"),
+        formulaSimChars: document.getElementById("formulaSimChars"),
+        formulaSimBadge: document.getElementById("formulaSimBadge"),
+        formulaSimPreview: document.getElementById("formulaSimPreview"),
+        formulaSimMeta: document.getElementById("formulaSimMeta"),
+        resetFormulaDefaults: document.getElementById("resetFormulaDefaults")
     };
 
     let customPromptPresets = [];
@@ -233,8 +249,135 @@
             theme: fields.theme.value,
             density: fields.density.value,
             fontScale: fields.fontScale.value,
-            generateFollowUpQuestions: fields.generateFollowUpQuestions.checked
+            generateFollowUpQuestions: fields.generateFollowUpQuestions.checked,
+            customFormulaEnabled: !!(fields.customFormulaEnabled && fields.customFormulaEnabled.checked),
+            sizeMultiplierBrief: Number(fields.sizeMultiplierBrief && fields.sizeMultiplierBrief.value),
+            sizeMultiplierMedium: Number(fields.sizeMultiplierMedium && fields.sizeMultiplierMedium.value),
+            sizeMultiplierDeep: Number(fields.sizeMultiplierDeep && fields.sizeMultiplierDeep.value),
+            lengthMultiplierShort: Number(fields.lengthMultiplierShort && fields.lengthMultiplierShort.value),
+            lengthMultiplierMedium: Number(fields.lengthMultiplierMedium && fields.lengthMultiplierMedium.value),
+            lengthMultiplierLong: Number(fields.lengthMultiplierLong && fields.lengthMultiplierLong.value),
+            charsPerWord: Number(fields.charsPerWord && fields.charsPerWord.value),
+            minTargetWords: Number(fields.minTargetWords && fields.minTargetWords.value),
+            maxTargetWords: Number(fields.maxTargetWords && fields.maxTargetWords.value),
+            customTargetTemplate: fields.customTargetTemplate ? fields.customTargetTemplate.value.trim() : ""
         };
+    }
+
+    function getWordTargetDefaults() {
+        const schemaDefaults = globalThis.SummarizerSettingsSchema && SummarizerSettingsSchema.DEFAULTS;
+        const promptDefaults = globalThis.SummarizerPromptCommon && SummarizerPromptCommon.DEFAULT_WORD_TARGET;
+        return Object.assign({
+            sizeMultiplierBrief: 0.05,
+            sizeMultiplierMedium: 0.08,
+            sizeMultiplierDeep: 0.12,
+            lengthMultiplierShort: 0.7,
+            lengthMultiplierMedium: 1.0,
+            lengthMultiplierLong: 1.35,
+            charsPerWord: 5,
+            minTargetWords: 60,
+            maxTargetWords: 1500,
+            customTargetTemplate: ""
+        }, promptDefaults || {}, schemaDefaults || {});
+    }
+
+    function applyWordTargetToForm(settings) {
+        const defaults = getWordTargetDefaults();
+        const source = settings || {};
+        const assignNumber = (field, value, fallback) => {
+            if (!field) return;
+            const numeric = Number(value);
+            field.value = Number.isFinite(numeric) ? numeric : fallback;
+        };
+        if (fields.customFormulaEnabled) {
+            fields.customFormulaEnabled.checked = !!source.customFormulaEnabled;
+        }
+        assignNumber(fields.sizeMultiplierBrief, source.sizeMultiplierBrief, defaults.sizeMultiplierBrief);
+        assignNumber(fields.sizeMultiplierMedium, source.sizeMultiplierMedium, defaults.sizeMultiplierMedium);
+        assignNumber(fields.sizeMultiplierDeep, source.sizeMultiplierDeep, defaults.sizeMultiplierDeep);
+        assignNumber(fields.lengthMultiplierShort, source.lengthMultiplierShort, defaults.lengthMultiplierShort);
+        assignNumber(fields.lengthMultiplierMedium, source.lengthMultiplierMedium, defaults.lengthMultiplierMedium);
+        assignNumber(fields.lengthMultiplierLong, source.lengthMultiplierLong, defaults.lengthMultiplierLong);
+        assignNumber(fields.charsPerWord, source.charsPerWord, defaults.charsPerWord);
+        assignNumber(fields.minTargetWords, source.minTargetWords, defaults.minTargetWords);
+        assignNumber(fields.maxTargetWords, source.maxTargetWords, defaults.maxTargetWords);
+        if (fields.customTargetTemplate) {
+            fields.customTargetTemplate.value = source.customTargetTemplate || "";
+        }
+        updateFormulaSimulator();
+    }
+
+    function updateFormulaSimulator() {
+        if (!fields.formulaSimBadge) return;
+        const settings = collectFormSettings();
+        const sourceChars = Number(fields.formulaSimChars && fields.formulaSimChars.value) || 12000;
+        let targetWords = 192;
+        let preview = "";
+        if (globalThis.SummarizerPromptCommon && typeof SummarizerPromptCommon.getSummarySizeInstructionsForSource === "function") {
+            const info = SummarizerPromptCommon.getSummarySizeInstructionsForSource(
+                settings.summarySize,
+                settings.summaryLength,
+                "x".repeat(sourceChars),
+                settings
+            );
+            targetWords = info.targetWords;
+            const sourceWords = Math.max(1, Math.round(sourceChars / (info.charsPerWord || 5)));
+            const template = settings.customTargetTemplate;
+            if (globalThis.SummarizerPromptCommon.renderWordTargetLine) {
+                preview = SummarizerPromptCommon.renderWordTargetLine(template, {
+                    targetWords,
+                    sourceChars,
+                    sourceWords
+                });
+            } else {
+                preview = `Target approximately ${targetWords} words based on the source length (${sourceChars} characters); scale coverage to the source rather than a fixed limit.`;
+            }
+        } else {
+            preview = `Target approximately ${targetWords} words based on the source length (${sourceChars} characters).`;
+        }
+        fields.formulaSimBadge.textContent = `~${targetWords.toLocaleString()} words`;
+        if (fields.formulaSimPreview) fields.formulaSimPreview.textContent = preview;
+        if (fields.formulaSimMeta) {
+            const modeNote = settings.customFormulaEnabled ? "custom formula" : "built-in defaults still apply unless you enable custom values";
+            fields.formulaSimMeta.textContent = `Using ${settings.summarySize || "Medium"} size × ${settings.summaryLength || "Medium"} length on ${sourceChars.toLocaleString()} characters (${modeNote}).`;
+        }
+    }
+
+    function setupFormulaControls() {
+        const watched = [
+            fields.customFormulaEnabled,
+            fields.sizeMultiplierBrief,
+            fields.sizeMultiplierMedium,
+            fields.sizeMultiplierDeep,
+            fields.lengthMultiplierShort,
+            fields.lengthMultiplierMedium,
+            fields.lengthMultiplierLong,
+            fields.charsPerWord,
+            fields.minTargetWords,
+            fields.maxTargetWords,
+            fields.customTargetTemplate,
+            fields.formulaSimChars,
+            fields.summarySize,
+            fields.summaryLength
+        ].filter(Boolean);
+        watched.forEach((field) => {
+            field.addEventListener("input", () => {
+                updateFormulaSimulator();
+                updateCurrentPromptPreview();
+            });
+            field.addEventListener("change", () => {
+                updateFormulaSimulator();
+                updateCurrentPromptPreview();
+            });
+        });
+        if (fields.resetFormulaDefaults) {
+            fields.resetFormulaDefaults.addEventListener("click", () => {
+                applyWordTargetToForm(Object.assign({}, getWordTargetDefaults(), { customFormulaEnabled: false }));
+                updateCurrentPromptPreview();
+                showToast("Formula restored to built-in defaults", "success");
+            });
+        }
+        updateFormulaSimulator();
     }
 
     function getPromptSourceType() {
@@ -805,6 +948,7 @@
             previewContent.setAttribute("data-density", fields.density.value);
             previewContent.setAttribute("data-font-scale", fields.fontScale.value);
         }
+        applyWordTargetToForm(settings);
         updateCurrentPromptPreview();
     }
 
@@ -844,6 +988,17 @@
                 fontScale: fields.fontScale.value,
                 generateFollowUpQuestions: fields.generateFollowUpQuestions.checked,
                 summaryLength: fields.summaryLength.value || "Medium",
+                customFormulaEnabled: !!(fields.customFormulaEnabled && fields.customFormulaEnabled.checked),
+                sizeMultiplierBrief: Number(fields.sizeMultiplierBrief && fields.sizeMultiplierBrief.value),
+                sizeMultiplierMedium: Number(fields.sizeMultiplierMedium && fields.sizeMultiplierMedium.value),
+                sizeMultiplierDeep: Number(fields.sizeMultiplierDeep && fields.sizeMultiplierDeep.value),
+                lengthMultiplierShort: Number(fields.lengthMultiplierShort && fields.lengthMultiplierShort.value),
+                lengthMultiplierMedium: Number(fields.lengthMultiplierMedium && fields.lengthMultiplierMedium.value),
+                lengthMultiplierLong: Number(fields.lengthMultiplierLong && fields.lengthMultiplierLong.value),
+                charsPerWord: Number(fields.charsPerWord && fields.charsPerWord.value),
+                minTargetWords: Number(fields.minTargetWords && fields.minTargetWords.value),
+                maxTargetWords: Number(fields.maxTargetWords && fields.maxTargetWords.value),
+                customTargetTemplate: fields.customTargetTemplate ? fields.customTargetTemplate.value.trim() : "",
                 promptAdvancedMode: {
                     youtube: fields.advancedModeYoutube.checked,
                     webpage: fields.advancedModeWebpage.checked,
@@ -1142,6 +1297,7 @@
     setupProviderSync();
     setupLivePreview();
     setupPromptReference();
+    setupFormulaControls();
 
     if (fields.presetAdd) fields.presetAdd.addEventListener("click", addPromptPreset);
 
