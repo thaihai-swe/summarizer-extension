@@ -81,9 +81,36 @@
     let customPromptPresets = [];
     const previewContent = document.getElementById("preview-content");
 
+    function updateStudioStatus() {
+        const providerStatus = document.getElementById("rail-provider-status");
+        const themeStatus = document.getElementById("rail-theme-status");
+        const nameMap = { gemini: "Gemini", openai: "OpenAI", local: "Local LLM" };
+        const mode = fields.promptMode && fields.promptMode.value
+            ? fields.promptMode.value.charAt(0).toUpperCase() + fields.promptMode.value.slice(1)
+            : "Summarize";
+        if (providerStatus) {
+            providerStatus.textContent = `${nameMap[fields.provider && fields.provider.value] || "Gemini"} · ${mode}`;
+        }
+        if (themeStatus) {
+            const themeLabel = { system: "System theme", light: "Light theme", dark: "Dark theme" };
+            const densityLabel = fields.density && fields.density.value === "compact" ? "Compact" : "Comfortable";
+            themeStatus.textContent = `${themeLabel[fields.theme && fields.theme.value] || "System theme"} · ${densityLabel}`;
+        }
+    }
+
+    function syncShortcutHint() {
+        const isMac = /Mac|iPhone|iPad/.test(navigator.platform || "");
+        const label = isMac ? "⌘S" : "Ctrl+S";
+        const chip = document.getElementById("hero-shortcut-chip");
+        const hint = document.getElementById("save-shortcut");
+        if (chip) chip.textContent = `${label} to save`;
+        if (hint) hint.textContent = label;
+    }
+
     // Dynamic Tab Navigation with active indicator slider
     function setupTabs() {
         const tabBtns = Array.from(document.querySelectorAll(".tab-btn"));
+        const railLinks = Array.from(document.querySelectorAll(".rail-link"));
         const tabContents = Array.from(document.querySelectorAll(".tab-panel"));
         const indicator = document.querySelector(".tab-indicator");
 
@@ -101,6 +128,9 @@
                 b.classList.toggle("active", selected);
                 b.setAttribute("aria-selected", selected ? "true" : "false");
                 b.setAttribute("tabindex", selected ? "0" : "-1");
+            });
+            railLinks.forEach((link) => {
+                link.classList.toggle("active", link.getAttribute("data-tab") === tabId);
             });
             tabContents.forEach((panel) => {
                 const selected = panel.id === `tab-${tabId}`;
@@ -143,6 +173,14 @@
             });
         });
 
+        railLinks.forEach((link) => {
+            link.addEventListener("click", () => {
+                const tabId = link.getAttribute("data-tab");
+                const targetBtn = tabBtns.find((b) => b.getAttribute("data-tab") === tabId);
+                if (targetBtn) activateTab(targetBtn);
+            });
+        });
+
         tabContents.forEach((panel) => {
             panel.hidden = !panel.classList.contains("active");
         });
@@ -164,7 +202,8 @@
                 const eyeOpen = btn.querySelector(".icon-eye-open");
                 const eyeClosed = btn.querySelector(".icon-eye-closed");
                 if (input && eyeOpen && eyeClosed) {
-                    if (input.type === "password") {
+                    const showing = input.type === "password";
+                    if (showing) {
                         input.type = "text";
                         eyeOpen.setAttribute("hidden", "");
                         eyeClosed.removeAttribute("hidden");
@@ -173,6 +212,9 @@
                         eyeClosed.setAttribute("hidden", "");
                         eyeOpen.removeAttribute("hidden");
                     }
+                    const label = showing ? `Hide ${input.id.replace(/([A-Z])/g, " $1").toLowerCase()}` : `Show ${input.id.replace(/([A-Z])/g, " $1").toLowerCase()}`;
+                    btn.setAttribute("aria-label", label);
+                    btn.setAttribute("aria-pressed", showing ? "true" : "false");
                 }
             });
         });
@@ -196,6 +238,13 @@
                 const providerId = card.getAttribute("data-provider");
                 select.value = providerId;
                 showProviderForm(providerId);
+                updateStudioStatus();
+            });
+            card.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    card.click();
+                }
             });
         });
 
@@ -950,6 +999,7 @@
         }
         applyWordTargetToForm(settings);
         updateCurrentPromptPreview();
+        updateStudioStatus();
     }
 
     async function saveSettings() {
@@ -1272,13 +1322,17 @@
     fields.saveBtn.addEventListener("click", saveSettings);
     fields.theme.addEventListener("change", () => {
         SummarizerTheme.applyThemeToDocument(fields.theme.value);
+        updateStudioStatus();
     });
     fields.density.addEventListener("change", () => {
         SummarizerTheme.applyDensityToDocument(fields.density.value);
+        updateStudioStatus();
     });
     fields.fontScale.addEventListener("change", () => {
         SummarizerTheme.applyFontScaleToDocument(fields.fontScale.value);
     });
+    if (fields.provider) fields.provider.addEventListener("change", updateStudioStatus);
+    if (fields.promptMode) fields.promptMode.addEventListener("change", updateStudioStatus);
     document.addEventListener("keydown", (event) => {
         if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") {
             event.preventDefault();
@@ -1289,9 +1343,11 @@
     SummarizerTheme.watchSystemTheme(() => {
         if (fields.theme.value === "system") {
             SummarizerTheme.applyThemeToDocument("system");
+            updateStudioStatus();
         }
     });
 
+    syncShortcutHint();
     setupTabs();
     setupPasswordToggles();
     setupProviderSync();

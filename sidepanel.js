@@ -429,9 +429,18 @@
         if (message.type === MSG.SETTINGS_UPDATED) {
             const t = message.settings;
             if (t) {
-                SummarizerTheme.applyThemeToDocument(t.theme);
-                SummarizerTheme.applyDensityToDocument(t.density);
-                SummarizerTheme.applyFontScaleToDocument(t.fontScale);
+                if (t.theme !== undefined) {
+                    SummarizerTheme.applyThemeToDocument(t.theme);
+                    if (elements.panelTheme) elements.panelTheme.value = t.theme;
+                }
+                if (t.density !== undefined) {
+                    SummarizerTheme.applyDensityToDocument(t.density);
+                    if (elements.panelDensity) elements.panelDensity.value = t.density;
+                }
+                if (t.fontScale !== undefined) {
+                    SummarizerTheme.applyFontScaleToDocument(t.fontScale);
+                    if (elements.panelFontScale) elements.panelFontScale.value = t.fontScale;
+                }
             }
             SummarizerSidepanelState.loadSettings(elements).catch(() => {});
         }

@@ -18,7 +18,7 @@ html, body {
   color: var(--color-text-primary);
   background: var(--color-bg);
   font-family: var(--font-body);
-  font-size: calc(var(--font-size-base) * var(--font-scale-multiplier));
+  font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
@@ -571,11 +571,11 @@ textarea:focus-visible,
   line-height: var(--line-height-snug);
 }
 
-.text-block h2 { font-size: 15px; }
-.text-block h3 { font-size: 14px; }
+.text-block h2 { font-size: var(--font-size-lg); }
+.text-block h3 { font-size: var(--font-size-md); }
 .text-block h4,
 .text-block h5,
-.text-block h6 { font-size: 13px; }
+.text-block h6 { font-size: var(--font-size-base); }
 
 .text-block p + p {
   margin-top: var(--space-2-5);
@@ -657,7 +657,7 @@ textarea:focus-visible,
 }
 
 .empty-state p {
-  font-size: 13px;
+  font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   max-width: 320px;
   line-height: var(--line-height-base);
@@ -808,7 +808,7 @@ textarea:focus-visible,
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-bg-elevated);
-  font-size: 12.5px;
+  font-size: var(--font-size-base);
   line-height: 1.48;
   color: var(--color-text-primary);
   cursor: pointer;
@@ -882,7 +882,7 @@ textarea:focus-visible,
   color: var(--color-text-primary);
   text-align: left;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: background var(--duration-fast) var(--ease-out);
@@ -923,7 +923,7 @@ textarea:focus-visible,
 
 .flat-section h3 {
   padding: var(--space-2-5) var(--space-3);
-  font-size: 13px;
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
   border-bottom: 1px solid var(--color-border);
@@ -1136,7 +1136,7 @@ textarea:focus-visible,
   max-width: 88%;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
-  font-size: 12.5px;
+  font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   position: relative;
   box-shadow: var(--shadow-xs);
@@ -1209,7 +1209,7 @@ textarea:focus-visible,
   border-radius: var(--radius-sm);
   background: var(--color-bg-elevated);
   color: var(--color-text-primary);
-  font-size: 12.5px;
+  font-size: var(--font-size-base);
   line-height: 1.45;
   transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }
