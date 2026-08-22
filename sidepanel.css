@@ -509,6 +509,136 @@ textarea:focus-visible,
 }
 
 /* --------------------------------------------------------------------------
+   7b. Generation Progress Stepper (Multi-Phase Visual Stepper)
+   -------------------------------------------------------------------------- */
+.workflow-stepper {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-3);
+  margin-bottom: var(--space-3);
+  box-shadow: var(--shadow-xs);
+  animation: stepper-fade-in var(--dur-base) var(--ease-out);
+}
+
+@keyframes stepper-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.workflow-stepper[hidden] {
+  display: none !important;
+}
+
+.stepper-track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+}
+
+.stepper-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  min-width: 0;
+  flex: 1;
+}
+
+.stepper-node {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-border-strong);
+  background: var(--color-bg-muted);
+  color: var(--color-text-tertiary);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.stepper-step .step-icon {
+  display: none;
+}
+
+.stepper-step .step-icon-idle {
+  display: inline-block;
+}
+
+.stepper-label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.stepper-label .step-name {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.stepper-label .step-detail {
+  font-size: 9px;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stepper-connector {
+  height: 2px;
+  flex: 0 0 12px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+
+.stepper-step.is-active .stepper-node {
+  border-color: var(--color-brand);
+  background: var(--color-brand-light);
+  color: var(--color-brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 20%, transparent);
+  animation: pulse-node 1.5s ease-in-out infinite;
+}
+
+.stepper-step.is-active .step-icon-idle { display: none; }
+.stepper-step.is-active .step-icon-active { display: block; width: 12px; height: 12px; }
+.stepper-step.is-active .step-name { color: var(--color-brand); font-weight: var(--font-weight-bold); }
+
+.stepper-step.is-done .stepper-node {
+  border-color: var(--color-success);
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.stepper-step.is-done .step-icon-idle { display: none; }
+.stepper-step.is-done .step-icon-done { display: block; width: 12px; height: 12px; }
+.stepper-step.is-done .step-name { color: var(--color-text-secondary); }
+.stepper-step.is-done + .stepper-connector { background: var(--color-success); }
+
+@keyframes pulse-node {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workflow-stepper,
+  .stepper-step.is-active .stepper-node {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
    8. Workspace & Content Cards
    -------------------------------------------------------------------------- */
 .workspace {
@@ -1370,4 +1500,146 @@ textarea:focus-visible,
   .empty-state button {
     display: none !important;
   }
+}
+
+/* --------------------------------------------------------------------------
+   Visual Concept Trees & Timeline Rails
+   -------------------------------------------------------------------------- */
+.text-block,
+.lead-card .text-block,
+.takeaways-list {
+  font-family: var(--font-reading);
+}
+
+.concept-tree {
+  margin: var(--space-3) 0 var(--space-2);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.concept-tree-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.concept-filter {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-full);
+  min-height: 26px;
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+.concept-filter.is-active,
+.concept-filter:hover {
+  border-color: var(--color-brand);
+  background: var(--color-brand-light);
+  color: var(--color-brand);
+}
+
+.concept-tree-grid {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.concept-node {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-2-5);
+  border-left: 3px solid var(--color-border-strong);
+}
+
+.concept-node.is-core {
+  border-left-color: var(--color-brand);
+  background: var(--color-accent-subtle);
+}
+
+.concept-node.is-important {
+  border-left-color: var(--color-warning);
+}
+
+.concept-node.is-supporting {
+  border-left-color: var(--color-rule-strong);
+}
+
+.concept-tier {
+  margin: 0 0 4px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.concept-term {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.concept-def {
+  margin: 4px 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-snug);
+}
+
+.timeline-rail {
+  list-style: none;
+  margin: var(--space-3) 0 var(--space-2);
+  padding: 0 0 0 14px;
+  border-left: 2px solid var(--color-border-strong);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.timeline-event {
+  position: relative;
+  padding-left: var(--space-3);
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -19px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-elevated);
+  border: 2px solid var(--color-brand);
+}
+
+.timeline-card {
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-2-5);
+}
+
+.timeline-stamp {
+  margin: 0 0 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-brand);
+  font-weight: var(--font-weight-semibold);
+}
+
+.timeline-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+}
+
+.timeline-detail {
+  margin: 4px 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
 }

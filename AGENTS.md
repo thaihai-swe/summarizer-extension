@@ -51,7 +51,7 @@ Use this file as the working contract for Codex-style agents making changes in t
 
 ## Key Behavior To Preserve
 
-- Extraction priority is: selected text -> YouTube -> course -> webpage.
+- Extraction priority is: selected text -> PDF/academic paper -> YouTube -> course -> webpage.
 - Results, conversations, and workflow state are stored per tab ID.
 - Closing a tab clears that tab's saved result, conversation, and workflow state.
 - New summaries clear prior follow-up conversation for the same tab.

@@ -5,11 +5,12 @@
 `lib/extractors.js` receives an extraction request and dispatches it in this priority:
 
 1. `lib/extractors/selected-text.js`
-2. `lib/extractors/youtube.js`
-3. `lib/extractors/course.js`
-4. `lib/extractors/webpage.js` (with `core.js` and `accessibility-tree.js` helpers)
+2. `lib/extractors/pdf.js` (PDFs, arXiv, PubMed, OpenReview, IEEE paper pages)
+3. `lib/extractors/youtube.js`
+4. `lib/extractors/course.js`
+5. `lib/extractors/webpage.js` (with `core.js` and `accessibility-tree.js` helpers)
 
-All extractors return a normalized source object with `sourceType`, `title`, `url`, and prompt-ready `content`. YouTube sources additionally preserve transcript segments and real timestamps. Source metadata is retained for prompt grounding; it is not rendered as a separate Source Metadata feature.
+All extractors return a normalized source object with `sourceType`, `title`, `url`, and prompt-ready `content`. YouTube sources additionally preserve transcript segments and real timestamps. PDF sources carry `isAcademic: true` when detected as a research paper. Source metadata is retained for prompt grounding; it is not rendered as a separate Source Metadata feature.
 
 ## Summary Service
 
@@ -30,6 +31,7 @@ Content is chunked only when it exceeds its source threshold:
 | YouTube | 24,000 characters | 12,000 | 4 |
 | Webpage | 60,000 characters | 12,000 | 4 |
 | Course | 50,000 characters | 12,000 | 4 |
+| PDF / Paper | 60,000 characters | 12,000 | 4 |
 | Selected text | Usually single request | — | — |
 
 The thresholds decide whether chunking starts. `lib/semantic-chunker.js` enforces target length, natural boundaries, overlap, and the maximum chunk count. Intermediate chunk and synthesis requests remain buffered.

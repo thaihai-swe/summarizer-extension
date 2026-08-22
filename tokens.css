@@ -1,6 +1,6 @@
 /* ==========================================================================
    DeepDigest Design System Tokens
-   Style: Precision Studio / Warm Ink & Amber-Vermillion
+   Style: Editorial Book / Warm Parchment & Antique Leather
    Density: High-Density Workbench (8/10) | Motion: Subtle (3/10) | Variance: Modern (5/10)
    Accessibility: WCAG 2.2 AA / AAA Compliant (4.5:1+ body text, 3:1+ UI controls)
    ========================================================================== */
@@ -12,6 +12,7 @@
   --font-display: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  --font-reading: "Newsreader", "Lora", "Georgia", "Charter", "Iowan Old Style", serif;
   --font-sans: var(--font-body);
 
   /* Base Type Scale (Multiplied by --font-scale-multiplier for dynamic scaling) */
@@ -85,27 +86,27 @@
   --header-height: 56px;
 
   /* --------------------------------------------------------------------------
-     5. SEMANTIC PALETTE: Light Theme (Warm Architectural Canvas & Warm Ink/Ember)
+     5. SEMANTIC PALETTE: Light Theme (Warm Parchment & Antique Leather)
      -------------------------------------------------------------------------- */
-  --color-paper: #FBFBFA;
-  --color-paper-2: #F3F3F0;
+  --color-paper: #FAF8F5;
+  --color-paper-2: #F2EFE9;
   --color-paper-elevated: #FFFFFF;
   
-  --color-ink: #18181B;
-  --color-ink-2: #3F3F46;
-  --color-ink-tertiary: #71717A;
+  --color-ink: #1C1917;
+  --color-ink-2: #44403C;
+  --color-ink-tertiary: #78716C;
   
-  --color-rule: #E4E4E7;
-  --color-rule-strong: #D4D4D8;
+  --color-rule: #E7E2DA;
+  --color-rule-strong: #D6CEBE;
   
-  /* Brand Accent: Ember / Warm Vermillion */
-  --color-accent: #EA580C;
-  --color-accent-hover: #C2410C;
-  --color-accent-light: #FFEDD5;
-  --color-accent-subtle: #FFF7ED;
+  /* Brand Accent: Bookbinder Amber-Terracotta */
+  --color-accent: #9A3412;
+  --color-accent-hover: #7C2D12;
+  --color-accent-light: #F5EBE1;
+  --color-accent-subtle: #FAF4EE;
   
-  --color-focus: #EA580C;
-  --color-focus-ring: 0 0 0 3px rgba(234, 88, 12, 0.22);
+  --color-focus: #9A3412;
+  --color-focus-ring: 0 0 0 3px rgba(154, 52, 18, 0.22);
   
   /* Semantic Status Colors */
   --color-success: #16A34A;
@@ -163,11 +164,11 @@
   --focus-ring: var(--color-focus-ring);
 
   /* Elevation Shadows */
-  --shadow-xs: 0 1px 2px rgba(24, 24, 27, 0.04);
-  --shadow-sm: 0 1px 3px rgba(24, 24, 27, 0.06), 0 1px 2px rgba(24, 24, 27, 0.04);
-  --shadow-md: 0 4px 12px -2px rgba(24, 24, 27, 0.08), 0 2px 5px -1px rgba(24, 24, 27, 0.04);
-  --shadow-lg: 0 12px 24px -4px rgba(24, 24, 27, 0.1), 0 4px 8px -2px rgba(24, 24, 27, 0.04);
-  --shadow-xl: 0 20px 40px -6px rgba(24, 24, 27, 0.14);
+  --shadow-xs: 0 1px 2px rgba(28, 25, 23, 0.05);
+  --shadow-sm: 0 1px 3px rgba(28, 25, 23, 0.07), 0 1px 2px rgba(28, 25, 23, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(28, 25, 23, 0.09), 0 2px 5px -1px rgba(28, 25, 23, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(28, 25, 23, 0.11), 0 4px 8px -2px rgba(28, 25, 23, 0.05);
+  --shadow-xl: 0 20px 40px -6px rgba(28, 25, 23, 0.15);
 
   --elevation-1: var(--shadow-sm);
   --elevation-2: var(--shadow-md);
@@ -179,28 +180,28 @@
 }
 
 /* ----------------------------------------------------------------------------
-   5. SEMANTIC PALETTE: Dark Theme (Rich Obsidian & Luminescent Ember)
+   5. SEMANTIC PALETTE: Dark Theme (Nocturne Study & Gilt Foil)
    ---------------------------------------------------------------------------- */
 :root[data-theme="dark"],
 :host([data-theme="dark"]) {
-  --color-paper: #09090B;
-  --color-paper-2: #121215;
-  --color-paper-elevated: #18181B;
+  --color-paper: #141210;
+  --color-paper-2: #1C1917;
+  --color-paper-elevated: #262320;
   
-  --color-ink: #FAFAFA;
-  --color-ink-2: #D4D4D8;
-  --color-ink-tertiary: #A1A1AA;
+  --color-ink: #F5F3EF;
+  --color-ink-2: #D6D3D1;
+  --color-ink-tertiary: #A8A29E;
   
-  --color-rule: #27272A;
-  --color-rule-strong: #3F3F46;
+  --color-rule: #34302C;
+  --color-rule-strong: #4E4842;
   
-  --color-accent: #F97316;
-  --color-accent-hover: #FB923C;
-  --color-accent-light: #431407;
-  --color-accent-subtle: #27140B;
+  --color-accent: #E07A5F;
+  --color-accent-hover: #F4987E;
+  --color-accent-light: #3A231C;
+  --color-accent-subtle: #221612;
   
-  --color-focus: #F97316;
-  --color-focus-ring: 0 0 0 3px rgba(249, 115, 22, 0.32);
+  --color-focus: #E07A5F;
+  --color-focus-ring: 0 0 0 3px rgba(224, 122, 95, 0.35);
   
   --color-success: #22C55E;
   --color-success-hover: #4ADE80;

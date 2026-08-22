@@ -3205,10 +3205,15 @@ button,
     }
 }
 
-.feature-grid-4 {
+.feature-grid-4,
+.feature-grid-5 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
+}
+
+.feature-grid-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .feature-card {
@@ -3254,6 +3259,11 @@ button,
 .select-color {
     background: rgba(16, 185, 129, 0.12);
     color: #10B981;
+}
+
+.pdf-color {
+    background: rgba(154, 52, 18, 0.12);
+    color: #9A3412;
 }
 
 .feature-card h3 {
@@ -3897,7 +3907,8 @@ button,
         min-height: auto;
     }
 
-    .feature-grid-4 {
+    .feature-grid-4,
+    .feature-grid-5 {
         grid-template-columns: repeat(2, 1fr);
     }
 
@@ -3955,7 +3966,8 @@ button,
         grid-template-columns: 1fr;
     }
 
-    .feature-grid-4 {
+    .feature-grid-4,
+    .feature-grid-5 {
         grid-template-columns: 1fr;
     }
 
@@ -4503,5 +4515,254 @@ html[data-theme="light"] .benefit-card:hover {
     .hero-proof {
         flex-direction: column;
         gap: 12px;
+    }
+}
+
+/* --- SIMULATED WORKFLOW STEPPER --- */
+.sim-workflow-stepper {
+    margin: 0 12px 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-muted);
+}
+
+.sim-workflow-stepper[hidden] {
+    display: none !important;
+}
+
+.sim-stepper-track {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.sim-stepper-step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+}
+
+.sim-stepper-node {
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border: 1.5px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.sim-stepper-label {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.sim-step-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sim-step-detail {
+    font-size: 9px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sim-stepper-connector {
+    height: 2px;
+    flex: 0 0 10px;
+    background: var(--border);
+    border-radius: 999px;
+}
+
+.sim-stepper-step.is-active .sim-stepper-node {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+    animation: pulse-node 1.5s ease-in-out infinite;
+}
+
+.sim-stepper-step.is-active .sim-step-name {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.sim-stepper-step.is-done .sim-stepper-node {
+    border-color: var(--success);
+    background: var(--success-soft);
+    color: var(--success);
+}
+
+.sim-stepper-step.is-done + .sim-stepper-connector {
+    background: var(--success);
+}
+
+@keyframes pulse-node {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+/* --- SIMULATED CONCEPT TREE --- */
+.sim-concept-tree {
+    display: grid;
+    gap: 10px;
+}
+
+.sim-concept-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.sim-concept-filter {
+    border: 1px solid var(--border);
+    background: var(--surface-muted);
+    color: var(--text-secondary);
+    border-radius: 999px;
+    min-height: 26px;
+    padding: 0 10px;
+    font-size: 10.5px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+}
+
+.sim-concept-filter.is-active,
+.sim-concept-filter:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.sim-concept-grid {
+    display: grid;
+    gap: 8px;
+}
+
+.sim-concept-node {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    border-left: 3px solid var(--border-strong);
+}
+
+.sim-concept-node.is-core {
+    border-left-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.sim-concept-node.is-important {
+    border-left-color: var(--warning);
+}
+
+.sim-concept-node.is-supporting {
+    border-left-color: var(--border-strong);
+}
+
+.sim-concept-tier {
+    margin: 0 0 3px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.sim-concept-term {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.sim-concept-def {
+    margin: 4px 0 0;
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+}
+
+/* --- SIMULATED TIMELINE RAIL --- */
+.sim-timeline-rail {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 14px;
+    border-left: 2px solid var(--border-strong);
+    display: grid;
+    gap: 10px;
+}
+
+.sim-timeline-event {
+    position: relative;
+    padding-left: 12px;
+}
+
+.sim-timeline-marker {
+    position: absolute;
+    left: -19px;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+}
+
+.sim-timeline-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+}
+
+.sim-timeline-stamp {
+    margin: 0 0 3px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.sim-timeline-title {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.sim-timeline-detail {
+    margin: 4px 0 0;
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+}
+
+.output-block-body p,
+.takeaway-list li,
+.sim-timeline-detail,
+.sim-concept-def {
+    font-family: "Newsreader", "Lora", Georgia, serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sim-stepper-step.is-active .sim-stepper-node {
+        animation: none;
     }
 }

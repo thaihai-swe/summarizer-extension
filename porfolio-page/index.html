@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="DeepDigest — an AI-powered browser extension case study. Transforms YouTube videos, webpages, course lessons, and selected text into deeply structured explanations.">
+  <meta name="description" content="DeepDigest — an AI-powered browser extension case study. Transforms YouTube videos, PDFs, academic papers, webpages, course lessons, and selected text into deeply structured explanations.">
   <title>DeepDigest — AI Extension Case Study &amp; Engineering Showcase</title>
   <link rel="icon" type="image/png" sizes="48x48" href="../icons/icon-48.png">
   <link rel="apple-touch-icon" href="../icons/icon-128.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="common.css">
 </head>
 <body>
@@ -115,7 +115,7 @@
         </h1>
 
         <p class="hero-subtitle">
-          A production-grade AI summarizer engineered from first principles in plain JavaScript. Designed as a structured cognitive workspace with source extraction, semantic chunking, prompt envelopes, quality gate self-healing, and per-tab isolation.
+          A production-grade AI summarizer engineered from first principles in plain JavaScript. Designed as a structured cognitive workspace with PDF and academic-paper extraction, a live multi-phase stepper, visual concept trees and timeline rails, prompt envelopes, quality-gate self-healing, and per-tab isolation.
         </p>
 
         <div class="hero-actions">
@@ -134,7 +134,7 @@
         </div>
 
         <div class="hero-proof" aria-label="DeepDigest highlights">
-          <div class="proof-item"><span class="proof-mark">01</span><span>Extract YouTube, pages, courses, and selections</span></div>
+          <div class="proof-item"><span class="proof-mark">01</span><span>Extract YouTube, PDFs, papers, pages, and selections</span></div>
           <div class="proof-item"><span class="proof-mark">02</span><span>Enforce structured heading contracts</span></div>
           <div class="proof-item"><span class="proof-mark">03</span><span>Run cloud or 100% local inference</span></div>
         </div>
@@ -145,8 +145,8 @@
             <div class="stat-icon-wrap">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             </div>
-            <div class="stat-number">4 Sources</div>
-            <div class="stat-desc">YouTube, Webpages, Courses &amp; Text</div>
+            <div class="stat-number">5 Sources</div>
+            <div class="stat-desc">YouTube, PDFs, Papers, Courses &amp; Text</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon-wrap">
@@ -201,6 +201,14 @@
             <span class="scenario-tag">Selection</span>
             <strong>Raft consensus excerpt</strong>
           </button>
+          <button type="button" class="scenario-btn" data-source="pdf" data-mode="analyze" data-depth="deep">
+            <span class="scenario-tag">PDF</span>
+            <strong>Attention Is All You Need</strong>
+          </button>
+          <button type="button" class="scenario-btn" data-source="concepts" data-mode="concepts" data-depth="deep">
+            <span class="scenario-tag">Concepts</span>
+            <strong>Transformer concept tree</strong>
+          </button>
           <button type="button" class="scenario-btn" data-source="webpage" data-mode="debate" data-depth="deep">
             <span class="scenario-tag">Debate</span>
             <strong>Leader vs leaderless</strong>
@@ -217,6 +225,8 @@
               <select id="sim-source-select" class="custom-select">
                 <option value="youtube" selected>YouTube: Andrej Karpathy - State of GPT</option>
                 <option value="webpage">Webpage: Designing Data-Intensive Applications</option>
+                <option value="pdf">PDF: Attention Is All You Need (arXiv)</option>
+                <option value="concepts">Concepts: Transformer architecture map</option>
                 <option value="course">Course: Coursera - Deep Learning Specialization</option>
                 <option value="selection">Selection: Raft Consensus Algorithm Excerpt</option>
               </select>
@@ -227,6 +237,8 @@
               <select id="sim-mode-select" class="custom-select">
                 <option value="summarize" selected>Summarize (Key Takeaways + Timeline)</option>
                 <option value="analyze">Analyze (Claims, Tradeoffs &amp; Evidence)</option>
+                <option value="timeline">Timeline (Vertical milestone rail)</option>
+                <option value="concepts">Concepts (Filterable concept tree)</option>
                 <option value="debate">Debate (Pro, Con &amp; Perspectives)</option>
                 <option value="study">Study (Flashcards &amp; Core Concepts)</option>
               </select>
@@ -328,6 +340,42 @@
                   <span class="status-text" id="panel-status-label">Ready to summarize</span>
                 </div>
 
+                <div id="sim-workflow-stepper" class="sim-workflow-stepper" aria-live="polite" aria-label="Generation progress" hidden>
+                  <div class="sim-stepper-track">
+                    <div class="sim-stepper-step" data-step="extract">
+                      <div class="sim-stepper-node" aria-hidden="true"><span>1</span></div>
+                      <div class="sim-stepper-label">
+                        <span class="sim-step-name">Extract</span>
+                        <span class="sim-step-detail" data-detail="extract"></span>
+                      </div>
+                    </div>
+                    <div class="sim-stepper-connector" aria-hidden="true"></div>
+                    <div class="sim-stepper-step" data-step="chunk">
+                      <div class="sim-stepper-node" aria-hidden="true"><span>2</span></div>
+                      <div class="sim-stepper-label">
+                        <span class="sim-step-name">Analyze</span>
+                        <span class="sim-step-detail" data-detail="chunk"></span>
+                      </div>
+                    </div>
+                    <div class="sim-stepper-connector" aria-hidden="true"></div>
+                    <div class="sim-stepper-step" data-step="synthesis">
+                      <div class="sim-stepper-node" aria-hidden="true"><span>3</span></div>
+                      <div class="sim-stepper-label">
+                        <span class="sim-step-name">Synthesize</span>
+                        <span class="sim-step-detail" data-detail="synthesis"></span>
+                      </div>
+                    </div>
+                    <div class="sim-stepper-connector" aria-hidden="true"></div>
+                    <div class="sim-stepper-step" data-step="quality">
+                      <div class="sim-stepper-node" aria-hidden="true"><span>4</span></div>
+                      <div class="sim-stepper-label">
+                        <span class="sim-step-name">Quality</span>
+                        <span class="sim-step-detail" data-detail="quality"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Structured Rendered Output Container -->
                 <div class="panel-scroll-content" id="sim-output-container">
                   <!-- Section 1: Core Summary -->
@@ -374,19 +422,54 @@
                       <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
                     <div class="output-block-body" id="body-timeline">
-                      <div class="timeline-entries" id="sim-text-timeline">
-                        <div class="timeline-row">
-                          <span class="time-badge font-mono">[02:15]</span>
-                          <span class="time-desc">Pre-training pipeline: Tokenization byte-pair encodings &amp; loss curves.</span>
+                      <ol class="sim-timeline-rail" id="sim-text-timeline">
+                        <li class="sim-timeline-event">
+                          <span class="sim-timeline-marker" aria-hidden="true"></span>
+                          <article class="sim-timeline-card">
+                            <p class="sim-timeline-stamp font-mono">[02:15]</p>
+                            <h4 class="sim-timeline-title">Pre-training pipeline</h4>
+                            <p class="sim-timeline-detail">Tokenization, byte-pair encodings &amp; loss curves.</p>
+                          </article>
+                        </li>
+                        <li class="sim-timeline-event">
+                          <span class="sim-timeline-marker" aria-hidden="true"></span>
+                          <article class="sim-timeline-card">
+                            <p class="sim-timeline-stamp font-mono">[14:30]</p>
+                            <h4 class="sim-timeline-title">SFT datasets</h4>
+                            <p class="sim-timeline-detail">Replacing raw web scrape with expert human demonstrations.</p>
+                          </article>
+                        </li>
+                        <li class="sim-timeline-event">
+                          <span class="sim-timeline-marker" aria-hidden="true"></span>
+                          <article class="sim-timeline-card">
+                            <p class="sim-timeline-stamp font-mono">[25:40]</p>
+                            <h4 class="sim-timeline-title">RLHF &amp; PPO</h4>
+                            <p class="sim-timeline-detail">Training reward models on comparative human rankings.</p>
+                          </article>
+                        </li>
+                      </ol>
+                    </div>
+                  </div>
+
+                  <!-- Section 3b: Visual Concept Tree -->
+                  <div class="output-block-item" id="sim-sec-concepts" hidden>
+                    <button class="output-block-header" type="button" aria-expanded="true" data-target="body-concepts">
+                      <span class="header-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                        <span>Concept Map</span>
+                      </span>
+                      <span class="badge-deep-only">Concepts Mode</span>
+                      <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="output-block-body" id="body-concepts">
+                      <div class="sim-concept-tree" id="sim-text-concepts">
+                        <div class="sim-concept-filters" role="group" aria-label="Filter concepts by tier">
+                          <button type="button" class="sim-concept-filter is-active" data-tier="all">All</button>
+                          <button type="button" class="sim-concept-filter" data-tier="core">Core</button>
+                          <button type="button" class="sim-concept-filter" data-tier="important">Important</button>
+                          <button type="button" class="sim-concept-filter" data-tier="supporting">Supporting</button>
                         </div>
-                        <div class="timeline-row">
-                          <span class="time-badge font-mono">[14:30]</span>
-                          <span class="time-desc">SFT datasets: Replacing raw web scrape with expert human demonstrations.</span>
-                        </div>
-                        <div class="timeline-row">
-                          <span class="time-badge font-mono">[25:40]</span>
-                          <span class="time-desc">RLHF &amp; PPO: Training reward models on comparative human rankings.</span>
-                        </div>
+                        <div class="sim-concept-grid" id="sim-concept-grid"></div>
                       </div>
                     </div>
                   </div>
@@ -449,23 +532,23 @@
           </article>
           <article class="benefit-card">
             <span class="benefit-index">B</span>
-            <h3>Timestamps that survive extraction</h3>
-            <p>YouTube summaries keep real transcript intervals such as <code>[14:22]</code> instead of inventing a timeline after the fact.</p>
+            <h3>PDFs and papers, not just pages</h3>
+            <p>arXiv, PubMed, OpenReview, IEEE, and Chrome PDF text layers extract as first-class sources with an academic prompt persona.</p>
           </article>
           <article class="benefit-card">
             <span class="benefit-index">C</span>
-            <h3>Semantic-first page extraction</h3>
-            <p>Mozilla Readability plus an accessibility-tree fallback strips ads, chrome, and boilerplate before the model ever sees the text.</p>
+            <h3>A live four-phase stepper</h3>
+            <p>Extract → Analyze → Synthesize → Quality replaces a static spinner. Long papers show chunk counters such as <code>2/3</code>.</p>
           </article>
           <article class="benefit-card">
             <span class="benefit-index">D</span>
-            <h3>Quality gate with one repair pass</h3>
-            <p>Deep and Long runs score section depth, then regenerate only the failing headings — keeping healthy content and cutting token waste.</p>
+            <h3>Concept trees and timeline rails</h3>
+            <p>Concepts mode renders filterable Core / Important / Supporting cards. Timeline mode and YouTube details become a vertical milestone spine.</p>
           </article>
           <article class="benefit-card">
             <span class="benefit-index">E</span>
-            <h3>Per-tab cognitive workspace</h3>
-            <p>Summary, conversation, and workflow state are keyed by tab ID. Closing a tab clears that memory. Switching tabs restores the matching snapshot.</p>
+            <h3>Quality gate with one repair pass</h3>
+            <p>Deep and Long runs score section depth, then regenerate only the failing headings — keeping healthy content and cutting token waste.</p>
           </article>
           <article class="benefit-card">
             <span class="benefit-index">F</span>
@@ -512,6 +595,12 @@
                 <td>Native timestamps, chapters, chunking</td>
               </tr>
               <tr>
+                <th scope="row">PDFs &amp; academic papers</th>
+                <td>Copy abstract by hand</td>
+                <td>Usually unsupported</td>
+                <td>arXiv, PubMed, OpenReview, IEEE, PDF.js layers</td>
+              </tr>
+              <tr>
                 <th scope="row">Output consistency</th>
                 <td>Depends on the prompt you wrote</td>
                 <td>Three-bullet TLDR</td>
@@ -522,6 +611,12 @@
                 <td>Hits the context window</td>
                 <td>Silent truncation</td>
                 <td>Semantic chunks with overlap + synthesis</td>
+              </tr>
+              <tr>
+                <th scope="row">Visual structure</th>
+                <td>Wall of chat text</td>
+                <td>Three bullets</td>
+                <td>Concept trees, timeline rails, live stepper</td>
               </tr>
               <tr>
                 <th scope="row">Follow-up questions</th>
@@ -581,7 +676,7 @@
 
           <!-- Tab Content 1: Sources -->
           <div class="cap-panel-content is-active" role="tabpanel" aria-labelledby="tab-btn-sources" id="panel-tab-sources">
-            <div class="feature-grid-4">
+            <div class="feature-grid-5">
               <div class="feature-card">
                 <div class="feature-icon youtube-color">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
@@ -591,6 +686,18 @@
                 <div class="feature-pill-row">
                   <span class="micro-pill">Timestamp safe</span>
                   <span class="micro-pill">Transcript fallback</span>
+                </div>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon pdf-color">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </div>
+                <h3>PDFs &amp; Papers</h3>
+                <p>Reads Chrome PDF text layers plus arXiv, PubMed, OpenReview, and IEEE pages with an academic research persona.</p>
+                <div class="feature-pill-row">
+                  <span class="micro-pill">PDF.js layers</span>
+                  <span class="micro-pill">arXiv / PubMed</span>
                 </div>
               </div>
 
@@ -664,11 +771,11 @@
               </div>
               <div class="mode-item">
                 <div class="mode-head"><span class="mode-name">Timeline</span></div>
-                <p>Strictly chronological sequence linking developments with source timestamps.</p>
+                <p>Vertical milestone rail with timestamp pills, phase markers, and event cards.</p>
               </div>
               <div class="mode-item">
                 <div class="mode-head"><span class="mode-name">Concepts</span></div>
-                <p>Knowledge graph of prerequisite terms, core principles, and domain connections.</p>
+                <p>Filterable Core / Important / Supporting concept tree rendered from the heading contract.</p>
               </div>
             </div>
           </div>
@@ -761,8 +868,8 @@
             <div class="step-num">01</div>
             <div class="step-content">
               <h4>Extraction Layer</h4>
-              <p class="step-desc">Content script queries YouTube transcripts or executes Readability DOM scoring.</p>
-              <div class="step-badge">extractors.js</div>
+              <p class="step-desc">Priority dispatcher: selection → PDF/paper → YouTube → course → Readability webpage.</p>
+              <div class="step-badge">extractors.js · pdf.js</div>
             </div>
           </div>
 
@@ -900,6 +1007,7 @@
             <div class="inspector-tabs">
               <button class="inspect-tab is-active" type="button" data-prompt="envelope">Shared Envelope</button>
               <button class="inspect-tab" type="button" data-prompt="youtube">YouTube Template</button>
+              <button class="inspect-tab" type="button" data-prompt="pdf">PDF / Paper Template</button>
               <button class="inspect-tab" type="button" data-prompt="repair">Quality Repair Prompt</button>
               <button class="inspect-tab" type="button" data-prompt="followup">Follow-up Q&amp;A Prompt</button>
             </div>
@@ -1072,7 +1180,7 @@ You are an expert analytical research assistant. Your task is to transform the p
             <span class="install-num">4</span>
             <div>
               <h3>Summarize a real page</h3>
-              <p>Open a YouTube video or article, then press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> on macOS) or use the context menu.</p>
+              <p>Open a YouTube video, arXiv paper, PDF, or article, then press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> on macOS) or use the context menu.</p>
             </div>
           </li>
         </ol>
@@ -1102,11 +1210,15 @@ You are an expert analytical research assistant. Your task is to transform the p
           </details>
           <details class="faq-item">
             <summary>How does DeepDigest handle long YouTube videos?</summary>
-            <p>Typical pages use one provider request. Long transcripts can be split into up to four semantic chunks with sentence overlap, then synthesized. Deep and Long modes may run one targeted repair pass if a section is too shallow.</p>
+            <p>Typical pages use one provider request. Long transcripts can be split into up to four semantic chunks with sentence overlap, then synthesized. Deep and Long modes may run one targeted repair pass if a section is too shallow. A four-phase stepper shows Extract → Analyze → Synthesize → Quality as this happens.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Can it summarize PDFs and academic papers?</summary>
+            <p>Yes. The extractor detects Chrome PDF text layers, <code>.pdf</code> URLs, and paper hosts such as arXiv, PubMed, OpenReview, and IEEE. Academic sources use a research-scientist persona covering Research Question, Methodology, Empirical Results, and Caveats. Long papers can chunk up to 60,000 characters.</p>
           </details>
           <details class="faq-item">
             <summary>Can I summarize private docs, intranet pages, or selections?</summary>
-            <p>Yes. Selected text has priority over YouTube, course, and webpage extractors. Pair selection mode with a local provider if the content should never leave the machine.</p>
+            <p>Yes. Selected text has priority over PDF, YouTube, course, and webpage extractors. Pair selection mode with a local provider if the content should never leave the machine.</p>
           </details>
           <details class="faq-item">
             <summary>What keyboard shortcuts and launch paths exist?</summary>
@@ -1424,6 +1536,54 @@ You are an expert analytical research assistant. Your task is to transform the p
             { time: "Paragraph 2", desc: "Heartbeat timers (150-300ms randomized) resolving split-vote deadlocks." }
           ],
           insights: "Randomized election timeouts represent a pragmatic design choice that eliminates complex deterministic leader negotiation protocols."
+        },
+        pdf: {
+          title: "Attention Is All You Need",
+          url: "https://arxiv.org/abs/1706.03762",
+          badge: "Academic Paper",
+          extractor: "PDF / arXiv extractor",
+          score: "97/100 (Validated)",
+          visual: "timeline",
+          summary: "Vaswani et al. replace recurrence and convolution with multi-head self-attention, showing that a purely attention-based encoder-decoder reaches state-of-the-art machine translation with far more parallel training. The paper introduces scaled dot-product attention, sinusoidal positional encodings, and residual layer-norm stacks.",
+          takeaways: [
+            "<strong>Research question:</strong> Can sequence transduction drop recurrence entirely and still model long-range dependencies?",
+            "<strong>Core methodology:</strong> Multi-head scaled attention plus feed-forward blocks, trained with label smoothing and warmup Adam.",
+            "<strong>Empirical result:</strong> 28.4 BLEU on WMT 2014 English-German at a fraction of prior training cost."
+          ],
+          timeline: [
+            { time: "Abstract", title: "Thesis", desc: "Attention-only architecture outperforms recurrent baselines on translation." },
+            { time: "§3.2", title: "Scaled attention", desc: "Softmax(QKᵀ / √dₖ)V prevents vanishing gradients in high-dimensional keys." },
+            { time: "§6", title: "Results & caveats", desc: "WMT BLEU gains; quadratic cost left as a limitation for long sequences." }
+          ],
+          insights: "Academic persona surfaces Research Question, Methodology, Empirical Results, and Caveats instead of a generic webpage TLDR. Long papers chunk up to 60k characters before synthesis."
+        },
+        concepts: {
+          title: "Transformer Architecture · Concept Map",
+          url: "https://arxiv.org/html/1706.03762",
+          badge: "Concepts",
+          extractor: "PDF / arXiv extractor",
+          score: "99/100 (Validated)",
+          visual: "concepts",
+          summary: "Concepts mode classifies the paper into Core, Important, and Supporting nodes. The side panel parses the heading contract into a filterable card grid rather than a wall of markdown.",
+          takeaways: [
+            "<strong>Core:</strong> Self-attention replaces recurrence as the primary sequence mixer.",
+            "<strong>Important:</strong> Multi-head projections let the model attend to several subspaces at once.",
+            "<strong>Supporting:</strong> Sinusoidal encodings inject order without recurrence or convolution."
+          ],
+          timeline: [
+            { time: "Core", title: "Self-attention", desc: "Every token attends to every other token in one parallel step." },
+            { time: "Important", title: "Multi-head", desc: "Independent Q/K/V projections capture distinct relation types." },
+            { time: "Supporting", title: "Positional encoding", desc: "Fixed sinusoids recover order after recurrence is removed." }
+          ],
+          concepts: [
+            { tier: "core", term: "Self-attention", definition: "Token-to-token mixing without recurrence or convolution." },
+            { tier: "core", term: "Scaled dot-product", definition: "QKᵀ / √dₖ keeps softmax out of the saturation regime." },
+            { tier: "important", term: "Multi-head attention", definition: "Parallel heads attend to different representation subspaces." },
+            { tier: "important", term: "Residual + LayerNorm", definition: "Stabilizes deep encoder-decoder stacks during training." },
+            { tier: "supporting", term: "Positional encoding", definition: "Sinusoidal vectors restore sequence order." },
+            { tier: "supporting", term: "Label smoothing", definition: "Regularizer used in the original WMT training recipe." }
+          ],
+          insights: "Filter pills hide non-matching tiers instantly. Markdown remains as a fallback under the visual tree so export and follow-up stay grounded."
         }
       };
 
@@ -1444,6 +1604,89 @@ You are an expert analytical research assistant. Your task is to transform the p
       var textTakeaways = document.getElementById('sim-text-takeaways');
       var textTimeline = document.getElementById('sim-text-timeline');
       var textInsights = document.getElementById('sim-text-insights');
+      var conceptsSection = document.getElementById('sim-sec-concepts');
+      var conceptGrid = document.getElementById('sim-concept-grid');
+      var stepperEl = document.getElementById('sim-workflow-stepper');
+      var stepperTimers = [];
+      var STEPPER_ORDER = ["extract", "chunk", "synthesis", "quality"];
+      var STEPPER_LABELS = {
+        extract: "Reading source…",
+        chunk: "Chunk 1/2",
+        synthesis: "Merging sections…",
+        quality: "Scoring headings…"
+      };
+
+      function clearStepperTimers() {
+        stepperTimers.forEach(function(id) { clearTimeout(id); });
+        stepperTimers = [];
+      }
+
+      function setStepperState(activeStep) {
+        if (!stepperEl) return;
+        var activeIndex = STEPPER_ORDER.indexOf(activeStep);
+        stepperEl.querySelectorAll('.sim-stepper-step').forEach(function(step) {
+          var key = step.getAttribute('data-step');
+          var index = STEPPER_ORDER.indexOf(key);
+          step.classList.remove('is-active', 'is-done');
+          if (activeIndex === -1) return;
+          if (index < activeIndex) step.classList.add('is-done');
+          if (index === activeIndex) step.classList.add('is-active');
+          var detail = step.querySelector('.sim-step-detail');
+          if (detail) detail.textContent = index === activeIndex ? (STEPPER_LABELS[key] || "") : "";
+        });
+      }
+
+      function hideStepper() {
+        if (!stepperEl) return;
+        stepperEl.hidden = true;
+        setStepperState(null);
+      }
+
+      function playStepper(onDone) {
+        if (!stepperEl) {
+          onDone();
+          return;
+        }
+        clearStepperTimers();
+        stepperEl.hidden = false;
+        setStepperState("extract");
+        STEPPER_ORDER.forEach(function(step, index) {
+          stepperTimers.push(setTimeout(function() {
+            setStepperState(step);
+          }, 280 * index));
+        });
+        stepperTimers.push(setTimeout(function() {
+          hideStepper();
+          onDone();
+        }, 280 * STEPPER_ORDER.length + 180));
+      }
+
+      function renderConcepts(nodes) {
+        if (!conceptGrid) return;
+        if (!nodes || !nodes.length) {
+          conceptGrid.innerHTML = "";
+          if (conceptsSection) conceptsSection.hidden = true;
+          return;
+        }
+        if (conceptsSection) conceptsSection.hidden = false;
+        conceptGrid.innerHTML = nodes.map(function(node) {
+          return '<article class="sim-concept-node is-' + node.tier + '" data-tier="' + node.tier + '">' +
+            '<p class="sim-concept-tier">' + node.tier + '</p>' +
+            '<h4 class="sim-concept-term">' + node.term + '</h4>' +
+            '<p class="sim-concept-def">' + node.definition + '</p>' +
+            '</article>';
+        }).join("");
+        document.querySelectorAll('.sim-concept-filter').forEach(function(btn) {
+          btn.classList.toggle('is-active', btn.getAttribute('data-tier') === 'all');
+        });
+      }
+
+      function filterConcepts(tier) {
+        if (!conceptGrid) return;
+        conceptGrid.querySelectorAll('.sim-concept-node').forEach(function(card) {
+          card.hidden = tier !== 'all' && card.getAttribute('data-tier') !== tier;
+        });
+      }
 
       function updateSimulation(sourceKey, isAnimated) {
         var data = demoData[sourceKey] || demoData.youtube;
@@ -1455,21 +1698,23 @@ You are an expert analytical research assistant. Your task is to transform the p
         if (simQualityScore) simQualityScore.textContent = data.score;
 
         if (isAnimated) {
-          if (panelStatusLabel) panelStatusLabel.textContent = "Extracting & streaming summary...";
+          if (panelStatusLabel) panelStatusLabel.textContent = "Extracting source…";
           if (panelStatus && panelStatus.querySelector('.status-indicator')) {
             panelStatus.querySelector('.status-indicator').className = "status-indicator running";
           }
           if (textSummary) textSummary.textContent = "Streaming tokens...";
           if (textTakeaways) textTakeaways.innerHTML = "<li>Analyzing key takeaways...</li>";
+          if (conceptsSection) conceptsSection.hidden = true;
           
-          setTimeout(function() {
+          playStepper(function() {
             renderData(data);
             if (panelStatusLabel) panelStatusLabel.textContent = "Summary complete (Quality Validated)";
             if (panelStatus && panelStatus.querySelector('.status-indicator')) {
               panelStatus.querySelector('.status-indicator').className = "status-indicator ready";
             }
-          }, 450);
+          });
         } else {
+          hideStepper();
           renderData(data);
           if (panelStatusLabel) panelStatusLabel.textContent = "Ready to summarize";
           if (panelStatus && panelStatus.querySelector('.status-indicator')) {
@@ -1490,13 +1735,31 @@ You are an expert analytical research assistant. Your task is to transform the p
 
         if (textTimeline) {
           var timelineHtml = data.timeline.map(function(t) {
-            return '<div class="timeline-row"><span class="time-badge font-mono">' + t.time + '</span><span class="time-desc">' + t.desc + '</span></div>';
+            var title = t.title || t.desc;
+            var detail = t.title ? t.desc : "";
+            return '<li class="sim-timeline-event">' +
+              '<span class="sim-timeline-marker" aria-hidden="true"></span>' +
+              '<article class="sim-timeline-card">' +
+              '<p class="sim-timeline-stamp font-mono">' + t.time + '</p>' +
+              '<h4 class="sim-timeline-title">' + title + '</h4>' +
+              (detail ? '<p class="sim-timeline-detail">' + detail + '</p>' : '') +
+              '</article></li>';
           }).join("");
           textTimeline.innerHTML = timelineHtml;
         }
 
+        renderConcepts(data.concepts || []);
         if (textInsights) textInsights.textContent = data.insights;
       }
+
+      document.querySelectorAll('.sim-concept-filter').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.sim-concept-filter').forEach(function(other) {
+            other.classList.toggle('is-active', other === btn);
+          });
+          filterConcepts(btn.getAttribute('data-tier'));
+        });
+      });
 
       // Scenario quick buttons
       scenarioButtons.forEach(function(btn) {
@@ -1599,6 +1862,17 @@ INSTRUCTIONS:
 
 TRANSCRIPT:
 {formattedTranscriptWithTimestamps}`,
+        pdf: `# PDF / ACADEMIC TEMPLATE (lib/prompts/templates/pdf.js)
+You are a Principal AI & Systems Research Scientist reviewing "{title}" ({url}).
+
+INSTRUCTIONS:
+1. Detect academic vs plain PDF from the URL (arXiv, PubMed, OpenReview, IEEE).
+2. Structure output as Research Question, Core Methodology, Empirical Results, and Caveats.
+3. Ground every claim in the extracted paper text. Do not invent citations.
+4. Long papers arrive as overlapping chunks; preserve terminology across synthesis.
+
+PAPER TEXT:
+{extractedPdfOrHtmlContent}`,
         repair: `# QUALITY GATE REPAIR PROMPT (lib/prompts/templates/repair.js)
 The initial generation had shallow sections that failed quality thresholds:
 Failing Sections: {failingSectionNames}

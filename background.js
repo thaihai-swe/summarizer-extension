@@ -13,6 +13,7 @@ if (typeof importScripts === "function") {
         "lib/prompts/templates/webpage.js",
         "lib/prompts/templates/course.js",
         "lib/prompts/templates/selected-text.js",
+        "lib/prompts/templates/pdf.js",
         "lib/prompts/templates/prompt-enhance.js",
         "lib/prompts/builders.js",
         "lib/prompts.js",

@@ -49,7 +49,7 @@ Every extractor returns at least:
 
 ```js
 {
-  sourceType: "youtube" | "webpage" | "course" | "selectedText",
+  sourceType: "youtube" | "webpage" | "course" | "selectedText" | "pdf",
   title: string,
   url: string,
   content: string,
@@ -84,7 +84,7 @@ Results are stored by tab ID and include source/provider metadata, content snaps
   id: string,                        // UUID generated per summary
   tabId: number,
   generatedAt: string,               // ISO timestamp
-  sourceType: "youtube" | "webpage" | "course" | "selectedText",
+  sourceType: "youtube" | "webpage" | "course" | "selectedText" | "pdf",
   title: string,
   url: string,
   provider: "gemini" | "openai" | "local",

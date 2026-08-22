@@ -38,8 +38,49 @@
         panelTheme: document.getElementById("panel-theme"),
         panelDensity: document.getElementById("panel-density"),
         panelFontScale: document.getElementById("panel-fontScale"),
-        summaryLanguage: document.getElementById("panel-summaryLanguage")
+        summaryLanguage: document.getElementById("panel-summaryLanguage"),
+        workflowStepper: document.getElementById("workflow-stepper")
     };
+
+    // Stepper step ordering: extract -> chunk -> synthesis -> quality
+    const STEPPER_ORDER = ["extract", "chunk", "synthesis", "quality"];
+
+    function updateStepperFromWorkflow(workflow) {
+        const stepper = elements.workflowStepper;
+        if (!stepper) return;
+
+        const isActive = workflow && (workflow.phase === "extracting" || workflow.phase === "summarizing");
+        stepper.hidden = !isActive;
+
+        if (!isActive) return;
+
+        const currentStep = (workflow.step) || (workflow.phase === "extracting" ? "extract" : "chunk");
+        const currentIndex = STEPPER_ORDER.indexOf(currentStep);
+        const steps = stepper.querySelectorAll(".stepper-step");
+        steps.forEach((stepEl, idx) => {
+            stepEl.classList.remove("is-active", "is-done");
+            if (idx < currentIndex) {
+                stepEl.classList.add("is-done");
+            } else if (idx === currentIndex) {
+                stepEl.classList.add("is-active");
+                // Update detail label for chunking step
+                const detail = stepEl.querySelector(".step-detail");
+                if (detail) {
+                    if (currentStep === "chunk" && workflow.chunkTotal > 1) {
+                        detail.textContent = `${workflow.chunkIndex || 0}/${workflow.chunkTotal}`;
+                    } else if (currentStep === "extract") {
+                        detail.textContent = "Reading...";
+                    } else if (currentStep === "synthesis") {
+                        detail.textContent = "Combining...";
+                    } else if (currentStep === "quality") {
+                        detail.textContent = "Checking...";
+                    } else {
+                        detail.textContent = "";
+                    }
+                }
+            }
+        });
+    }
 
     function setStatus(message, type) {
         if (!elements.status) return;
@@ -98,6 +139,7 @@
         const workflow = workflowResponse && workflowResponse.ok ? workflowResponse.workflow : null;
         if (workflowResponse && workflowResponse.tabId) activeTabId = workflowResponse.tabId;
         setStatus(formatWorkflowStatus(workflow, latestResult), getWorkflowStatusType(workflow));
+        updateStepperFromWorkflow(workflow);
         if (workflow && (workflow.phase === "extracting" || workflow.phase === "summarizing")) {
             if (!isStreaming) {
                 SummarizerRender.clearAllContent(elements, workflow);
@@ -164,6 +206,7 @@
 
         activeTabId = localTabId;
         setStatus(formatWorkflowStatus(workflow, latestResult), getWorkflowStatusType(workflow));
+        updateStepperFromWorkflow(workflow);
         if (elements.cancelBtn) {
             elements.cancelBtn.hidden = !(workflow && (workflow.phase === "extracting" || workflow.phase === "summarizing"));
         }
@@ -410,6 +453,7 @@
             }
             setStatus("Summary updated.", "ready");
             stopWorkflowPolling();
+            if (elements.workflowStepper) elements.workflowStepper.hidden = true;
         }
         if (message.type === MSG.SUMMARY_ERROR) {
             isStreaming = false;
@@ -425,6 +469,7 @@
             }
             setStatus(errorMessage, "error");
             stopWorkflowPolling();
+            if (elements.workflowStepper) elements.workflowStepper.hidden = true;
         }
         if (message.type === MSG.SETTINGS_UPDATED) {
             const t = message.settings;

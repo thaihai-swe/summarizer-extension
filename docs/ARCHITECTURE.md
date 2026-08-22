@@ -20,9 +20,10 @@ side panel -> background -> content script -> extractor
 Extraction priority is:
 
 1. selected text
-2. YouTube transcript
-3. course lesson
-4. webpage
+2. PDF / academic paper
+3. YouTube transcript
+4. course lesson
+5. webpage
 
 ## Core Modules
 
@@ -43,8 +44,9 @@ Extraction priority is:
 
 ### Extraction
 
-- `lib/extractors.js`: source-priority dispatcher
+- `lib/extractors.js`: source-priority dispatcher (selected text → PDF/paper → YouTube → course → webpage)
 - `lib/extractors/selected-text.js`: selected excerpt
+- `lib/extractors/pdf.js`: PDFs, arXiv, PubMed, OpenReview, IEEE paper pages, Chrome PDF viewer text layers
 - `lib/extractors/youtube.js`: transcript, timestamps, chapters, metadata
 - `lib/extractors/course.js`: course lesson content
 - `lib/extractors/webpage.js`: semantic webpage extraction
@@ -54,7 +56,8 @@ Extraction priority is:
 
 - `lib/prompts/builders.js`: routes summary, chunk, synthesis, and deep-dive prompts
 - `lib/prompts/common.js`: shared envelope, section plans, modes, grounding, and output rules
-- `lib/prompts/templates/`: source-specific YouTube, webpage, course, and selected-text templates
+- `lib/prompts/templates/`: source-specific YouTube, webpage, course, selected-text, and PDF/paper templates
+- `lib/prompts/templates/pdf.js`: academic paper & PDF document prompt builder
 - `lib/prompts/templates/prompt-enhance.js`: options-page prompt enhancement helper
 - `docs/PROMPTS.md`: canonical prompt inventory
 

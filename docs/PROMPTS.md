@@ -10,6 +10,7 @@ Use it as the source of truth when changing prompt behavior in:
 - `lib/prompts/templates/webpage.js`
 - `lib/prompts/templates/course.js`
 - `lib/prompts/templates/selected-text.js`
+- `lib/prompts/templates/pdf.js`
 - `lib/prompts/templates/prompt-enhance.js`
 
 ## Prompt Architecture
@@ -20,6 +21,9 @@ Runtime flow:
 
 1. Extraction produces normalized context (`sourceType`, `title`, `url`, `content`, optional metadata).
 2. `lib/prompts/builders.js` routes to the matching template builder.
+   - `sourceType === "pdf"` → `lib/prompts/templates/pdf.js` (academic paper or PDF document).
+   - `promptMode === "concepts"` → `lib/prompts/templates/course.js` concept builder for any source.
+   - Other source types → YouTube, course, webpage, or selected-text templates.
 3. Source templates assemble a shared prompt envelope from `lib/prompts/common.js`.
 4. `summaryLanguage` is injected through a critical language directive requiring all response content to use the selected language; parser-required headings remain unchanged.
 5. The final prompt string is sent through `generateText(prompt, providerSettings)`.

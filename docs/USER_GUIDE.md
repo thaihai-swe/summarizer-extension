@@ -1,6 +1,6 @@
 # User Guide
 
-DeepDigest creates structured summaries from webpages, YouTube videos, course lessons, and selected text. The side panel is the primary interface. Both the side panel and settings page use a high-density reading studio design with keyboard-navigable tabs, visible focus, and reduced-motion support.
+DeepDigest creates structured summaries from webpages, YouTube videos, course lessons, PDFs, academic papers, and selected text. The side panel is the primary interface. Both the side panel and settings page use a high-density reading studio design with a Warm Book & Library palette, keyboard-navigable tabs, visible focus, and reduced-motion support.
 
 ## Custom Prompt Presets
 
@@ -24,10 +24,11 @@ You can trigger a summary using any of the following methods:
 
 - YouTube watch pages with available transcripts
 - Webpages and documents
+- PDFs and academic paper pages (arXiv, PubMed, OpenReview, IEEE, Chrome PDF viewer text layers)
 - Supported course lesson pages (Udemy, Coursera)
 - Text selected on a page
 
-Selected text has priority over all other source types. When no selection exists, the extension prioritizes YouTube, then course content, then webpage extraction.
+Selected text has priority over all other source types. When no selection exists, the extension prioritizes PDFs and academic papers, then YouTube, then course content, then webpage extraction.
 
 ## Side Panel Controls
 
@@ -36,6 +37,7 @@ Selected text has priority over all other source types. When no selection exists
 - **Cancel button**: abort the current request.
 - **Settings button**: open the Options page.
 - **Theme / Density / Font Scale / Language**: adjust output formatting in the controls row below the Generate button.
+- **Generation stepper**: during a run, a four-step ribbon shows Extract → Analyze → Synthesize → Quality. Chunked sources display live progress such as `2/3`.
 
 ## Summary Modes
 
@@ -45,8 +47,8 @@ Selected text has priority over all other source types. When no selection exists
 - **Debate**: supporting, opposing, and balanced interpretations
 - **Study**: definitions, retention, and practice focus
 - **Outline**: hierarchical topic structure
-- **Timeline**: chronological or step-by-step order
-- **Concepts**: knowledge-concept map with definitions, relationships, and prerequisites
+- **Timeline**: chronological or step-by-step order, rendered as a vertical milestone rail when the source has timestamps, phases, or dates
+- **Concepts**: knowledge-concept map with definitions, relationships, and prerequisites, rendered as filterable Core / Important / Supporting cards
 
 ## Summary Sizes
 

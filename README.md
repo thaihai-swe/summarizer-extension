@@ -1,12 +1,13 @@
 # DeepDigest
 
-Browser extension for summarizing YouTube videos, webpages, selected text, and course lesson content with Gemini, OpenAI, or a local LLM endpoint.
+Browser extension for summarizing YouTube videos, webpages, selected text, PDFs, academic papers, and course lesson content with Gemini, OpenAI, or a local LLM endpoint.
 
 ## User Overview
 
 - Summarizes YouTube watch/live pages from transcript data
 - Summarizes webpages from semantic-first extraction with accessibility-tree fallback
 - Summarizes highlighted text when the user has a selection
+- Summarizes PDFs and academic paper pages (arXiv, PubMed, OpenReview, IEEE, Chrome PDF viewer)
 - Custom Prompt Presets: Create named prompts for instant access
 - Side Panel shortcuts: Trigger summaries via `Ctrl+Shift+S` or Right-Click Context Menu
 - Total Execution Token and Latency reporting directly in the panel
@@ -73,10 +74,11 @@ The codebase is split into small modules instead of monolithic extractor or prom
   - [lib/extractors.js](/lib/extractors.js)
   - [lib/extractors/core.js](/lib/extractors/core.js)
   - [lib/extractors/accessibility-tree.js](/lib/extractors/accessibility-tree.js)
-  - [lib/extractors/youtube.js](/lib/extractors/youtube.js)
-  - [lib/extractors/webpage.js](/lib/extractors/webpage.js)
-  - [lib/extractors/course.js](/lib/extractors/course.js)
   - [lib/extractors/selected-text.js](/lib/extractors/selected-text.js)
+  - [lib/extractors/pdf.js](/lib/extractors/pdf.js)
+  - [lib/extractors/youtube.js](/lib/extractors/youtube.js)
+  - [lib/extractors/course.js](/lib/extractors/course.js)
+  - [lib/extractors/webpage.js](/lib/extractors/webpage.js)
 - Prompt building:
   - [lib/prompts/builders.js](/lib/prompts/builders.js)
   - [lib/prompts/common.js](/lib/prompts/common.js)
@@ -90,6 +92,7 @@ The codebase is split into small modules instead of monolithic extractor or prom
   - [sidepanel.js](/sidepanel.js)
   - [lib/sidepanel/state.js](/lib/sidepanel/state.js)
   - [lib/sidepanel/render.js](/lib/sidepanel/render.js)
+  - [lib/sidepanel/visual-renderers.js](/lib/sidepanel/visual-renderers.js)
 
 ## Load Locally
 

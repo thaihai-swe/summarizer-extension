@@ -7,7 +7,7 @@
     <title>DeepDigest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="tokens.css">
     <link rel="stylesheet" href="sidepanel.css">
 </head>
@@ -89,6 +89,59 @@
                         <option value="English">English</option>
                         <option value="Vietnamese">Vietnamese</option>
                     </select>
+                </div>
+            </div>
+
+            <!-- Multi-Phase Generation Stepper (visible during active generation) -->
+            <div id="workflow-stepper" class="workflow-stepper" aria-live="polite" aria-label="Generation progress" hidden>
+                <div class="stepper-track">
+                    <div class="stepper-step" data-step="extract">
+                        <div class="stepper-node" aria-hidden="true">
+                            <svg class="step-icon step-icon-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 8 6 11 13 4"/></svg>
+                            <svg class="step-icon step-icon-active" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/></svg>
+                            <span class="step-icon step-icon-idle" aria-hidden="true">1</span>
+                        </div>
+                        <div class="stepper-label">
+                            <span class="step-name">Extract</span>
+                            <span class="step-detail"></span>
+                        </div>
+                    </div>
+                    <div class="stepper-connector" aria-hidden="true"></div>
+                    <div class="stepper-step" data-step="chunk">
+                        <div class="stepper-node" aria-hidden="true">
+                            <svg class="step-icon step-icon-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 8 6 11 13 4"/></svg>
+                            <svg class="step-icon step-icon-active" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/></svg>
+                            <span class="step-icon step-icon-idle" aria-hidden="true">2</span>
+                        </div>
+                        <div class="stepper-label">
+                            <span class="step-name">Analyze</span>
+                            <span class="step-detail"></span>
+                        </div>
+                    </div>
+                    <div class="stepper-connector" aria-hidden="true"></div>
+                    <div class="stepper-step" data-step="synthesis">
+                        <div class="stepper-node" aria-hidden="true">
+                            <svg class="step-icon step-icon-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 8 6 11 13 4"/></svg>
+                            <svg class="step-icon step-icon-active" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/></svg>
+                            <span class="step-icon step-icon-idle" aria-hidden="true">3</span>
+                        </div>
+                        <div class="stepper-label">
+                            <span class="step-name">Synthesize</span>
+                            <span class="step-detail"></span>
+                        </div>
+                    </div>
+                    <div class="stepper-connector" aria-hidden="true"></div>
+                    <div class="stepper-step" data-step="quality">
+                        <div class="stepper-node" aria-hidden="true">
+                            <svg class="step-icon step-icon-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 8 6 11 13 4"/></svg>
+                            <svg class="step-icon step-icon-active" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/></svg>
+                            <span class="step-icon step-icon-idle" aria-hidden="true">4</span>
+                        </div>
+                        <div class="stepper-label">
+                            <span class="step-name">Quality</span>
+                            <span class="step-detail"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -195,6 +248,7 @@
     <script src="lib/settings-schema.js"></script>
     <script src="lib/storage.js"></script>
     <script src="lib/sidepanel/state.js"></script>
+    <script src="lib/sidepanel/visual-renderers.js"></script>
     <script src="lib/sidepanel/render.js"></script>
     <script src="sidepanel.js"></script>
 </body>

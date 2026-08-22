@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "DeepDigest",
-    "description": "Deep, structured summaries of YouTube videos, webpages, courses, and selected text.",
+    "description": "Deep, structured summaries of YouTube videos, webpages, courses, PDFs, academic papers, and selected text.",
     "version": "0.1.0",
     "permissions": [
         "storage",
@@ -56,6 +56,7 @@
                 "lib/extractors/core.js",
                 "lib/extractors/accessibility-tree.js",
                 "lib/extractors/selected-text.js",
+                "lib/extractors/pdf.js",
                 "lib/extractors/youtube.js",
                 "lib/extractors/webpage.js",
                 "lib/extractors/course.js",

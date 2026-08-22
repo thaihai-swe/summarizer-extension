@@ -226,13 +226,13 @@
         ${sharedTokens}
         :host { all: initial; font-family: var(--font-sans); }
         .fab {
-          background: var(--accent-primary, #EA580C);
+          background: var(--accent-primary, #9A3412);
           color: #fff;
           border: 1px solid transparent;
           border-radius: 999px;
           padding: 9px 15px;
           cursor: pointer;
-          box-shadow: 0 4px 14px rgba(234, 88, 12, 0.32);
+          box-shadow: 0 4px 14px rgba(154, 52, 18, 0.32);
           font: 600 12.5px/1.2 var(--font-display, var(--font-sans));
           display: inline-flex;
           align-items: center;
@@ -240,15 +240,15 @@
           transition: background var(--duration-fast, 140ms) ease, transform var(--duration-fast, 140ms) ease, box-shadow var(--duration-fast, 140ms) ease;
         }
         .fab:hover:not(:disabled) {
-          background: var(--accent-secondary, #C2410C);
+          background: var(--accent-secondary, #7C2D12);
           transform: translateY(-1px) scale(1.02);
-          box-shadow: 0 6px 18px rgba(234, 88, 12, 0.42);
+          box-shadow: 0 6px 18px rgba(154, 52, 18, 0.42);
         }
         .fab:active:not(:disabled) {
           transform: scale(0.98);
         }
         .fab:focus-visible {
-          outline: 3px solid var(--color-focus, #EA580C);
+          outline: 3px solid var(--color-focus, #9A3412);
           outline-offset: 2px;
         }
         .fab.loading {
@@ -269,8 +269,8 @@
           overflow: auto;
           margin-top: 10px;
           background: var(--surface, #FFFFFF);
-          color: var(--text, #18181B);
-          border: 1px solid var(--border, #E4E4E7);
+          color: var(--text, #1C1917);
+          border: 1px solid var(--border, #E7E2DA);
           border-radius: var(--radius-md, 10px);
           padding: 16px;
           box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
@@ -290,9 +290,9 @@
           margin-bottom: 8px;
         }
         .close-btn, .actions button {
-          border: 1px solid var(--border, #E4E4E7);
-          background: var(--surface-muted, #F3F3F0);
-          color: var(--text, #18181B);
+          border: 1px solid var(--border, #E7E2DA);
+          background: var(--surface-muted, #F2EFE9);
+          color: var(--text, #1C1917);
           border-radius: 999px;
           padding: 6px 10px;
           cursor: pointer;
@@ -301,8 +301,8 @@
           transition: all 140ms ease;
         }
         .close-btn:hover, .actions button:hover:not(:disabled) {
-          border-color: var(--accent-primary, #EA580C);
-          background: var(--surface-hover, #FFF7ED);
+          border-color: var(--accent-primary, #9A3412);
+          background: var(--surface-hover, #FAF4EE);
         }
         .actions {
           display: flex;
@@ -311,7 +311,7 @@
           margin-top: 12px;
         }
         .actions .btn-primary {
-          background: var(--accent-primary, #EA580C);
+          background: var(--accent-primary, #9A3412);
           border-color: transparent;
           color: #fff;
           font-weight: 600;
@@ -323,14 +323,14 @@
           margin: 16px 0 8px;
           text-transform: uppercase;
           letter-spacing: 0.08em;
-          color: var(--text-tertiary, #71717A);
+          color: var(--text-tertiary, #78716C);
         }
         .summary { white-space: pre-wrap; word-break: break-word; }
         ul { padding-left: 18px; margin: 0; }
-        .meta { color: var(--text-tertiary, #71717A); margin: 0 0 12px; font-size: 12px; }
+        .meta { color: var(--text-tertiary, #78716C); margin: 0 0 12px; font-size: 12px; }
         .error { color: var(--error, #DC2626); background: #FEE2E2; padding: 12px; border-radius: 8px; font-size: 13px; margin: 12px 0; border: 1px solid rgba(220, 38, 38, 0.2); }
         *:focus-visible {
-          outline: 3px solid var(--color-focus, #EA580C);
+          outline: 3px solid var(--color-focus, #9A3412);
           outline-offset: 2px;
         }
         @media (prefers-reduced-motion: reduce) {
