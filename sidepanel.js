@@ -46,9 +46,11 @@
         groundingOpenBtn: document.getElementById("grounding-open-btn"),
         shell: document.getElementById("panel-shell"),
         panelTheme: document.getElementById("panel-theme"),
-        panelDensity: document.getElementById("panel-density"),
         panelFontScale: document.getElementById("panel-fontScale"),
         summaryLanguage: document.getElementById("panel-summaryLanguage"),
+        summaryTone: document.getElementById("panel-summaryTone"),
+        summarySize: document.getElementById("panel-summarySize"),
+        summaryLength: document.getElementById("panel-summaryLength"),
         workflowStepper: document.getElementById("workflow-stepper")
     };
 
@@ -539,10 +541,6 @@
                     SummarizerTheme.applyThemeToDocument(t.theme);
                     if (elements.panelTheme) elements.panelTheme.value = t.theme;
                 }
-                if (t.density !== undefined) {
-                    SummarizerTheme.applyDensityToDocument(t.density);
-                    if (elements.panelDensity) elements.panelDensity.value = t.density;
-                }
                 if (t.fontScale !== undefined) {
                     SummarizerTheme.applyFontScaleToDocument(t.fontScale);
                     if (elements.panelFontScale) elements.panelFontScale.value = t.fontScale;
@@ -569,23 +567,43 @@
 
     async function setupDisplayControls() {
         const themeEl = elements.panelTheme;
-        const densityEl = elements.panelDensity;
         const fontEl = elements.panelFontScale;
         const languageEl = elements.summaryLanguage;
-        if (!themeEl && !densityEl && !fontEl && !languageEl) return;
+        const toneEl = elements.summaryTone;
+        const sizeEl = elements.summarySize;
+        const lengthEl = elements.summaryLength;
+        if (!themeEl && !fontEl && !languageEl && !toneEl && !sizeEl && !lengthEl) return;
+
+        function populateSettingOptions(selectEl, settingKey) {
+            if (!selectEl) return;
+            const values = SummarizerSettingsSchema.getValidValues(settingKey);
+            if (!values) return;
+            selectEl.innerHTML = "";
+            Array.from(values).forEach((value) => {
+                const opt = document.createElement("option");
+                opt.value = value;
+                opt.textContent = value;
+                selectEl.appendChild(opt);
+            });
+        }
+
+        populateSettingOptions(toneEl, "summaryTone");
+        populateSettingOptions(sizeEl, "summarySize");
+        populateSettingOptions(lengthEl, "summaryLength");
 
         try {
             const settings = await SummarizerStorage.getSettings();
             if (themeEl) themeEl.value = settings.theme || "system";
-            if (densityEl) densityEl.value = settings.density || "comfortable";
             if (fontEl) fontEl.value = settings.fontScale || "md";
             if (languageEl) {
                 populateLanguageOptions(languageEl, settings);
                 languageEl.value = settings.summaryLanguage || "English";
                 if (!languageEl.value) languageEl.value = "English";
             }
+            if (toneEl) toneEl.value = settings.summaryTone || "Simple";
+            if (sizeEl) sizeEl.value = settings.summarySize || "Medium";
+            if (lengthEl) lengthEl.value = settings.summaryLength || "Medium";
             SummarizerTheme.applyThemeToDocument(settings.theme || "system");
-            SummarizerTheme.applyDensityToDocument(settings.density || "comfortable");
             SummarizerTheme.applyFontScaleToDocument(settings.fontScale || "md");
         } catch (_) {}
 
@@ -601,7 +619,7 @@
             });
         }
 
-        async function persistVisual(partial) {
+        async function persistSetting(partial) {
             try {
                 await SummarizerStorage.saveSettings(partial);
             } catch (_) {}
@@ -610,24 +628,33 @@
         if (themeEl) {
             themeEl.addEventListener("change", async () => {
                 SummarizerTheme.applyThemeToDocument(themeEl.value);
-                await persistVisual({ theme: themeEl.value });
-            });
-        }
-        if (densityEl) {
-            densityEl.addEventListener("change", async () => {
-                SummarizerTheme.applyDensityToDocument(densityEl.value);
-                await persistVisual({ density: densityEl.value });
+                await persistSetting({ theme: themeEl.value });
             });
         }
         if (fontEl) {
             fontEl.addEventListener("change", async () => {
                 SummarizerTheme.applyFontScaleToDocument(fontEl.value);
-                await persistVisual({ fontScale: fontEl.value });
+                await persistSetting({ fontScale: fontEl.value });
             });
         }
         if (languageEl) {
             languageEl.addEventListener("change", async () => {
-                await persistVisual({ summaryLanguage: languageEl.value });
+                await persistSetting({ summaryLanguage: languageEl.value });
+            });
+        }
+        if (toneEl) {
+            toneEl.addEventListener("change", async () => {
+                await persistSetting({ summaryTone: toneEl.value });
+            });
+        }
+        if (sizeEl) {
+            sizeEl.addEventListener("change", async () => {
+                await persistSetting({ summarySize: sizeEl.value });
+            });
+        }
+        if (lengthEl) {
+            lengthEl.addEventListener("change", async () => {
+                await persistSetting({ summaryLength: lengthEl.value });
             });
         }
     }

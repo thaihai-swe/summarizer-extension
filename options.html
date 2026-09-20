@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      <p class="rail-copy">Tune providers, prompts, and reading density without changing how the summarizer engine works.</p>
+      <p class="rail-copy">Tune providers, prompts, and reading preferences without changing how the summarizer engine works.</p>
 
       <nav class="rail-nav" aria-label="Settings sections">
         <button class="rail-link active" type="button" data-tab="general">
@@ -859,15 +859,6 @@
                   </select>
                 </label>
 
-                <label class="settings-field" for="density">
-                  <span class="field-label">Reading Density</span>
-                  <span class="field-hint">Compact or comfortable rhythm</span>
-                  <select id="density">
-                    <option value="comfortable">Comfortable</option>
-                    <option value="compact">Compact</option>
-                  </select>
-                </label>
-
                 <label class="settings-field" for="fontScale">
                   <span class="field-label">Font Size</span>
                   <span class="field-hint">Scale reading text independently</span>
@@ -885,7 +876,7 @@
               <header class="section-header">
                 <p class="section-kicker">Preview</p>
                 <h2>Reading Experience</h2>
-                <p class="section-description">Live preview of how the side panel will render with your current density and font settings.</p>
+                <p class="section-description">Live preview of how the side panel will render with your current font setting.</p>
               </header>
               <div class="preview-frame" id="preview-frame">
                 <div class="preview-header">
@@ -895,7 +886,7 @@
                 <div class="preview-content" id="preview-content">
                   <div class="preview-section">
                     <h3 class="preview-heading">Summary</h3>
-                    <p class="preview-text">This is a preview of the summary text rendering. The font size, line height, and spacing will update live as you adjust the density and font scale controls above.</p>
+                    <p class="preview-text">This is a preview of the summary text rendering. The font size and line height update live as you adjust the font size above.</p>
                   </div>
                   <div class="preview-section">
                     <h3 class="preview-heading">Key Takeaways</h3>
@@ -907,7 +898,7 @@
                   </div>
                   <div class="preview-section">
                     <h3 class="preview-heading">Detailed Breakdown</h3>
-                    <p class="preview-text muted">Additional sections appear here based on the mode you select. The spacing and typography adapt to your density preference.</p>
+                    <p class="preview-text muted">Additional sections appear here based on the mode you select. Typography adapts to your preferred font size.</p>
                   </div>
                 </div>
               </div>

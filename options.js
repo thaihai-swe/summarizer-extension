@@ -21,7 +21,6 @@
         timelinePromptHint: document.getElementById("timelinePromptHint"),
         showFloatingUi: document.getElementById("showFloatingUi"),
         theme: document.getElementById("theme"),
-        density: document.getElementById("density"),
         fontScale: document.getElementById("fontScale"),
         generateFollowUpQuestions: document.getElementById("generateFollowUpQuestions"),
         geminiApiKey: document.getElementById("geminiApiKey"),
@@ -93,8 +92,7 @@
         }
         if (themeStatus) {
             const themeLabel = { system: "System theme", light: "Light theme", dark: "Dark theme" };
-            const densityLabel = fields.density && fields.density.value === "compact" ? "Compact" : "Comfortable";
-            themeStatus.textContent = `${themeLabel[fields.theme && fields.theme.value] || "System theme"} · ${densityLabel}`;
+            themeStatus.textContent = themeLabel[fields.theme && fields.theme.value] || "System theme";
         }
     }
 
@@ -258,18 +256,15 @@
         }
     }
 
-    // Live previews for rendering density and scale
+    // Live preview for reading scale
     function setupLivePreview() {
-        const densitySelect = fields.density;
         const fontScaleSelect = fields.fontScale;
 
         function updatePreview() {
             if (!previewContent) return;
-            previewContent.setAttribute("data-density", densitySelect.value);
             previewContent.setAttribute("data-font-scale", fontScaleSelect.value);
         }
 
-        densitySelect.addEventListener("change", updatePreview);
         fontScaleSelect.addEventListener("change", updatePreview);
         updatePreview();
     }
@@ -296,7 +291,6 @@
             timelinePromptHint: normalizeHintValue(fields.timelinePromptHint),
             showFloatingUi: fields.showFloatingUi.checked,
             theme: fields.theme.value,
-            density: fields.density.value,
             fontScale: fields.fontScale.value,
             generateFollowUpQuestions: fields.generateFollowUpQuestions.checked,
             customFormulaEnabled: !!(fields.customFormulaEnabled && fields.customFormulaEnabled.checked),
@@ -883,12 +877,24 @@
         fields.presetName.value = ""; fields.presetSystem.value = ""; fields.presetUser.value = ""; renderPromptPresets();
     }
 
+    function populateSettingOptions(selectEl, settingKey) {
+        if (!selectEl) return;
+        const values = SummarizerSettingsSchema.getValidValues(settingKey);
+        if (!values) return;
+        selectEl.innerHTML = "";
+        Array.from(values).forEach((value) => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = value;
+            selectEl.appendChild(option);
+        });
+    }
+
     async function loadSettings() {
         const settings = await SummarizerStorage.getSettings();
         customPromptPresets = Array.isArray(settings.customPromptPresets) ? settings.customPromptPresets.slice() : [];
         renderPromptPresets();
         SummarizerTheme.applyThemeToDocument(settings.theme || "system");
-        SummarizerTheme.applyDensityToDocument(settings.density || "comfortable");
         SummarizerTheme.applyFontScaleToDocument(settings.fontScale || "md");
 
         function updateLanguageDropdown() {
@@ -967,7 +973,6 @@
         seedEditableBuiltInPrompts(false);
         fields.showFloatingUi.checked = settings.showFloatingUi !== false;
         fields.theme.value = settings.theme || "system";
-        fields.density.value = settings.density || "comfortable";
         fields.fontScale.value = settings.fontScale || "md";
         fields.generateFollowUpQuestions.checked = settings.generateFollowUpQuestions !== false;
 
@@ -994,7 +999,6 @@
 
         // Update preview state
         if (previewContent) {
-            previewContent.setAttribute("data-density", fields.density.value);
             previewContent.setAttribute("data-font-scale", fields.fontScale.value);
         }
         applyWordTargetToForm(settings);
@@ -1034,7 +1038,6 @@
                 conceptsPromptHint: normalizeHintValue(fields.conceptsPromptHint),
                 showFloatingUi: fields.showFloatingUi.checked,
                 theme: fields.theme.value,
-                density: fields.density.value,
                 fontScale: fields.fontScale.value,
                 generateFollowUpQuestions: fields.generateFollowUpQuestions.checked,
                 summaryLength: fields.summaryLength.value || "Medium",
@@ -1324,10 +1327,6 @@
         SummarizerTheme.applyThemeToDocument(fields.theme.value);
         updateStudioStatus();
     });
-    fields.density.addEventListener("change", () => {
-        SummarizerTheme.applyDensityToDocument(fields.density.value);
-        updateStudioStatus();
-    });
     fields.fontScale.addEventListener("change", () => {
         SummarizerTheme.applyFontScaleToDocument(fields.fontScale.value);
     });
@@ -1346,6 +1345,27 @@
             updateStudioStatus();
         }
     });
+
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName !== "local" || !changes.summarizerSettings) return;
+        const oldSettings = changes.summarizerSettings.oldValue || {};
+        const newSettings = changes.summarizerSettings.newValue || {};
+        [
+            ["summaryTone", fields.summaryTone],
+            ["summarySize", fields.summarySize],
+            ["summaryLength", fields.summaryLength],
+            ["theme", fields.theme],
+            ["fontScale", fields.fontScale]
+        ].forEach(([key, field]) => {
+            if (!field || oldSettings[key] === newSettings[key] || newSettings[key] === undefined) return;
+            field.value = newSettings[key];
+            field.dispatchEvent(new Event("change"));
+        });
+    });
+
+    populateSettingOptions(fields.summaryTone, "summaryTone");
+    populateSettingOptions(fields.summarySize, "summarySize");
+    populateSettingOptions(fields.summaryLength, "summaryLength");
 
     syncShortcutHint();
     setupTabs();

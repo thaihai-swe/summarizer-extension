@@ -1100,14 +1100,6 @@ textarea::placeholder {
   background: var(--color-brand);
 }
 
-.preview-content[data-density="compact"] {
-  padding: 11px;
-}
-
-.preview-content[data-density="compact"] .preview-section + .preview-section {
-  margin-top: 8px;
-}
-
 .preview-content[data-font-scale="sm"] {
   font-size: 11.5px;
 }

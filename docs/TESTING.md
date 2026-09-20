@@ -82,7 +82,10 @@ Verify all modes:
 ## Settings Coverage
 
 - Verify output language setting persists and affects generated output
-- Verify theme/density/fontScale dropdowns persist and render correctly
+- Verify Summary Tone, Summary Size, and Summary Length have identical choices in the side panel and Settings page
+- With both views open, change each summary control in the side panel and verify the Settings-page field updates immediately; save from Settings and verify the side panel updates
+- Verify all nine tones persist after reopening and that Concise, Critical, Witty, and Roast do not normalize to Simple
+- Verify theme and fontScale dropdowns persist and render correctly
 - Verify follow-up toggle on/off affects auto-generated suggestions
 - Verify API key, endpoint, and model fields persist after reload
 - Verify custom prompt hints save and load correctly
@@ -92,7 +95,7 @@ Verify all modes:
 
 ## UI and Accessibility Coverage
 
-- Keyboard-only: Tab through mode, Generate, Cancel, Settings, theme/density/font, language, section toggles, follow-ups, chat. Verify Options tab navigation supports arrow keys and Space/Enter.
+- Keyboard-only: Tab through mode, Generate, Cancel, Settings, tone/size/length, language, theme/font, section toggles, follow-ups, chat. Verify Options tab navigation supports arrow keys and Space/Enter.
 - Focus rings visible on all interactive controls
 - Screen reader: section toggles announce Expand/Collapse + section name; live status announces workflow changes
 - `prefers-reduced-motion`: skeleton/progress animations collapse to near-instant

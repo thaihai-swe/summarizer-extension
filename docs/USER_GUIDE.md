@@ -36,7 +36,8 @@ Selected text has priority over all other source types. When no selection exists
 - **Generate button**: start a new summary.
 - **Cancel button**: abort the current request.
 - **Settings button**: open the Options page.
-- **Theme / Density / Font Scale / Language**: adjust output formatting in the controls row below the Generate button.
+- **Tone / Size / Length / Language**: choose the voice, coverage depth, detail, and output language for the next summary.
+- **Theme / Text Size**: adjust the reading appearance. All six controls stay synchronized with the matching Settings-page fields.
 - **Generation stepper**: during a run, a four-step ribbon shows Extract → Analyze → Synthesize → Quality. Chunked sources display live progress such as `2/3`.
 
 ## Summary Modes
@@ -55,6 +56,12 @@ Selected text has priority over all other source types. When no selection exists
 - **Brief**: essential conclusion and three takeaways
 - **Medium**: standard structured result
 - **Deep**: comprehensive summary with Evidence and Details, Connections Causes & Tradeoffs, Concept Map and Prerequisites, Causal and Knowledge Flow, and Perspectives and Uncertainty
+
+## Summary Tones
+
+- **Simple / Concise / Friendly**: favor approachable, compact, or conversational language.
+- **Expert / Professional / Academic**: favor technical, business-focused, or scholarly language.
+- **Critical / Witty / Roast**: emphasize evidence-focused critique, light wit, or sharp but factual humor while preserving source accuracy.
 
 ## Summary Lengths
 

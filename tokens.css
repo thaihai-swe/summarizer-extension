@@ -80,7 +80,6 @@
   --dur-base: 220ms;
   --dur-slow: 320ms;
 
-  --density-multiplier: 1;
   --reading-progress-h: 3px;
   --panel-padding: 16px;
   --header-height: 56px;
@@ -230,26 +229,7 @@
 }
 
 /* ----------------------------------------------------------------------------
-   6. DENSITY SCALES
-   ---------------------------------------------------------------------------- */
-:root[data-density="compact"] {
-  --density-multiplier: 0.82;
-  --panel-padding: 12px;
-  --header-height: 48px;
-  --space-2: 6px;
-  --space-3: 8px;
-  --space-4: 12px;
-  --space-5: 16px;
-}
-
-:root[data-density="comfortable"] {
-  --density-multiplier: 1;
-  --panel-padding: 16px;
-  --header-height: 56px;
-}
-
-/* ----------------------------------------------------------------------------
-   7. FONT SCALE VARIATIONS
+   6. FONT SCALE VARIATIONS
    ---------------------------------------------------------------------------- */
 :root[data-font-scale="sm"] { --font-scale-multiplier: 0.90; }
 :root[data-font-scale="md"] { --font-scale-multiplier: 1; }

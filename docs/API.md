@@ -176,10 +176,9 @@ Full settings object after schema normalization (see `lib/settings-schema.js`):
   customTargetTemplate: string,
   summaryLanguage: string, // Output language (default "English", configurable with customLanguages)
   customLanguages: string, // Comma-separated list of additional languages
-  summaryTone: "Simple" | "Expert" | "Academic" | "Professional" | "Friendly",
+  summaryTone: "Simple" | "Concise" | "Friendly" | "Expert" | "Professional" | "Academic" | "Critical" | "Witty" | "Roast",
   generateFollowUpQuestions: boolean,
   theme: "system" | "light" | "dark",
-  density: "comfortable" | "compact",
   fontScale: "sm" | "md" | "lg" | "xl",
   gemini: { apiKey, model },
   openai: { apiKey, model, baseUrl },

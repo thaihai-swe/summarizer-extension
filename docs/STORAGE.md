@@ -87,7 +87,6 @@ Full schema-normalized settings layout:
   showFloatingUi: boolean,
   generateFollowUpQuestions: boolean,
   theme: "system" | "light" | "dark",
-  density: "comfortable" | "compact",
   fontScale: "sm" | "md" | "lg" | "xl",
   gemini: { apiKey: string, model: string },
   openai: { apiKey: string, model: string, baseUrl: string },
@@ -96,6 +95,8 @@ Full schema-normalized settings layout:
 ```
 
 Defaults are defined in `lib/settings-schema.js` and fall back to `lib/storage.js` values: Gemini `gemini-3.5-flash-lite`, OpenAI `gpt-4o-mini`, local `llama3.1` at `http://127.0.0.1:11434`.
+
+Legacy `density` values are ignored during normalization and are removed the next time settings are saved.
 
 ## Results Object
 

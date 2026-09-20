@@ -39,7 +39,6 @@ Note: Local setups require a fast, high-context model to summarize long text wel
 
 - **Output Language**: Select `English` or `Vietnamese` in the side-panel language dropdown or Options page. Default is `English`.
 - **Theme**: Choose `System Default`, `Light`, or `Dark` in the side-panel dropdown.
-- **Density**: Choose `Comfortable` or `Compact` in the side-panel dropdown.
 - **Font Scale**: Choose between `Small`, `Medium`, `Large`, or `Extra Large` in the side-panel dropdown.
 - **Follow-up Questions**: Toggle auto-generated question suggestions on or off in Options.
 - **Floating UI**: Toggle the floating mini-panel button on pages on or off in Options.

@@ -38,6 +38,16 @@ Important constraints:
 - Heading names (e.g. `Connections, Causes & Tradeoffs`) are parsed directly; do not change them without updating `lib/cleaners.js` and `lib/sidepanel/render.js`.
 - Providers remain prompt-agnostic. They do not interpret settings or split sections.
 
+## Summary tone behavior
+
+The shared prompt envelope maps every Settings-page tone to an explicit descriptor and system role:
+
+- `Simple`, `Concise`, and `Friendly` control clarity, compactness, and conversational warmth.
+- `Expert`, `Professional`, and `Academic` control technical, business-oriented, and scholarly framing.
+- `Critical`, `Witty`, and `Roast` add evidence-focused critique, restrained wit, or sharp playful humor without weakening source grounding, factual accuracy, or respectful treatment of people.
+
+The side panel and Settings page use the same canonical tone values from `lib/settings-schema.js`.
+
 ## Runtime Prompt Entry Points
 
 ### 1. Standard summary prompt
