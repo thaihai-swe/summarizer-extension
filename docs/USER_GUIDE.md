@@ -132,10 +132,10 @@ Select a language (`English` or `Vietnamese`) in the side-panel language dropdow
 
 Ask questions in the side panel after a summary completes. Use the toggle in the Follow-up header to choose between two modes:
 
-- **Source (default)**: Answers are strictly grounded in the saved summary, relevant excerpts, recent conversation, and source content.
+- **Source (default)**: Answers are strictly grounded in the current session summary, relevant excerpts, recent conversation, and source content.
 - **General**: Answers leverage the model's broader knowledge base without requiring or referencing the tab's source content.
 
-Suggested question chips follow the currently selected mode. The text selection "Ask about this" tooltip remains **Source** mode because it is explicitly tied to the selected source text. A new summary clears prior follow-up history for that tab.
+Suggested question chips follow the currently selected mode. The text selection "Ask about this" tooltip remains **Source** mode because it is explicitly tied to the selected source text. Follow-up history lasts only for the active panel session and is cleared by a new summary, tab switch, panel reload, or extension restart.
 
 ## Providers
 
@@ -145,9 +145,9 @@ Suggested question chips follow the currently selected mode. The text selection 
 
 ## Tab Lifecycle
 
-- Results are per-tab. Switching tabs shows that tab's saved summary.
-- The side panel content updates on tab switch.
-- Closing a tab clears its saved result and conversation.
+- Results exist only for the active panel session.
+- Switching tabs clears the current result and conversation.
+- Panel or extension reloads do not restore previous summaries or conversations.
 
 ## Export
 

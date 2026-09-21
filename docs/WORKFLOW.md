@@ -20,7 +20,6 @@ sequenceDiagram
     participant Extract as Extractor
     participant Prompt as Prompt Builder
     participant AI as Provider
-    participant Store as Storage
 
     Panel->>BG: SUMMARIZE_ACTIVE_TAB
     BG->>Tab: EXTRACT_CONTENT / FETCH_COURSE_CONTENT
@@ -41,17 +40,12 @@ sequenceDiagram
     AI-->>BG: complete text
     BG->>BG: parseStructuredSummary()
     BG->>BG: evaluate quality and repair Deep/Long if needed
-    BG->>Store: save result and clear conversation
     BG-->>Panel: SUMMARY_UPDATED
 ```
 
 ## Source Priority
 
 `selected text → YouTube → course → webpage`.
-
-## Workflow Phases
-
-`workflow-store.js` tracks per-tab phases including extraction, summarizing, completed, error, and cancelled states. `ui-notifier.js` sends progress updates to the matching side panel.
 
 ## Semantic Chunking
 
@@ -67,21 +61,21 @@ Settings are normalized by `lib/settings-schema.js` and read through `lib/storag
 
 `DEEP_DIVE_ACTIVE_TAB` supports dual grounding modes selected via the side-panel chat toggle:
 
-- **Source (default)**: `buildDeepDivePrompt()` constructs a source-grounded prompt containing the saved summary, Deep sections, recent conversation, relevant excerpts (up to 8,000 characters), and source content (up to 6,000 characters).
+- **Source (default)**: `buildDeepDivePrompt()` constructs a source-grounded prompt containing the current session summary, Deep sections, recent conversation, relevant excerpts (up to 8,000 characters), and source content (up to 6,000 characters).
 - **General**: `buildOpenFollowUpPrompt()` constructs a general-knowledge prompt omitting the summary and source content so the user can ask broad, open-domain questions in the same conversation thread without being constrained to the current tab.
 
 Conversation history is capped to six turns. Turns are tagged with `(Source-Grounded)` or `(General Knowledge)` in the prompt transcript so subsequent source queries do not hallucinate general answers as page evidence. A new summary clears prior follow-up history for that tab.
 
 ## Cancellation
 
-Summary jobs are scoped to the initiating tab. The background keeps one `AbortController` per active tab job. The side panel sends `CANCEL_SUMMARIZE`; the controller aborts the provider request, marks workflow state as cancelled, and prevents a partial result from being saved.
+Summary jobs are scoped to the initiating tab. The background keeps one `AbortController` per active tab job. The side panel sends `CANCEL_SUMMARIZE`; the controller aborts the provider request and prevents a partial result from being shown as complete.
 
 ## Tab Lifecycle
 
-- The side panel requests the active tab ID when opened.
-- Switching tabs refreshes from that tab's saved result and workflow state.
+- The side panel tracks the active tab ID while it is open.
+- Switching tabs clears the current session result and conversation.
 - Messages with a different `tabId` are ignored so an older tab cannot overwrite the current panel.
-- Closing a tab clears its result, conversation, workflow state, and in-memory cache.
+- Closing a tab releases any active summary request for that tab.
 
 ## Quality Gate and Repair
 
@@ -90,7 +84,7 @@ After parsing:
 1. `SummarizerQuality.evaluateSummary()` scores the structured result.
 2. Deep/Long failures trigger one targeted repair prompt for weak or missing sections.
 3. `mergeRepairedSections()` replaces only weak sections.
-4. Quality metadata is attached to the saved result.
+4. Quality metadata is attached to the session result.
 
 ## Deep/Long Expansion
 

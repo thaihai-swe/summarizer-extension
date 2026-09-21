@@ -65,9 +65,7 @@
             "lib/providers/openai.js",
             "lib/providers/local.js",
             "lib/provider-registry.js",
-            "lib/tab-cache-service.js",
             "lib/background/tab-manager.js",
-            "lib/background/workflow-store.js",
             "lib/background/ui-notifier.js",
             "lib/background/summary-service.js",
             "background.js"

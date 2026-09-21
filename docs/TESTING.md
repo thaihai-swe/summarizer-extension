@@ -67,23 +67,22 @@ Verify all modes:
 - Switch to **General**, click a suggested question chip, and verify it executes in **General** mode; switch back to **Source** and verify the same chip uses source grounding
 - Use highlight tooltip "Ask about this" and verify it executes in **Source** mode
 - Generate a new summary and verify old conversation clears
-- Open multiple tabs and verify saved results remain isolated
-- Close a summarized tab and verify its state clears
+- Switch tabs and verify the current panel result and conversation clear
+- Reload the panel or extension and verify no prior result or conversation is restored
 
 ## Streaming and Cancellation Coverage
 
 - Verify SUMMARY_CHUNK messages arrive and the side panel renders incremental sections
 - Verify Cancel button appears during generation
-- Cancel mid-generation and confirm no partial result is saved
-- Verify the workflow state shows cancelled
+- Cancel mid-generation and confirm no partial result is shown as complete
 
 ## Tab Switch Coverage
 
 - Open the side panel on Tab A, start a summary
-- Switch to Tab B: verify Tab A's content is not visible
-- Switch back to Tab A: verify the panel refreshes correctly
+- Switch to Tab B: verify Tab A's content is cleared
+- Switch back to Tab A: verify no persisted result is restored
 - Verify extension icon opens the panel for the currently active tab
-- Firefox temporary add-on: toolbar action opens the native sidebar and a summary survives tab switching
+- Firefox temporary add-on: toolbar action opens the native sidebar and session results clear on tab switching
 
 ## Settings Coverage
 

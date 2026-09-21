@@ -88,7 +88,7 @@ Entry:
 - `lib/prompts/builders.js` → `buildDeepDivePrompt(context, question, settings)`
 
 Behavior:
-- Grounds follow-up answers in the saved summary, Deep fields, conversation history, and relevant source context.
+- Grounds follow-up answers in the current session summary, Deep fields, conversation history, and relevant source context.
 - Instructs the model to refuse queries unrelated to the source or summary.
 - Sections: `Answer`, `Evidence From Source`, `Caveats / Open Questions`.
 

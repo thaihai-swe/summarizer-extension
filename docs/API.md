@@ -13,12 +13,9 @@ FETCH_COURSE_CONTENT    // Background → content script: extract course lesson
 SUMMARY_CHUNK           // Background → side panel: incremental streaming text
 SUMMARY_UPDATED         // Background → side panel: final parsed result ready
 SUMMARY_ERROR           // Background → side panel: error during workflow
-GET_ACTIVE_TAB_RESULT   // Side panel → background: request saved result
-GET_ACTIVE_TAB_WORKFLOW // Side panel → background: request workflow phase
 CANCEL_SUMMARIZE        // Side panel → background: abort active request
-CLEAR_TAB_DATA          // Cleanup on tab close
 OPEN_SIDE_PANEL         // Extension icon click → open side panel
-DEEP_DIVE_ACTIVE_TAB    // Side panel → background: send follow-up question ({ question, grounding: "source" | "open" })
+DEEP_DIVE_ACTIVE_TAB    // Side panel → background: send follow-up question plus session context
 SETTINGS_UPDATED        // Options page → background: settings changed
 ```
 
@@ -52,19 +49,20 @@ Cancellation (`CANCEL_SUMMARIZE`) aborts the provider request via an `AbortContr
   type: "DEEP_DIVE_ACTIVE_TAB",
   question: string,
   grounding?: "source" | "open",  // default "source"
+  result: object,                   // current side-panel result; not persisted
+  conversationHistory?: object[],   // current session turns; not persisted
   tabId?: number
 }
 ```
 
-Conversation history items stored in `chrome.storage.local` under `summarizerConversationsByTab[tabId]`:
+Conversation history items exist only in the active side-panel session:
 
 ```js
 {
   question: string,
   answer: string,
   type: "user-question",
-  grounding: "source" | "open",   // default "source"
-  timestamp: string               // ISO string
+  grounding: "source" | "open"   // default "source"
 }
 ```
 
@@ -103,7 +101,7 @@ Every extractor returns at least:
 
 ## Summary Result Object
 
-Results are stored by tab ID and include source/provider metadata, content snapshots, and parsed output:
+Results exist in the active side-panel session and include source/provider metadata, content snapshots, and parsed output:
 
 ```js
 {
@@ -144,14 +142,6 @@ Results are stored by tab ID and include source/provider metadata, content snaps
     repaired: boolean                // true if repair pass was run
   }
 }
-```
-
-## Workflow Phase Values
-
-Per-tab workflow state, stored via `workflow-store.js`:
-
-```js
-"extracting" | "summarizing" | "completed" | "error" | "cancelled"
 ```
 
 ## Settings Shape
@@ -199,13 +189,13 @@ Providers do not know about source types, section parsing, or UI state. Cancella
 
 ## Workflow
 
-`summary-service.js` emits `SUMMARY_CHUNK` (streaming), `SUMMARY_UPDATED` (final), and `SUMMARY_ERROR` messages while `workflow-store.js` persists per-tab phases. The main path is:
+`summary-service.js` emits `SUMMARY_CHUNK` (streaming), `SUMMARY_UPDATED` (final), and `SUMMARY_ERROR` messages. The main path is:
 
 1. **Extraction** – content script sends normalized source object.
 2. **Prompt building** – `lib/prompts/builders.js` assembles the final prompt (or chunk prompts + synthesis).
 3. **Provider generation** – `generateText()` streams or buffers the response.
 4. **Parsing** – `lib/cleaners.js` extracts section fields by heading.
 5. **Quality gate** – `lib/summary-quality.js` scores, optionally repairs Deep/Long output.
-6. **Save & notify** – Result stored, `SUMMARY_UPDATED` sent to side panel.
+6. **Notify** – Result sent to the active side panel through `SUMMARY_UPDATED`; no result or workflow persistence occurs.
 
 On the side panel, the result renders with collapsible sections, a quality badge (Deep/Long only), and auto-expansion per the Deep/Long policy. Transcript segments are collapsed by default with `[mm:ss]` timestamps.

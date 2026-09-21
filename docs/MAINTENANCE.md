@@ -49,7 +49,7 @@
 
 ## State Changes
 
-Keep results, conversations, and workflow state scoped to tab ID. Preserve cleanup when tabs close and conversation reset when summaries regenerate.
+Keep results and conversations scoped to the active side-panel session. Do not reintroduce persistence for results, conversations, or workflow progress; reset session state when tabs change or summaries regenerate.
 
 
 ## Custom Prompt Presets

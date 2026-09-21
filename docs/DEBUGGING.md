@@ -32,7 +32,7 @@ Open the service worker console from `chrome://extensions/` by finding DeepDiges
 
 ### Streaming or cancellation issues
 - Confirm the provider supports streaming and that `SUMMARY_CHUNK` is emitted only for the final pass.
-- Cancel should abort the per-tab `AbortController` and leave no partial saved result.
+- Cancel should abort the per-tab `AbortController` and leave no partial session result.
 - Stale chunks from another tab must be ignored by `tabId`.
 
 ### Settings not applying
@@ -44,8 +44,6 @@ Open the service worker console from `chrome://extensions/` by finding DeepDiges
 
 - `lib/background/summary-service.js`
 - `lib/background/tab-manager.js`
-- `lib/background/workflow-store.js`
-- `lib/tab-cache-service.js`
 - `lib/extractors.js`
 - `lib/prompts/common.js`
 - `lib/prompts/builders.js`

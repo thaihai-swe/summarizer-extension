@@ -622,7 +622,7 @@
                 <th scope="row">Follow-up questions</th>
                 <td>Ungrounded chat</td>
                 <td>Usually none</td>
-                <td>Grounded in the saved summary and source</td>
+                <td>Grounded in the current session summary and source</td>
               </tr>
               <tr>
                 <th scope="row">Local / private inference</th>
@@ -983,7 +983,7 @@
             </summary>
             <div class="arch-content-body">
               <p>
-                Because the Chrome side panel remains mounted when a user switches browser tabs, all caches, ongoing workflows, and follow-up conversation histories are keyed by <code>tabId</code>. Switching tabs instantaneously pulls that tab's stored snapshot from an in-memory cache and <code>chrome.storage.local</code>, ignoring cross-talk from background tabs.
+                The Chrome side panel keeps only the active session result and follow-up context in memory. Switching tabs clears the current panel state, avoiding persistent storage work and stale cross-tab data.
               </p>
             </div>
           </details>
@@ -1131,7 +1131,7 @@ You are an expert analytical research assistant. Your task is to transform the p
           <article class="security-card">
             <div class="sec-badge sec-badge-success">Transient memory</div>
             <h3>Tab close wipes that tab</h3>
-            <p>Results, follow-up chat, and workflow phase are keyed by tab ID and cleared when the tab goes away. No hidden reading history.</p>
+            <p>Results, follow-up chat, and workflow progress stay in the active side-panel session only. Switching tabs or closing the panel clears them; no hidden reading history.</p>
           </article>
         </div>
       </div>
@@ -1230,7 +1230,7 @@ You are an expert analytical research assistant. Your task is to transform the p
           </details>
           <details class="faq-item">
             <summary>Is browsing history recorded or sent anywhere?</summary>
-            <p>No analytics and no hidden scrape. Content is sent to the provider you configured, and only after you generate. Closing a tab clears that tab’s result, conversation, and workflow state.</p>
+            <p>No analytics and no hidden scrape. Content is sent to the provider you configured, and only after you generate. Results and follow-up context remain session-only and are cleared when the panel session ends.</p>
           </details>
         </div>
       </div>

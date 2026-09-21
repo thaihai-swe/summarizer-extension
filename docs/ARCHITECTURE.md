@@ -8,7 +8,7 @@ browser compatibility facade keeps callback-style legacy modules working against
 Promise-based APIs.
 
 1. content-script extraction
-2. background orchestration and per-tab state
+2. background orchestration and active request state
 3. prompt construction and provider generation
 4. side-panel rendering and options management
 
@@ -17,7 +17,7 @@ Promise-based APIs.
 ```text
 side panel -> background -> content script -> extractor
            -> prompt builder -> provider -> cleaner/parser
-           -> quality gate -> storage -> side panel
+           -> quality gate -> side panel
 ```
 
 Extraction priority is:
@@ -41,9 +41,7 @@ Extraction priority is:
 
 - `lib/background/summary-service.js`: extraction, prompt calls, retries, semantic chunking, synthesis, streaming, quality repair, follow-ups
 - `lib/background/tab-manager.js`: active-tab routing, content-script injection, side-panel open, tab cleanup
-- `lib/background/workflow-store.js`: per-tab workflow phases
 - `lib/background/ui-notifier.js`: progress and result notifications
-- `lib/tab-cache-service.js`: in-memory per-tab result/conversation cache restored on tab switch
 
 ### Extraction
 
@@ -81,7 +79,7 @@ Extraction priority is:
 
 ### UI and persistence
 
-- `lib/storage.js`: browser local storage wrappers, schema-backed settings, and tab-scoped data
+- `lib/storage.js`: browser local storage wrappers and schema-backed settings
 - `lib/sidepanel/state.js`, `lib/sidepanel/render.js`: side-panel state/render helpers
 - `lib/sidepanel/toc.js`: Deep/Long result table of contents and scroll tracking
 - `lib/transcript-export.js`: timestamped transcript copy and SRT serialization
@@ -115,9 +113,9 @@ Deep summaries add:
 - `Causal and Knowledge Flow`
 - `Perspectives and Uncertainty`
 
-`lib/cleaners.js` maps these headings to the saved result object. Heading changes require parser and UI review.
+`lib/cleaners.js` maps these headings to the result object held by the active side-panel session. Heading changes require parser and UI review.
 
-Saved results may also include:
+Session results may also include:
 
 ```js
 {
@@ -135,11 +133,11 @@ Saved results may also include:
 `lib/settings-schema.js` owns defaults, valid enums, and field normalization. `lib/storage.js` delegates to the schema when loaded and exposes:
 
 - `getSettings()` / `saveSettings()`
-Unknown keys pass through so older stored fields remain intact. Storage keys themselves are unchanged.
+Unknown settings keys pass through so older preferences remain intact. Legacy result, conversation, and workflow keys are removed during extension install/update.
 
 ## Quality Gate and Repair
 
-After parsing, `lib/summary-quality.js`:
+After parsing, `lib/summary-quality.js` evaluates output before notifying the side panel:
 
 1. Builds a required/recommended section contract from source type, size, and length.
 2. Scores section length, list counts, timestamps (YouTube), placeholders, and coverage.
@@ -154,9 +152,9 @@ To open the Chrome side panel from a context menu or keyboard command, the call 
 
 ## Side Panel Lifecycle
 
-- Results, conversations, and workflow state are keyed by tab ID.
-- Switching tabs refreshes the panel from the newly active tab and ignores stale messages whose `tabId` does not match.
-- Closing a tab clears that tab's saved result, conversation, and workflow state.
+- The active panel keeps the current result and follow-up conversation in memory for the current session.
+- Switching tabs clears the panel result and conversation; stale messages whose `tabId` does not match are ignored.
+- Reloading the panel or extension does not restore result, conversation, or workflow state.
 - Transcript is collapsed by default and shows only `[mm:ss]` / `[hh:mm:ss]` timestamps.
 - Section expansion policy:
   - Brief/Medium: first substantive section expanded
@@ -167,9 +165,9 @@ To open the Chrome side panel from a context menu or keyboard command, the call 
 
 ## Storage and Lifecycle
 
-Results, conversations, and workflow state are keyed by tab ID. A new summary clears the prior conversation for that tab. Closing a tab removes its saved result, conversation, and workflow state.
+Only settings are persisted. Results, conversations, and workflow progress are session-only.
 
-The extension requests `unlimitedStorage` and uses `chrome.storage.local`; data is local to the browser profile.
+The extension uses `chrome.storage.local` for settings; provider credentials and preferences remain local to the browser profile.
 
 ## Provider Interface
 

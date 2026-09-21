@@ -3,8 +3,7 @@
     let latestResult = null;
     let activeTabId = null;
     let refreshSequence = 0;
-    let workflowPollTimer = null;
-    let isStreaming = false;
+    let conversationHistory = [];
     let currentGroundingMode = "source";
 
     const SOURCE_CHAT_HINT = "Grounded in this tab’s summary";
@@ -55,48 +54,7 @@
         summaryTone: document.getElementById("panel-summaryTone"),
         summarySize: document.getElementById("panel-summarySize"),
         summaryLength: document.getElementById("panel-summaryLength"),
-        workflowStepper: document.getElementById("workflow-stepper")
     };
-
-    // Stepper step ordering: extract -> chunk -> synthesis -> quality
-    const STEPPER_ORDER = ["extract", "chunk", "synthesis", "quality"];
-
-    function updateStepperFromWorkflow(workflow) {
-        const stepper = elements.workflowStepper;
-        if (!stepper) return;
-
-        const isActive = workflow && (workflow.phase === "extracting" || workflow.phase === "summarizing");
-        stepper.hidden = !isActive;
-
-        if (!isActive) return;
-
-        const currentStep = (workflow.step) || (workflow.phase === "extracting" ? "extract" : "chunk");
-        const currentIndex = STEPPER_ORDER.indexOf(currentStep);
-        const steps = stepper.querySelectorAll(".stepper-step");
-        steps.forEach((stepEl, idx) => {
-            stepEl.classList.remove("is-active", "is-done");
-            if (idx < currentIndex) {
-                stepEl.classList.add("is-done");
-            } else if (idx === currentIndex) {
-                stepEl.classList.add("is-active");
-                // Update detail label for chunking step
-                const detail = stepEl.querySelector(".step-detail");
-                if (detail) {
-                    if (currentStep === "chunk" && workflow.chunkTotal > 1) {
-                        detail.textContent = `${workflow.chunkIndex || 0}/${workflow.chunkTotal}`;
-                    } else if (currentStep === "extract") {
-                        detail.textContent = "Reading...";
-                    } else if (currentStep === "synthesis") {
-                        detail.textContent = "Combining...";
-                    } else if (currentStep === "quality") {
-                        detail.textContent = "Checking...";
-                    } else {
-                        detail.textContent = "";
-                    }
-                }
-            }
-        });
-    }
 
     function setStatus(message, type) {
         if (!elements.status) return;
@@ -123,21 +81,6 @@
         button.setAttribute("aria-busy", isBusy ? "true" : "false");
     }
 
-    function formatWorkflowStatus(workflow, fallbackResult) {
-        if (!workflow) return fallbackResult ? "Summary ready." : "Ready.";
-        if (workflow.phase === "failed") return workflow.lastError || workflow.statusMessage || "Summary failed.";
-        if (workflow.phase === "completed") return workflow.statusMessage || "Summary ready.";
-        if (workflow.statusMessage) return workflow.statusMessage;
-        if (workflow.phase === "extracting") return "Extracting current tab...";
-        if (workflow.phase === "summarizing") return "Summarizing current tab...";
-        return fallbackResult ? "Summary ready." : "Ready.";
-    }
-
-    function getWorkflowStatusType(workflow) {
-        if (!workflow || workflow.phase === "completed") return "ready";
-        return workflow.phase === "failed" ? "error" : "busy";
-    }
-
     async function sendRuntimeMessage(message) {
         return new Promise((resolve) => {
             try {
@@ -148,29 +91,6 @@
                 resolve({ ok: false, error: error.message });
             }
         });
-    }
-
-    async function refreshWorkflowStatusOnly() {
-        const workflowResponse = await sendRuntimeMessage({ type: MSG.GET_ACTIVE_TAB_WORKFLOW });
-        const workflow = workflowResponse && workflowResponse.ok ? workflowResponse.workflow : null;
-        if (workflowResponse && workflowResponse.tabId) activeTabId = workflowResponse.tabId;
-        setStatus(formatWorkflowStatus(workflow, latestResult), getWorkflowStatusType(workflow));
-        updateStepperFromWorkflow(workflow);
-        if (workflow && (workflow.phase === "extracting" || workflow.phase === "summarizing")) {
-            if (!isStreaming) {
-                SummarizerRender.clearAllContent(elements, workflow);
-            }
-        }
-        if (!workflow || workflow.phase === "completed" || workflow.phase === "failed") stopWorkflowPolling();
-    }
-
-    function startWorkflowPolling() {
-        if (workflowPollTimer) clearInterval(workflowPollTimer);
-        workflowPollTimer = setInterval(() => refreshWorkflowStatusOnly().catch(() => {}), 1000);
-    }
-
-    function stopWorkflowPolling() {
-        if (workflowPollTimer) { clearInterval(workflowPollTimer); workflowPollTimer = null; }
     }
 
     function normalizeGrounding(value) {
@@ -241,47 +161,63 @@
         elements.emptyState.hidden = !!result;
     }
 
+    // Follow-up prompts only need parsed sections and a bounded source window.
+    // Avoid cloning a full transcript through runtime messaging on every question.
+    const FOLLOW_UP_RESULT_FIELDS = [
+        "tabId", "sourceType", "title", "url", "summary", "keyTakeaways", "mainPoints",
+        "detailsOfVideo", "detailedBreakdown", "expertCommentary", "evidenceAndDetails",
+        "argumentAndInsight", "conceptMapAndPrerequisites", "causalAndKnowledgeFlow",
+        "perspectivesAndUncertainty", "reviewKit", "practicalSteps", "conceptMap",
+        "coreDefinitions", "prerequisitesMisconceptions", "pitfallsWarnings", "resourcesTools",
+        "videoDetails"
+    ];
+
+    function compactSourceForFollowUp(value, limit = 16000) {
+        const source = String(value || "");
+        if (source.length <= limit) return source;
+        const headLength = Math.floor(limit * 0.7);
+        const tailLength = Math.max(0, limit - headLength);
+        return source.slice(0, headLength)
+            + "\n\n[Middle of source omitted for message efficiency.]\n\n"
+            + source.slice(-tailLength);
+    }
+
+    function buildFollowUpContext(result) {
+        if (!result) return null;
+        const context = {};
+        FOLLOW_UP_RESULT_FIELDS.forEach((field) => {
+            if (result[field] !== undefined && result[field] !== null) context[field] = result[field];
+        });
+        const source = result.sourceContentForPrompt || result.sourceContentRaw || result.sourceContent || "";
+        context.sourceContentForPrompt = compactSourceForFollowUp(source);
+        return context;
+    }
+
     async function refreshActiveTabView() {
         const mySeq = ++refreshSequence;
-        const resultResponse = await sendRuntimeMessage({ type: MSG.GET_ACTIVE_TAB_RESULT });
+        const tabs = await new Promise((resolve) => {
+            try {
+                chrome.tabs.query({ active: true, currentWindow: true }, resolve);
+            } catch (_) {
+                resolve([]);
+            }
+        });
         if (mySeq !== refreshSequence) return;
-
-        let localTabId = null;
-        if (resultResponse && resultResponse.ok) {
-            localTabId = resultResponse.tabId;
-            renderResult(resultResponse.result);
-        } else {
-            renderResult(null);
+        const nextTabId = tabs && tabs[0] && tabs[0].id ? tabs[0].id : null;
+        if (latestResult && latestResult.tabId === nextTabId && activeTabId === nextTabId) {
+            return;
         }
-
-        const workflowResponse = await sendRuntimeMessage({ type: MSG.GET_ACTIVE_TAB_WORKFLOW });
-        if (mySeq !== refreshSequence) return;
-        const workflow = workflowResponse && workflowResponse.ok ? workflowResponse.workflow : null;
-        if (workflowResponse && workflowResponse.tabId) localTabId = workflowResponse.tabId;
-
-        activeTabId = localTabId;
-        setStatus(formatWorkflowStatus(workflow, latestResult), getWorkflowStatusType(workflow));
-        updateStepperFromWorkflow(workflow);
-        if (elements.cancelBtn) {
-            elements.cancelBtn.hidden = !(workflow && (workflow.phase === "extracting" || workflow.phase === "summarizing"));
-        }
-
+        activeTabId = nextTabId;
+        latestResult = null;
+        conversationHistory = [];
+        renderResult(null);
         elements.chatLog.innerHTML = "";
-        if (localTabId) {
-            SummarizerSidepanelState.loadConversationHistory(localTabId, appendChatEntry, elements.chatLog).catch(() => {});
-        }
-
-        if (workflow && workflow.phase !== "completed" && workflow.phase !== "failed") {
-            startWorkflowPolling();
-            SummarizerRender.clearAllContent(elements, workflow);
-        } else {
-            stopWorkflowPolling();
-        }
+        if (elements.cancelBtn) elements.cancelBtn.hidden = true;
+        setStatus("Ready.", "ready");
     }
 
     async function summarize() {
         setStatus("Starting summary...", "busy");
-        isStreaming = false;
         setButtonBusy(elements.summarizeBtn, true, "Running...", "Generate");
         if (elements.fabSummarize) setButtonBusy(elements.fabSummarize, true, "Running...", "Generate");
 
@@ -301,7 +237,6 @@
             return;
         }
 
-        startWorkflowPolling();
         setButtonBusy(elements.summarizeBtn, false, "Running...", "Generate");
         if (elements.fabSummarize) setButtonBusy(elements.fabSummarize, false, "Running...", "Generate");
     }
@@ -316,7 +251,13 @@
         setStatus(grounding === "open" ? "Asking (general)..." : "Asking...", "busy");
         setButtonBusy(elements.chatSend, true, "...", "Send");
 
-        const response = await sendRuntimeMessage({ type: MSG.DEEP_DIVE_ACTIVE_TAB, question, grounding });
+        const response = await sendRuntimeMessage({
+            type: MSG.DEEP_DIVE_ACTIVE_TAB,
+            question,
+            grounding,
+            result: grounding === "source" ? buildFollowUpContext(latestResult) : null,
+            conversationHistory
+        });
         if (!response || !response.ok) {
             setStatus((response && response.error) || "Follow-up failed.", "error");
             setButtonBusy(elements.chatSend, false, "...", "Send");
@@ -328,6 +269,8 @@
             (response.result && response.result.answer) || response.answer || "No response.",
             (response.result && response.result.grounding) || grounding
         );
+        conversationHistory.push(response.result || response);
+        conversationHistory = conversationHistory.slice(-6);
         setStatus("Answer received.", "ready");
         setButtonBusy(elements.chatSend, false, "...", "Send");
     }
@@ -433,14 +376,11 @@
     }
 
     async function clearCurrentTabData() {
-        const response = await sendRuntimeMessage({ type: MSG.CLEAR_TAB_DATA });
-        if (response && response.ok) {
-            renderResult(null);
-            elements.chatLog.innerHTML = "";
-            setStatus("Cleared.", "ready");
-        } else {
-            setStatus((response && response.error) || "Failed to clear.", "error");
-        }
+        latestResult = null;
+        conversationHistory = [];
+        renderResult(null);
+        elements.chatLog.innerHTML = "";
+        setStatus("Cleared.", "ready");
     }
 
     function setupReadingProgress() {
@@ -527,7 +467,6 @@
             }
             setButtonBusy(elements.summarizeBtn, false, "Running...", "Generate");
             setStatus("Cancelled.", "ready");
-            stopWorkflowPolling();
             elements.cancelBtn.hidden = true;
         });
     }
@@ -553,22 +492,18 @@
 
     chrome.runtime.onMessage.addListener((message) => {
         if (message.type === MSG.SUMMARY_UPDATED) {
-            isStreaming = false;
             if (message.tabId && activeTabId && message.tabId !== activeTabId) return;
             if (elements.cancelBtn) elements.cancelBtn.hidden = true;
             renderResult(message.result);
             if (elements.transcriptFilter) elements.transcriptFilter.value = "";
             elements.chatLog.innerHTML = "";
+            conversationHistory = [];
             if (message.tabId) {
                 activeTabId = message.tabId;
-                SummarizerSidepanelState.loadConversationHistory(message.tabId, appendChatEntry, elements.chatLog);
             }
             setStatus("Summary updated.", "ready");
-            stopWorkflowPolling();
-            if (elements.workflowStepper) elements.workflowStepper.hidden = true;
         }
         if (message.type === MSG.SUMMARY_ERROR) {
-            isStreaming = false;
             if (elements.cancelBtn) elements.cancelBtn.hidden = true;
             if (message.tabId && activeTabId && message.tabId !== activeTabId) return;
             let errorMessage = message.error || "Summary failed.";
@@ -580,8 +515,6 @@
                 errorMessage = "Summary cancelled.";
             }
             setStatus(errorMessage, "error");
-            stopWorkflowPolling();
-            if (elements.workflowStepper) elements.workflowStepper.hidden = true;
         }
         if (message.type === MSG.SETTINGS_UPDATED) {
             const t = message.settings;
@@ -599,7 +532,6 @@
         }
         if (message.type === MSG.SUMMARY_CHUNK) {
             if (message.tabId && activeTabId && message.tabId !== activeTabId) return;
-            isStreaming = true;
             if (message.tabId) activeTabId = message.tabId;
             renderResult(message.result);
             setStatus("Generating summary...", "busy");

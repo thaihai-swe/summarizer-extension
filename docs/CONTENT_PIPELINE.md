@@ -16,11 +16,10 @@ All extractors return a normalized source object with `sourceType`, `title`, `ur
 
 `lib/background/summary-service.js` orchestrates:
 
-1. Per-tab workflow updates through `workflow-store.js`.
-2. Extraction from the active tab through `tab-manager.js`.
-3. Settings normalization and prompt selection.
-4. Single-request generation or semantic chunking and synthesis.
-5. Parsing, quality evaluation, optional repair, save, and notification.
+1. Extraction from the active tab through `tab-manager.js`.
+2. Settings normalization and prompt selection.
+3. Single-request generation or semantic chunking and synthesis.
+4. Parsing, quality evaluation, optional repair, and notification.
 
 ## Chunk Thresholds
 
@@ -55,7 +54,7 @@ Chunks carry metadata such as `index`, `text`, `startTimestamp`, `endTimestamp`,
 - `buildSummaryPrompt()` → YouTube, course, webpage, or selected-text template
 - `buildChunkSummaryPrompt()` → source chunk template
 - `buildSynthesisPrompt()` → sequential synthesis of chunk outputs
-- `buildDeepDivePrompt()` → follow-up question grounded in the saved summary and source
+- `buildDeepDivePrompt()` → follow-up question grounded in the current session summary and source
 - `buildOpenFollowUpPrompt()` → general-knowledge follow-up that omits summary and source content
 
 `lib/prompts/common.js` supplies the shared envelope, output language, mode instructions, section contract, grounding rules, and custom prompt guidance.
@@ -96,17 +95,17 @@ Output heading changes require updates to `lib/cleaners.js`, prompt section plan
 
 ## Quality Gate and Repair
 
-`lib/summary-quality.js` evaluates parsed output before saving:
+`lib/summary-quality.js` evaluates parsed output before notifying the side panel:
 
 - Builds required and recommended sections based on source, size, and length.
 - Scores section length, list counts, timestamp coverage for YouTube, placeholders, and source/output coverage.
 - For Deep/Long failures, sends one targeted repair prompt containing only weak or missing sections.
 - Merges repaired sections with healthy original sections and re-scores once.
 
-Quality metadata (`score`, `passed`, `issues`, `weakSections`, `repaired`) is saved in the result and displayed as a compact side-panel badge.
+Quality metadata (`score`, `passed`, `issues`, `weakSections`, `repaired`) is attached to the session result and displayed as a compact side-panel badge.
 
 ## Storage and Rendering
 
-`lib/storage.js` saves results, conversations, and workflow state by tab ID. `lib/tab-cache-service.js` keeps an in-memory cache for fast tab switching; persistent storage remains the source of truth.
+`lib/storage.js` persists settings only. Results, conversations, and workflow progress stay in the active session and are not restored after a panel or extension restart.
 
 The side panel renders collapsible sections, keeps the transcript collapsed by default, uses only `[mm:ss]` or `[hh:mm:ss]` labels, and auto-expands substantive sections for Deep/Long output.
