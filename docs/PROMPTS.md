@@ -32,6 +32,8 @@ Users can configure additional output languages in Settings using `customLanguag
 6. The response is parsed by heading in `parseStructuredSummary()`.
 7. Failed Deep/Long results may trigger one targeted repair prompt from `lib/summary-quality.js`.
 
+Summary-result prompts ask the model to use Markdown bold syntax (`**text**`) sparingly for important keywords and short phrases. The rule applies to standard, chunked, synthesized, custom-preset, and repaired summary output, but not to follow-up chat answers. Required headings, full sentences, timestamps, code, URLs, placeholders, and generic wording must not be bolded.
+
 Important constraints:
 
 - Source grounding rules remain active, but prompts no longer instruct the model to produce bracketed claim labels such as `[DIRECTLY STATED]`, `[PARAPHRASE]`, `[INFERENCE]`, or `[OPINION]`.

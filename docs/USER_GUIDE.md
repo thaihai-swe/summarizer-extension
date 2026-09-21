@@ -135,7 +135,7 @@ Ask questions in the side panel after a summary completes. Use the toggle in the
 - **Source (default)**: Answers are strictly grounded in the saved summary, relevant excerpts, recent conversation, and source content.
 - **General**: Answers leverage the model's broader knowledge base without requiring or referencing the tab's source content.
 
-Clicking suggested question chips or using the text selection "Ask about this" tooltip always submits in **Source** mode. A new summary clears prior follow-up history for that tab.
+Suggested question chips follow the currently selected mode. The text selection "Ask about this" tooltip remains **Source** mode because it is explicitly tied to the selected source text. A new summary clears prior follow-up history for that tab.
 
 ## Providers
 
