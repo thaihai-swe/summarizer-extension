@@ -968,7 +968,7 @@
             </summary>
             <div class="arch-content-body">
               <p>
-                When generating in <em>Deep</em> or <em>Long</em> modes, the quality gate inspects the parsed AST for section depth, minimum bullet counts, and placeholder avoidance. If a specific section (e.g. <em>Perspectives and Uncertainty</em>) falls below the threshold, a targeted repair prompt regenerates only that section — preserving healthy content and saving 80% of token compute.
+                When generating in <em>Deep</em> or <em>Long</em> modes, the quality gate inspects the parsed AST for section depth, minimum bullet counts, and placeholder avoidance. If a specific section (e.g. <em>Reasoning, Evidence &amp; Claim Audit</em>) falls below the threshold, a targeted repair prompt regenerates only that section — preserving healthy content and saving 80% of token compute.
               </p>
             </div>
           </details>
@@ -1028,12 +1028,12 @@ You are an expert analytical research assistant. Your task is to transform the p
 4. Tone: Analytical, concise, objective, and dense with actionable insight.
 
 ## MANDATORY HEADING CONTRACT:
-## Summary
-## Key Takeaways
+## Main Summary
+## Executive Takeaways
 ## Details of the Video / Content
 ## Connections, Causes & Tradeoffs (for Deep depth)
-## Evidence and Examples
-## Perspectives and Uncertainty
+## Reasoning, Evidence &amp; Claim Audit
+## Caveats, Biases &amp; Open Questions
 ## Follow-up Questions
 
 {sourceSpecificTemplate}</code></pre>
@@ -1068,7 +1068,7 @@ You are an expert analytical research assistant. Your task is to transform the p
           <div class="decision-box">
             <div class="decision-num">02</div>
             <h3>Heading Alias Contract vs JSON Mode</h3>
-            <p><strong>Decision:</strong> Used markdown headings (<code>## Key Takeaways</code>) instead of JSON Schema generation.</p>
+            <p><strong>Decision:</strong> Used markdown headings (<code>## Executive Takeaways</code>) instead of JSON Schema generation.</p>
             <p><strong>Rationale:</strong> Allows incremental streaming rendering to the user within 300ms. JSON requires buffering the full payload before parsing, which degrades perceived performance.</p>
             <div class="decision-pills">
               <span class="dpill green">Streaming friendly</span>
@@ -1843,12 +1843,12 @@ You are an expert analytical research assistant. Your task is to transform the p
 4. Tone: Analytical, concise, objective, and dense with actionable insight.
 
 ## MANDATORY HEADING CONTRACT:
-## Summary
-## Key Takeaways
+## Main Summary
+## Executive Takeaways
 ## Details of the Video / Content
 ## Connections, Causes & Tradeoffs (for Deep depth)
-## Evidence and Examples
-## Perspectives and Uncertainty
+## Reasoning, Evidence &amp; Claim Audit
+## Caveats, Biases &amp; Open Questions
 ## Follow-up Questions
 
 {sourceSpecificTemplate}`,

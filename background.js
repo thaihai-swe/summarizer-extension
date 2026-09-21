@@ -22,8 +22,10 @@ if (typeof importScripts === "function") {
         "lib/providers/openai.js",
         "lib/providers/local.js",
         "lib/provider-registry.js",
+        "lib/background/result-builder.js",
         "lib/background/tab-manager.js",
         "lib/background/ui-notifier.js",
+        "lib/background/generation-service.js",
         "lib/background/summary-service.js"
     );
 }
@@ -142,11 +144,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 const tabId =
                     message.tabId || (sender.tab && sender.tab.id) || (await SummarizerTabManager.getActiveTab()).id;
                 await SummarizerBrowserApi.setSidePanelEnabledForTab(tabId, true);
-                if (message.mode) {
-                    await SummarizerStorage.saveSettings({ promptMode: message.mode });
+                const promptMode = message.promptMode || message.mode;
+                if (promptMode) {
+                    await SummarizerStorage.saveSettings({ promptMode });
                 }
                 const result = await SummarizerSummaryService.summarizeForTab(tabId);
-                sendResponse({ ok: true, result });
+                sendResponse(sender.tab
+                    ? { ok: true, result: SummarizerResultBuilder.buildFloatingResult(result) }
+                    : { ok: true, tabId });
                 return;
             }
 
@@ -160,6 +165,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
             case MSG.OPEN_SIDE_PANEL: {
                 sendResponse(await SummarizerTabManager.openSidePanel());
+                return;
+            }
+
+            case MSG.GET_PUBLIC_SETTINGS: {
+                const settings = await SummarizerStorage.getSettings();
+                sendResponse({
+                    ok: true,
+                    settings: {
+                        theme: settings.theme || "system",
+                        showFloatingUi: Boolean(settings.showFloatingUi)
+                    }
+                });
                 return;
             }
 

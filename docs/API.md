@@ -15,6 +15,7 @@ SUMMARY_UPDATED         // Background → side panel: final parsed result ready
 SUMMARY_ERROR           // Background → side panel: error during workflow
 CANCEL_SUMMARIZE        // Side panel → background: abort active request
 OPEN_SIDE_PANEL         // Extension icon click → open side panel
+GET_PUBLIC_SETTINGS     // Content shell → background: theme/floating-UI settings only
 DEEP_DIVE_ACTIVE_TAB    // Side panel → background: send follow-up question plus session context
 SETTINGS_UPDATED        // Options page → background: settings changed
 ```
@@ -30,15 +31,16 @@ When the provider supports streaming and the request is the final pass (not an i
 ```js
 // SUMMARY_CHUNK payload (per chunk event)
 {
-  chunkText: string,    // Full accumulated text so far (not delta)
-  done: boolean,        // true if this is the final chunk
+  result: object,       // Parsed render-only projection; no source/transcript/raw output
   tabId: number
 }
 ```
 
-The side panel renders incrementally by re-parsing `chunkText` on each event. When `done` is true, the panel waits for the final `SUMMARY_UPDATED` message to overlay quality metadata and expansion state.
+The background parses accumulated provider text at most once every 250 ms and sends only fields required for partial rendering. The side panel coalesces delivery with `requestAnimationFrame`; source data, transcript data, quality metadata, and the table of contents arrive only with final `SUMMARY_UPDATED`.
 
 Cancellation (`CANCEL_SUMMARIZE`) aborts the provider request via an `AbortController` scoped to the tab job and discards any partial result.
+
+If the lightweight content shell receives an extraction request before extractor modules are loaded, it returns `{ ok: false, code: "EXTRACTORS_NOT_READY" }`. The background injects the extractor bundle and retries once.
 
 ## Follow-Up Message & Conversation Schema
 
@@ -78,8 +80,6 @@ Every extractor returns at least:
   content: string,
   contentRaw: string,           // Full-length original content before truncation
   contentForPrompt: string,     // Content as inserted into prompts
-  sourceContentRaw: string,     // Preserved raw source
-  sourceContentForPrompt: string,
   transcriptSegments?: [{       // YouTube only
     index: number,
     text: string,
@@ -118,22 +118,25 @@ Results exist in the active side-panel session and include source/provider metad
   summarySize: "Brief" | "Medium" | "Deep",
   summaryLength: "Short" | "Medium" | "Long",
   expansionMode: "standard" | "deep",
-  sourceContent: string,
-  sourceContentRaw: string,
-  sourceContentForPrompt: string,
+  sourceContentRaw: string,          // Canonical non-YouTube source retained for follow-ups
+  sourceContentForPrompt?: string,   // Present only when different from sourceContentRaw
+  transcriptSegments?: object[],     // Canonical YouTube transcript representation
   summary: string,                   // "Main Summary" section content
   keyTakeaways: string[],            // Bulleted list items
-  mainPoints: string,                // "Main Points" section
   detailsOfVideo: string,            // "Details of the Video" (YouTube only)
-  detailedBreakdown: string,         // "Detailed Breakdown" / "Complete Guided Walkthrough"
-  expertCommentary: string,          // "Expert Commentary" / analysis
+  detailedBreakdown: string,         // "Complete Guided Walkthrough"
+  expertCommentary: string,          // "Caveats, Biases & Open Questions"
   followUpQuestions: string[],       // Auto-generated follow-up suggestions
-  evidenceAndDetails: string,        // Deep: "Evidence and Details"
+  evidenceAndDetails: string,        // "Reasoning, Evidence & Claim Audit"
   argumentAndInsight: string,        // Deep: "Connections, Causes & Tradeoffs"
-  conceptMapAndPrerequisites: string,// Deep: "Concept Map and Prerequisites"
-  causalAndKnowledgeFlow: string,    // Deep: "Causal and Knowledge Flow"
-  perspectivesAndUncertainty: string,// Deep: "Perspectives and Uncertainty"
-  rawText: string,                   // Unparsed model output
+  conceptMapAndPrerequisites: string,// "Concepts, Definitions & Mental Models"
+  practicalSteps: string,            // "Practical Application" or concepts-mode "Practical Steps"
+  reviewKit: string,                 // "Memory & Review Kit" when enabled
+  conceptMap: string,                // Concepts mode
+  coreDefinitions: string,           // Concepts mode
+  prerequisitesMisconceptions: string,// Concepts mode
+  pitfallsWarnings: string,          // Concepts mode
+  resourcesTools: string,             // Concepts mode
   quality: {                         // Quality gate metadata
     score: number,                   // 0.0 – 1.0 coverage score
     passed: boolean,                 // true if score meets threshold
@@ -143,6 +146,8 @@ Results exist in the active side-panel session and include source/provider metad
   }
 }
 ```
+
+The page-level floating UI receives a compact `SUMMARY_UPDATED.result` containing only `tabId`, `title`, `sourceType`, `promptMode`, `summary`, and `keyTakeaways`. Full results remain inside extension contexts.
 
 ## Settings Shape
 
@@ -189,7 +194,7 @@ Providers do not know about source types, section parsing, or UI state. Cancella
 
 ## Workflow
 
-`summary-service.js` emits `SUMMARY_CHUNK` (streaming), `SUMMARY_UPDATED` (final), and `SUMMARY_ERROR` messages. The main path is:
+`generation-service.js` emits compact `SUMMARY_CHUNK` projections, `summary-service.js` publishes the final `SUMMARY_UPDATED` result, and the background router publishes `SUMMARY_ERROR`. The main path is:
 
 1. **Extraction** – content script sends normalized source object.
 2. **Prompt building** – `lib/prompts/builders.js` assembles the final prompt (or chunk prompts + synthesis).

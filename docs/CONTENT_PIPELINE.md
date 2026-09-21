@@ -67,29 +67,32 @@ The assembled prompt is passed to `lib/provider-registry.js` as:
 generateText(prompt, providerSettings, onChunk?)
 ```
 
-For the final pass, providers can call `onChunk(accumulatedText)`. The background emits `SUMMARY_CHUNK` to the matching tab. The side panel re-parses accumulated text and renders partial sections while preserving expansion state. The completed result arrives as `SUMMARY_UPDATED`. Chunking and synthesis requests do not stream into the UI.
+For the final pass, providers can call `onChunk(accumulatedText)`. The generation service parses at most once every 250 ms and emits a compact `SUMMARY_CHUNK` projection without source or transcript payloads. The side panel batches partial DOM work with `requestAnimationFrame`; the completed result arrives as `SUMMARY_UPDATED`. Chunking and synthesis requests do not stream into the UI.
+
+Only a lightweight message/floating-UI shell is registered on every page. On the first extraction request, the shell returns `EXTRACTORS_NOT_READY`, the background injects source-specific extractors, and the request is retried once.
 
 ## Parsing
 
-`lib/cleaners.js` parses the complete response by matching heading aliases.
+`lib/cleaners.js` parses the complete response by matching the canonical headings in the prompt contract.
 
 Standard headings mapped to state:
 
-- Main Summary / Summary
-- Key Takeaways
-- Main Points
+- Main Summary
+- Executive Takeaways
 - Details of the Video (YouTube)
-- Detailed Breakdown / Complete Guided Walkthrough
-- Expert Commentary
+- Complete Guided Walkthrough
+- Caveats, Biases & Open Questions
+- Memory & Review Kit (when enabled)
 - Follow-up Questions
 
-Deep headings mapped to state:
+Analysis headings mapped to state:
 
-- Evidence and Details
+- Reasoning, Evidence & Claim Audit
 - Connections, Causes & Tradeoffs → `argumentAndInsight`
-- Concept Map and Prerequisites / Concepts, Definitions & Mental Models
-- Causal and Knowledge Flow
-- Perspectives and Uncertainty
+- Concepts, Definitions & Mental Models
+- Practical Application → `practicalSteps`
+
+Concepts-mode headings map to `conceptMap`, `coreDefinitions`, `prerequisitesMisconceptions`, `practicalSteps`, `pitfallsWarnings`, and `resourcesTools`.
 
 Output heading changes require updates to `lib/cleaners.js`, prompt section plans, and side-panel rendering together.
 

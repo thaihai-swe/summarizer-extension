@@ -1,6 +1,13 @@
 # Testing Guide
 
-There is no automated build or test suite. Validate behavior by loading the extension unpacked.
+Run the focused runtime checks first:
+
+```bash
+node --test tests/runtime-performance.test.js
+node scripts/print-prompt-snapshots.js
+```
+
+There is no full browser automation suite, so also validate behavior by loading the extension unpacked.
 
 ## Load and Reload
 
@@ -36,7 +43,7 @@ For each, verify the correct source type, title, URL, and summary sections are s
 ## Prompt Mode Coverage
 
 Verify all modes:
-- summarize: clear overview with Summary and Key Takeaways
+- summarize: clear overview with Main Summary and Executive Takeaways
 - analyze: claims/evidence separation and Missing Context & Limitations
 - explain: progressive explanation
 - debate: `[Pro]`, `[Con]`, `[Balanced]` prefixes
@@ -73,8 +80,19 @@ Verify all modes:
 ## Streaming and Cancellation Coverage
 
 - Verify SUMMARY_CHUNK messages arrive and the side panel renders incremental sections
+- Verify chunk messages arrive no more than four times per second and contain no source, transcript, or raw model-output fields
+- Verify transcript rows do not exist until the transcript is expanded; then verify filtering and line copy
 - Verify Cancel button appears during generation
 - Cancel mid-generation and confirm no partial result is shown as complete
+- Cancel during the retry delay and Gemini direct-video generation; confirm no fallback request continues
+
+## Loading and Payload Coverage
+
+- On a newly loaded ordinary page, verify extractor globals are absent before the first summary request
+- Generate once and verify extractors are injected and extraction retries successfully
+- Generate again and verify the already-loaded extractors are reused
+- Verify the floating page UI receives only title/source/mode/summary/takeaway fields
+- Verify content-script settings updates contain no provider credentials
 
 ## Tab Switch Coverage
 

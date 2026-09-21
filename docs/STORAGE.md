@@ -2,6 +2,8 @@
 
 The extension uses `chrome.storage.local` through `lib/storage.js` for persistent settings only. Results, follow-up conversations, and workflow state are session-only and are held only while the active side panel/background workflow is alive.
 
+Each extension context caches normalized settings after its first read. `chrome.storage.onChanged` refreshes that cache, and writes are serialized so rapid control changes cannot overwrite one another. Callers receive defensive copies and cannot mutate the cached settings object.
+
 ## Storage Keys
 
 - `summarizerSettings`: global settings

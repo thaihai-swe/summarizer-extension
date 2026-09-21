@@ -55,7 +55,7 @@ Selected text has priority over all other source types. When no selection exists
 
 - **Brief**: essential conclusion and three takeaways
 - **Medium**: standard structured result
-- **Deep**: comprehensive summary with Evidence and Details, Connections Causes & Tradeoffs, Concept Map and Prerequisites, Causal and Knowledge Flow, and Perspectives and Uncertainty
+- **Deep**: comprehensive summary with Reasoning, Evidence & Claim Audit, Connections, Causes & Tradeoffs, Concepts, Definitions & Mental Models, and Memory & Review Kit
 
 ## Summary Tones
 
@@ -89,17 +89,16 @@ The formula is:
 
 Completed summaries may display:
 
-- **Main Summary** / **Summary** – main conclusion
-- **Key Takeaways** – bulleted main insights
-- **Main Points** – detailed summary of the key content
+- **Main Summary** – main conclusion
+- **Executive Takeaways** – bulleted main insights
 - **Details of the Video** (YouTube only) – walkthrough of the video narrative
-- **Detailed Breakdown** / **Complete Guided Walkthrough** – topic-by-topic explanation
-- **Expert Commentary** – analysis and evaluation
-- **Evidence and Details** (Deep) – supporting evidence and claims
+- **Complete Guided Walkthrough** – topic-by-topic explanation
+- **Caveats, Biases & Open Questions** – limitations and unresolved issues
+- **Memory & Review Kit** (Deep/Study) – review prompts and recall aids
+- **Reasoning, Evidence & Claim Audit** (Deep) – supporting evidence and claims
 - **Connections, Causes & Tradeoffs** (Deep) – dependencies and tradeoffs
-- **Concept Map and Prerequisites** (Deep) – structured concept hierarchy
-- **Causal and Knowledge Flow** (Deep) – causal links in the material
-- **Perspectives and Uncertainty** (Deep) – alternative viewpoints and open questions
+- **Concepts, Definitions & Mental Models** (Deep) – structured concept hierarchy
+- **Practical Application** (when supported) – source-grounded actions and decisions
 - **Follow-up Questions** – suggested questions for deeper exploration
 
 ## Section Expansion

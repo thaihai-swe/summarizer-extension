@@ -65,8 +65,10 @@
             "lib/providers/openai.js",
             "lib/providers/local.js",
             "lib/provider-registry.js",
+            "lib/background/result-builder.js",
             "lib/background/tab-manager.js",
             "lib/background/ui-notifier.js",
+            "lib/background/generation-service.js",
             "lib/background/summary-service.js",
             "background.js"
         ]
@@ -90,20 +92,8 @@
             "js": [
                 "lib/browser-api.js",
                 "lib/messages.js",
-                "lib/settings-schema.js",
-                "lib/storage.js",
-                "lib/cleaners.js",
-                "lib/debug.js",
                 "lib/markdown.js",
                 "lib/ui/theme.js",
-                "lib/extractors/core.js",
-                "lib/extractors/accessibility-tree.js",
-                "lib/extractors/selected-text.js",
-                "lib/extractors/pdf.js",
-                "lib/extractors/youtube.js",
-                "lib/extractors/webpage.js",
-                "lib/extractors/course.js",
-                "lib/extractors.js",
                 "content.js"
             ],
             "run_at": "document_idle"

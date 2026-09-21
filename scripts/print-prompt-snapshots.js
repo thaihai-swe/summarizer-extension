@@ -96,7 +96,6 @@ const youtubeContext = {
     },
     summary: "Transactions group operations so the database can keep data consistent even when failures or concurrency happen.",
     keyTakeaways: ["ACID properties define reliability.", "Isolation levels trade safety for performance."],
-    mainPoints: "Transactions, ACID, isolation levels, anomalies, practical tradeoffs.",
     detailedBreakdown: "The speaker walks from basic transaction semantics to concrete isolation examples.",
     expertCommentary: "The video is strong on intuition but lighter on implementation tradeoffs.",
     sourceContent: "[00:00] Intro to transactions...",

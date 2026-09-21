@@ -39,7 +39,9 @@ Extraction priority is:
 
 ### Background
 
-- `lib/background/summary-service.js`: extraction, prompt calls, retries, semantic chunking, synthesis, streaming, quality repair, follow-ups
+- `lib/background/summary-service.js`: summary orchestration, quality repair, cancellation ownership, follow-ups
+- `lib/background/generation-service.js`: provider execution, retry, semantic chunking, synthesis, and throttled streaming
+- `lib/background/result-builder.js`: full results and compact stream/floating-UI projections
 - `lib/background/tab-manager.js`: active-tab routing, content-script injection, side-panel open, tab cleanup
 - `lib/background/ui-notifier.js`: progress and result notifications
 
@@ -69,7 +71,8 @@ Extraction priority is:
 - `lib/providers/gemini.js`, `openai.js`, `local.js`: endpoint-specific provider implementations (the local provider covers Ollama and OpenAI-compatible/LM Studio-style endpoints)
 - `lib/cleaners.js`: response cleaning and heading-based parsing
 - `lib/markdown.js`: rendered Markdown
-- `sidepanel.js`: Markdown/plain-text export actions
+- `lib/sidepanel/chat.js`: grounding, bounded follow-up context, and in-session conversation
+- `lib/sidepanel/actions.js`: summary/transcript copy and export actions
 
 ### Quality, chunking, and settings
 
@@ -79,7 +82,7 @@ Extraction priority is:
 
 ### UI and persistence
 
-- `lib/storage.js`: browser local storage wrappers and schema-backed settings
+- `lib/storage.js`: cached browser-local settings with serialized writes and schema normalization
 - `lib/sidepanel/state.js`, `lib/sidepanel/render.js`: side-panel state/render helpers
 - `lib/sidepanel/toc.js`: Deep/Long result table of contents and scroll tracking
 - `lib/transcript-export.js`: timestamped transcript copy and SRT serialization
@@ -103,15 +106,14 @@ The envelope applies safety rules, settings (including output language), source 
 
 ## Output Contract
 
-Standard summaries use parser-safe headings such as `Summary`, `Key Takeaways`, `Main Points`, `Detailed Breakdown`, `Expert Commentary`, and `Follow-up Questions`. YouTube also uses `Details of the Video`.
+Standard summaries use the canonical headings `Main Summary`, `Executive Takeaways`, `Complete Guided Walkthrough`, `Caveats, Biases & Open Questions`, `Memory & Review Kit`, and `Follow-up Questions`. YouTube also uses `Details of the Video`.
 
-Deep summaries add:
+Analysis and deep summaries add:
 
-- `Evidence and Details`
+- `Reasoning, Evidence & Claim Audit`
 - `Connections, Causes & Tradeoffs` (parsed into `argumentAndInsight`)
-- `Concept Map and Prerequisites` / `Concepts, Definitions & Mental Models`
-- `Causal and Knowledge Flow`
-- `Perspectives and Uncertainty`
+- `Concepts, Definitions & Mental Models`
+- `Practical Application` when the source or mode supports it
 
 `lib/cleaners.js` maps these headings to the result object held by the active side-panel session. Heading changes require parser and UI review.
 
@@ -156,6 +158,7 @@ To open the Chrome side panel from a context menu or keyboard command, the call 
 - Switching tabs clears the panel result and conversation; stale messages whose `tabId` does not match are ignored.
 - Reloading the panel or extension does not restore result, conversation, or workflow state.
 - Transcript is collapsed by default and shows only `[mm:ss]` / `[hh:mm:ss]` timestamps.
+- Transcript rows are created only on first expansion, avoiding hidden long-list DOM work during result rendering.
 - Section expansion policy:
   - Brief/Medium: first substantive section expanded
   - Deep: first three substantive sections expanded
@@ -177,4 +180,6 @@ Providers remain prompt-agnostic. The registry supplies provider-specific settin
 generateText(prompt, providerSettings, onChunk?)
 ```
 
-Final generation passes stream tokens when the provider supports it. Chunking/synthesis intermediate requests stay buffered. Streamed text is parsed incrementally and rendered in the side panel via `SUMMARY_CHUNK`, then finalized with `SUMMARY_UPDATED`. Cancellation uses a per-tab `AbortController` merged into the provider signal.
+Final generation passes stream tokens when the provider supports it. Chunking/synthesis intermediate requests stay buffered. Accumulated text is parsed and emitted as a compact `SUMMARY_CHUNK` projection at most every 250 ms, then finalized with `SUMMARY_UPDATED`. Cancellation uses an identity-checked per-tab `AbortController` merged into the provider signal.
+
+The manifest loads only the lightweight page UI/message shell on ordinary pages. The shell requests only public `theme` and `showFloatingUi` values from the background; provider settings remain in extension contexts. `tab-manager.js` injects extractor modules on the first extraction request for each document, then retries the request once. This keeps extraction code off pages that are never summarized.
