@@ -78,4 +78,4 @@ When `onChunk` is omitted, requests are sent as standard non-stream POST request
 
 ## Execution metadata
 
-Provider responses may report input, output, and total token usage. DeepDigest aggregates available usage across chunk and synthesis requests, stores it on `result.execution`, and renders a compact badge under the summary title with model/provider label, token count when available, and total generation time. Providers that do not report usage omit the token count.
+Provider responses may report input, output, and total token usage. DeepDigest aggregates available usage across chunk and synthesis requests and stores it on `result.execution` for diagnostics; it is not shown as redundant side-panel chrome.

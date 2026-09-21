@@ -51,7 +51,7 @@ If the lightweight content shell receives an extraction request before extractor
   type: "DEEP_DIVE_ACTIVE_TAB",
   question: string,
   grounding?: "source" | "open",  // default "source"
-  result: object,                   // current side-panel result; not persisted
+  result: object,                   // current side-panel result; session-only, with bounded in-memory tab switching cache
   conversationHistory?: object[],   // current session turns; not persisted
   tabId?: number
 }
@@ -137,6 +137,11 @@ Results exist in the active side-panel session and include source/provider metad
   prerequisitesMisconceptions: string,// Concepts mode
   pitfallsWarnings: string,          // Concepts mode
   resourcesTools: string,             // Concepts mode
+  sections: Array<{                   // requested custom top-level sections (canonical fields are typed above)
+    id: string,
+    heading: string,
+    content: string
+  }>,
   quality: {                         // Quality gate metadata
     score: number,                   // 0.0 – 1.0 coverage score
     passed: boolean,                 // true if score meets threshold

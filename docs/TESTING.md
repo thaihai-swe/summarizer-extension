@@ -100,7 +100,7 @@ Verify all modes:
 - Switch to Tab B: verify Tab A's content is cleared
 - Switch back to Tab A: verify no persisted result is restored
 - Verify extension icon opens the panel for the currently active tab
-- Firefox temporary add-on: toolbar action opens the native sidebar and session results clear on tab switching
+- Firefox temporary add-on: toolbar action opens the native sidebar and recent session results restore on tab switching without surviving an extension restart
 
 ## Settings Coverage
 

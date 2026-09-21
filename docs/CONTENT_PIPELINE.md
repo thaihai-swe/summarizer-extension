@@ -73,7 +73,7 @@ Only a lightweight message/floating-UI shell is registered on every page. On the
 
 ## Parsing
 
-`lib/cleaners.js` parses the complete response by matching the canonical headings in the prompt contract.
+`lib/cleaners.js` parses canonical headings into typed fields and preserves requested custom top-level `##` headings in `result.sections[]`. Nested `###` headings remain part of their parent section content.
 
 Standard headings mapped to state:
 
@@ -94,7 +94,7 @@ Analysis headings mapped to state:
 
 Concepts-mode headings map to `conceptMap`, `coreDefinitions`, `prerequisitesMisconceptions`, `practicalSteps`, `pitfallsWarnings`, and `resourcesTools`.
 
-Output heading changes require updates to `lib/cleaners.js`, prompt section plans, and side-panel rendering together.
+Canonical output heading changes require updates to `lib/cleaners.js`, prompt section plans, and side-panel rendering together. Custom headings do not require a code change because they are rendered and exported dynamically.
 
 ## Quality Gate and Repair
 
@@ -105,10 +105,10 @@ Output heading changes require updates to `lib/cleaners.js`, prompt section plan
 - For Deep/Long failures, sends one targeted repair prompt containing only weak or missing sections.
 - Merges repaired sections with healthy original sections and re-scores once.
 
-Quality metadata (`score`, `passed`, `issues`, `weakSections`, `repaired`) is attached to the session result and displayed as a compact side-panel badge.
+Quality metadata (`score`, `passed`, `issues`, `weakSections`, `repaired`) remains attached to the session result for internal repair and section-expansion decisions; redundant coverage badges are not shown in the side panel.
 
 ## Storage and Rendering
 
-`lib/storage.js` persists settings only. Results, conversations, and workflow progress stay in the active session and are not restored after a panel or extension restart.
+`lib/storage.js` persists settings only. Results, conversations, and workflow progress stay in the active session. A bounded in-memory side-panel cache restores recent results when switching tabs, but results are not restored after a panel or extension restart.
 
-The side panel renders collapsible sections, keeps the transcript collapsed by default, uses only `[mm:ss]` or `[hh:mm:ss]` labels, and auto-expands substantive sections for Deep/Long output.
+The side panel renders canonical collapsible sections first and custom sections afterward, keeps the transcript collapsed by default, uses only `[mm:ss]` or `[hh:mm:ss]` labels, and auto-expands substantive sections for Deep/Long output.

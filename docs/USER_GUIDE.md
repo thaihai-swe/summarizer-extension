@@ -111,17 +111,11 @@ Sections are collapsible. Initial expansion depends on size and length:
 
 Expand All and Collapse All buttons appear when multiple Deep sections are available.
 
+Custom prompt presets may request additional `##` sections. These appear after the standard sections and are included in Markdown and plain-text exports.
+
 ## Transcript
 
 When the source is a YouTube video, the transcript is displayed collapsed by default. Click the transcript toggle button to expand it. Timestamps are shown as `[mm:ss]` or `[hh:mm:ss]`. Use **Copy** to copy the timestamped transcript or **Download SRT** to save subtitle cues for a video editor or media player.
-
-## Quality Badge
-
-After a Deep or Long summary completes, a small badge at the top left of the summary area shows the coverage score (e.g. "Coverage solid  92%"). If the score is low, it shows "Coverage needs work" with short descriptions.
-
-## Execution Metadata
-
-After a summary completes, a badge below the title shows total token usage (if reported by the provider) and the time it took to generate.
 
 ## Output Language
 

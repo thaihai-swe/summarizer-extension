@@ -106,7 +106,7 @@ The envelope applies safety rules, settings (including output language), source 
 
 ## Output Contract
 
-Standard summaries use the canonical headings `Main Summary`, `Executive Takeaways`, `Complete Guided Walkthrough`, `Caveats, Biases & Open Questions`, `Memory & Review Kit`, and `Follow-up Questions`. YouTube also uses `Details of the Video`.
+Standard summaries use the canonical headings `Main Summary`, `Executive Takeaways`, `Complete Guided Walkthrough`, `Caveats, Biases & Open Questions`, `Memory & Review Kit`, and `Follow-up Questions`. YouTube also uses `Details of the Video`. Custom prompt-requested `##` sections are preserved and rendered after these canonical sections without entering the quality repair contract.
 
 Analysis and deep summaries add:
 
@@ -145,7 +145,7 @@ After parsing, `lib/summary-quality.js` evaluates output before notifying the si
 2. Scores section length, list counts, timestamps (YouTube), placeholders, and coverage.
 3. For Deep/Long failures, runs one targeted repair request for weak/missing sections only.
 4. Merges repaired sections without discarding healthy ones.
-5. Attaches quality metadata for the side-panel badge and weak-section styling.
+5. Attaches quality metadata for internal repair and weak-section styling; redundant quality badges are not shown in the side panel.
 
 
 ## User Gestures and Side Panel Opening
@@ -168,7 +168,7 @@ To open the Chrome side panel from a context menu or keyboard command, the call 
 
 ## Storage and Lifecycle
 
-Only settings are persisted. Results, conversations, and workflow progress are session-only.
+Only settings are persisted. Results, conversations, and workflow progress are session-only; the side panel keeps a bounded in-memory cache of recent results for tab switching and clears entries when tabs close.
 
 The extension uses `chrome.storage.local` for settings; provider credentials and preferences remain local to the browser profile.
 

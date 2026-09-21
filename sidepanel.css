@@ -838,7 +838,7 @@ textarea:focus-visible,
 }
 
 /* --------------------------------------------------------------------------
-   10. Result Header & Quality Badges
+   10. Result Header
    -------------------------------------------------------------------------- */
 .result-header {
   padding: var(--space-2) 0 var(--space-3);
@@ -846,61 +846,11 @@ textarea:focus-visible,
   margin-bottom: var(--space-3);
 }
 
-.section-kicker {
-  font-size: 10px;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-brand);
-  font-family: var(--font-mono);
-  margin-bottom: var(--space-1);
-}
-
 .summary-title {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   line-height: 1.25;
-}
-
-.result-meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 10.5px;
-  color: var(--color-text-tertiary);
-  margin-top: 6px;
-  font-family: var(--font-mono);
-  padding: 2px 7px;
-  border-radius: var(--radius-2xs);
-  background: var(--color-bg-muted);
-  border: 1px solid var(--color-border);
-}
-
-.quality-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.02em;
-  margin-bottom: var(--space-2);
-  border: 1px solid transparent;
-}
-
-.quality-badge.is-pass {
-  background: var(--color-success-light);
-  color: var(--color-success);
-  border-color: color-mix(in srgb, var(--color-success) 35%, transparent);
-}
-
-.quality-badge.is-warn {
-  background: var(--color-warning-light);
-  color: var(--color-warning);
-  border-color: color-mix(in srgb, var(--color-warning) 35%, transparent);
 }
 
 /* --------------------------------------------------------------------------

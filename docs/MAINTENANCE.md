@@ -49,7 +49,7 @@
 
 ## State Changes
 
-Keep results and conversations scoped to the active side-panel session. Do not reintroduce persistence for results, conversations, or workflow progress; reset session state when tabs change or summaries regenerate.
+Keep results and conversations scoped to the active side-panel session. Do not reintroduce persistent storage for results, conversations, or workflow progress. The side panel may retain a small bounded in-memory result cache so switching tabs restores recent results; clear the entry when a tab is closed or a new summary replaces it.
 
 ## Runtime Performance
 

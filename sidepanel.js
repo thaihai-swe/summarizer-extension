@@ -6,6 +6,7 @@
     let pendingStreamResult = null;
     let streamRenderFrame = 0;
     let streamActive = false;
+    const resultCache = SummarizerSidepanelResultCache.create(4);
 
     const elements = {
         status: document.getElementById("panel-status"),
@@ -133,11 +134,18 @@
         if (latestResult && latestResult.tabId === nextTabId && activeTabId === nextTabId) return;
         activeTabId = nextTabId;
         resetSession();
-        setStatus("Ready.", "ready");
+        const cachedResult = resultCache.get(nextTabId);
+        if (cachedResult) {
+            renderResult(cachedResult);
+            setStatus("Summary restored.", "ready");
+        } else {
+            setStatus("Ready.", "ready");
+        }
     }
 
     async function summarize() {
         latestResult = null;
+        resultCache.remove(activeTabId);
         streamActive = true;
         setStatus("Starting summary...", "busy");
         setButtonBusy(elements.summarizeBtn, true, "Running...", "Generate");
@@ -343,7 +351,11 @@
     elements.exportTxtBtn?.addEventListener("click", actions.exportText);
     elements.transcriptCopyBtn?.addEventListener("click", actions.copyTranscript);
     elements.transcriptSrtBtn?.addEventListener("click", actions.downloadTranscriptSrt);
-    elements.clearBtn?.addEventListener("click", () => { resetSession(); setStatus("Cleared.", "ready"); });
+    elements.clearBtn?.addEventListener("click", () => {
+        resultCache.remove(activeTabId);
+        resetSession();
+        setStatus("Cleared.", "ready");
+    });
     elements.settingsBtn?.addEventListener("click", () => chrome.runtime.openOptionsPage());
     elements.chatSend?.addEventListener("click", () => chat.ask());
     elements.chatInput?.addEventListener("keydown", (event) => {
@@ -354,6 +366,7 @@
 
     chrome.runtime.onMessage.addListener((message) => {
         if (message.type === MSG.SUMMARY_UPDATED) {
+            if (message.tabId) resultCache.remember(message.tabId, message.result);
             if (message.tabId && activeTabId && message.tabId !== activeTabId) return;
             if (streamRenderFrame) cancelAnimationFrame(streamRenderFrame);
             streamRenderFrame = 0;
@@ -404,6 +417,7 @@
     });
 
     chrome.tabs.onActivated.addListener(() => refreshActiveTabView().catch(() => {}));
+    chrome.tabs.onRemoved.addListener((tabId) => resultCache.remove(tabId));
     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         if (tab.active && (changeInfo.status === "loading" || changeInfo.status === "complete")) {
             refreshActiveTabView().catch(() => {});
