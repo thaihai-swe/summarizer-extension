@@ -16,6 +16,8 @@ Browser extension for summarizing YouTube videos, webpages, selected text, PDFs,
   - Coursera lesson and supplement pages
 - Supports follow-up Q&A in Source mode (grounded in the saved summary) or General mode (open knowledge, not limited to the page)
 - Exports summaries as Markdown or plain text
+- Copies YouTube transcripts and downloads timestamped SRT subtitle files
+- Supports Chrome Side Panel and a Firefox native sidebar package
 - Creates reusable Custom Prompt Presets from the Options page
 - Starts summaries from the page context menu or `Ctrl+Shift+S` (`Cmd+Shift+S` on macOS)
 - Shows available token usage and generation duration after completion

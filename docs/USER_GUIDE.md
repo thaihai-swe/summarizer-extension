@@ -36,7 +36,7 @@ Selected text has priority over all other source types. When no selection exists
 - **Generate button**: start a new summary.
 - **Cancel button**: abort the current request.
 - **Settings button**: open the Options page.
-- **Tone / Size / Length / Language**: choose the voice, coverage depth, detail, and output language for the next summary.
+- **Tone / Coverage / Detail / Language**: choose the voice, how much source material to retain, how fully to explain it, and the output language for the next summary.
 - **Theme / Text Size**: adjust the reading appearance. All six controls stay synchronized with the matching Settings-page fields.
 - **Generation stepper**: during a run, a four-step ribbon shows Extract → Analyze → Synthesize → Quality. Chunked sources display live progress such as `2/3`.
 
@@ -51,7 +51,7 @@ Selected text has priority over all other source types. When no selection exists
 - **Timeline**: chronological or step-by-step order, rendered as a vertical milestone rail when the source has timestamps, phases, or dates
 - **Concepts**: knowledge-concept map with definitions, relationships, and prerequisites, rendered as filterable Core / Important / Supporting cards
 
-## Summary Sizes
+## Coverage
 
 - **Brief**: essential conclusion and three takeaways
 - **Medium**: standard structured result
@@ -63,7 +63,7 @@ Selected text has priority over all other source types. When no selection exists
 - **Expert / Professional / Academic**: favor technical, business-focused, or scholarly language.
 - **Critical / Witty / Roast**: emphasize evidence-focused critique, light wit, or sharp but factual humor while preserving source accuracy.
 
-## Summary Lengths
+## Detail
 
 - **Short**: concise output
 - **Medium**: balanced length
@@ -74,12 +74,12 @@ Selected text has priority over all other source types. When no selection exists
 Open **Settings → General → Dynamic Word Target** to inspect the live formula and optionally override it.
 
 - **Use custom formula values**: when enabled, your multipliers and clamps replace the built-in defaults on the next Generate.
-- **Size multipliers**: Brief `0.05`, Medium `0.08`, Deep `0.12` by default.
-- **Length multipliers**: Short `0.7`, Medium `1.0`, Long `1.35` by default.
+- **Coverage multipliers**: Brief `0.05`, Medium `0.08`, Deep `0.12` by default.
+- **Detail multipliers**: Short `0.7`, Medium `1.0`, Long `1.35` by default.
 - **Chars / word**, **Min words**, and **Max words** control the character-to-word ratio and the 60–1500 clamp.
 - **Custom target sentence**: optional prompt sentence. Placeholders `{targetWords}`, `{sourceChars}`, and `{sourceWords}` are replaced at generate time.
 - **Simulate source length**: drag the slider to preview the resulting word target before you save.
-- **Reset formula defaults**: restore the shipped values without changing Size or Length.
+- **Reset formula defaults**: restore the shipped values without changing Coverage or Detail.
 
 The formula is:
 
@@ -114,7 +114,7 @@ Expand All and Collapse All buttons appear when multiple Deep sections are avail
 
 ## Transcript
 
-When the source is a YouTube video, the transcript is displayed collapsed by default. Click the transcript toggle button to expand it. Timestamps are shown as `[mm:ss]` or `[hh:mm:ss]`.
+When the source is a YouTube video, the transcript is displayed collapsed by default. Click the transcript toggle button to expand it. Timestamps are shown as `[mm:ss]` or `[hh:mm:ss]`. Use **Copy** to copy the timestamped transcript or **Download SRT** to save subtitle cues for a video editor or media player.
 
 ## Quality Badge
 

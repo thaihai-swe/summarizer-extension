@@ -10,6 +10,17 @@ After loading, Chrome registers the **Summarize with DeepDigest** page/selection
 item and the `Ctrl+Shift+S` command (`Cmd+Shift+S` on macOS). If a shortcut conflicts with
 another extension, open `chrome://extensions/shortcuts` and assign a different key.
 
+### Firefox
+
+Run `node scripts/prepare-firefox.mjs`, then open `about:debugging#/runtime/this-firefox` and
+choose **Load Temporary Add-on**. Select `.output/firefox/manifest.json`. Firefox uses its
+native sidebar, while Chrome continues to use the Side Panel API. Re-run the preparation
+script after source changes before reloading the temporary add-on.
+
+The Firefox manifest declares `websiteContent` because summaries send extracted source content
+to the provider selected in Settings. Review this declaration and the AMO data-collection
+questionnaire before publishing if provider or telemetry behavior changes.
+
 ## 2. Configure a Provider
 Click the extension icon to open the side panel, then open Options from the side-panel settings button. Configure one of the supported providers.
 

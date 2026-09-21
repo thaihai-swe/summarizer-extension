@@ -86,6 +86,7 @@ Every extractor returns at least:
     index: number,
     text: string,
     startSeconds: number,
+    durationSeconds: number,
     startLabel: string          // Formatted timestamp, e.g. "01:23"
   }],
   videoDetails?: {              // YouTube only

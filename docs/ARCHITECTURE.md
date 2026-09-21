@@ -2,7 +2,10 @@
 
 ## Overview
 
-The extension is a Chrome Manifest V3 extension with four runtime layers:
+The extension is a Manifest V3 extension with Chrome and Firefox runtime packages. Chrome uses
+the Side Panel API; the Firefox package uses `sidebar_action` and the native sidebar. A small
+browser compatibility facade keeps callback-style legacy modules working against Firefox's
+Promise-based APIs.
 
 1. content-script extraction
 2. background orchestration and per-tab state
@@ -78,8 +81,10 @@ Extraction priority is:
 
 ### UI and persistence
 
-- `lib/storage.js`: Chrome local storage wrappers, schema-backed settings, and tab-scoped data
+- `lib/storage.js`: browser local storage wrappers, schema-backed settings, and tab-scoped data
 - `lib/sidepanel/state.js`, `lib/sidepanel/render.js`: side-panel state/render helpers
+- `lib/sidepanel/toc.js`: Deep/Long result table of contents and scroll tracking
+- `lib/transcript-export.js`: timestamped transcript copy and SRT serialization
 - `lib/ui/theme.js`: theme support
 - `sidepanel.html`, `sidepanel.css`: side-panel markup and styles
 - `options.html`, `options.css`: options page markup and styles

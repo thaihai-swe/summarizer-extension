@@ -33,7 +33,11 @@ if (typeof importScripts === "function") {
 const MSG = SummarizerMessages.types;
 const openSidePanelsByWindow = new Map();
 function openSidePanelForTab(tabId) {
-    if (!tabId || !chrome.sidePanel) return Promise.resolve();
+    if (!tabId) return Promise.resolve();
+    if (SummarizerBrowserApi.hasFirefoxSidebar && SummarizerBrowserApi.hasFirefoxSidebar()) {
+        return SummarizerBrowserApi.openPrimarySidebar({ tabId }).catch(() => {});
+    }
+    if (!SummarizerBrowserApi.hasChromeSidePanel || !SummarizerBrowserApi.hasChromeSidePanel()) return Promise.resolve();
     // Must be called synchronously from a user gesture (context menu / command).
     // Do not await anything before this call or Chrome rejects it.
     const openPromise = typeof chrome.sidePanel.open === "function"
@@ -108,13 +112,13 @@ chrome.runtime.onStartup.addListener(() => {
     pruneClosedTabState().catch(() => { });
 });
 
-if (chrome.sidePanel && chrome.sidePanel.onOpened && typeof chrome.sidePanel.onOpened.addListener === "function") {
+if (SummarizerBrowserApi.hasChromeSidePanel && SummarizerBrowserApi.hasChromeSidePanel() && chrome.sidePanel.onOpened && typeof chrome.sidePanel.onOpened.addListener === "function") {
     chrome.sidePanel.onOpened.addListener((info) => {
         openSidePanelsByWindow.set(info.windowId, info);
     });
 }
 
-if (chrome.sidePanel && chrome.sidePanel.onClosed && typeof chrome.sidePanel.onClosed.addListener === "function") {
+if (SummarizerBrowserApi.hasChromeSidePanel && SummarizerBrowserApi.hasChromeSidePanel() && chrome.sidePanel.onClosed && typeof chrome.sidePanel.onClosed.addListener === "function") {
     chrome.sidePanel.onClosed.addListener((info) => {
         openSidePanelsByWindow.delete(info.windowId);
     });
@@ -122,7 +126,7 @@ if (chrome.sidePanel && chrome.sidePanel.onClosed && typeof chrome.sidePanel.onC
 
 chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
     const openPanel = openSidePanelsByWindow.get(windowId);
-    if (!openPanel || openPanel.tabId === tabId || !chrome.sidePanel || typeof chrome.sidePanel.close !== "function") {
+    if (!openPanel || openPanel.tabId === tabId || !SummarizerBrowserApi.hasChromeSidePanel || !SummarizerBrowserApi.hasChromeSidePanel() || typeof chrome.sidePanel.close !== "function") {
         return;
     }
 

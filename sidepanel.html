@@ -5,9 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DeepDigest</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="tokens.css">
     <link rel="stylesheet" href="sidepanel.css">
 </head>
@@ -58,43 +55,53 @@
                     </button>
                 </div>
             </header>
-            <div class="sidepanel-controls-row">
-                <div class="control-chip">
-                    <label class="control-chip-label" for="panel-summaryTone">Tone</label>
-                    <select id="panel-summaryTone" aria-label="Summary tone"></select>
-                </div>
-                <div class="control-chip">
-                    <label class="control-chip-label" for="panel-summarySize">Size</label>
-                    <select id="panel-summarySize" aria-label="Summary size"></select>
-                </div>
-                <div class="control-chip">
-                    <label class="control-chip-label" for="panel-summaryLength">Length</label>
-                    <select id="panel-summaryLength" aria-label="Summary length"></select>
-                </div>
-                <div class="control-chip">
-                    <label class="control-chip-label" for="panel-summaryLanguage">Language</label>
-                    <select id="panel-summaryLanguage" aria-label="Output language">
-                        <option value="English">English</option>
-                        <option value="Vietnamese">Vietnamese</option>
-                    </select>
-                </div>
-                <div class="control-chip">
-                    <label class="control-chip-label" for="panel-theme">Theme</label>
-                    <select id="panel-theme" aria-label="Theme">
-                        <option value="system">System</option>
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                    </select>
-                </div>
-                <div class="control-chip">
-                    <label class="control-chip-label" for="panel-fontScale">Text Size</label>
-                    <select id="panel-fontScale" aria-label="Text size">
-                        <option value="sm">Small</option>
-                        <option value="md">Medium</option>
-                        <option value="lg">Large</option>
-                        <option value="xl">Extra Large</option>
-                    </select>
-                </div>
+            <div class="sidepanel-controls-row" aria-label="Summary and reading controls">
+                <fieldset class="control-group control-group-summary">
+                    <legend>Summary</legend>
+                    <div class="control-group-grid">
+                        <div class="control-chip">
+                            <label class="control-chip-label" for="panel-summaryTone">Tone</label>
+                            <select id="panel-summaryTone" aria-label="Summary tone"></select>
+                        </div>
+                        <div class="control-chip">
+                            <label class="control-chip-label" for="panel-summarySize">Coverage</label>
+                            <select id="panel-summarySize" aria-label="Summary coverage"></select>
+                        </div>
+                        <div class="control-chip">
+                            <label class="control-chip-label" for="panel-summaryLength">Detail</label>
+                            <select id="panel-summaryLength" aria-label="Summary detail"></select>
+                        </div>
+                        <div class="control-chip">
+                            <label class="control-chip-label" for="panel-summaryLanguage">Language</label>
+                            <select id="panel-summaryLanguage" aria-label="Output language">
+                                <option value="English">English</option>
+                                <option value="Vietnamese">Vietnamese</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="control-group control-group-reading">
+                    <legend>Reading</legend>
+                    <div class="control-group-grid">
+                        <div class="control-chip">
+                            <label class="control-chip-label" for="panel-theme">Theme</label>
+                            <select id="panel-theme" aria-label="Theme">
+                                <option value="system">System</option>
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                            </select>
+                        </div>
+                        <div class="control-chip">
+                            <label class="control-chip-label" for="panel-fontScale">Text size</label>
+                            <select id="panel-fontScale" aria-label="Text size">
+                                <option value="sm">Small</option>
+                                <option value="md">Medium</option>
+                                <option value="lg">Large</option>
+                                <option value="xl">Extra large</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
 
             <!-- Multi-Phase Generation Stepper (visible during active generation) -->
@@ -175,15 +182,23 @@
                         <h2 id="panel-title" class="summary-title">Main Summary</h2>
                     </header>
 
+                    <nav id="result-toc" class="result-toc" aria-label="Summary contents" hidden>
+                        <div class="result-toc-header">
+                            <span class="result-toc-title">On this page</span>
+                            <span class="result-toc-hint">Long result</span>
+                        </div>
+                        <ol id="result-toc-list" class="result-toc-list"></ol>
+                    </nav>
+
                     <div class="summary-overview">
-                        <article class="content-card lead-card" aria-labelledby="summary-heading">
+                        <article id="summary-overview-card" class="content-card lead-card" data-toc-label="Main Summary" aria-labelledby="summary-heading">
                             <div class="section-head">
                                 <h3 id="summary-heading">Main Summary</h3>
                             </div>
                             <div id="panel-summary" class="text-block"></div>
                         </article>
 
-                        <article class="content-card takeaway-card" aria-labelledby="takeaways-heading">
+                        <article id="summary-takeaways-card" class="content-card takeaway-card" data-toc-label="Executive Takeaways" aria-labelledby="takeaways-heading">
                             <div class="section-head">
                                 <h3 id="takeaways-heading">Executive Takeaways</h3>
                             </div>
@@ -213,6 +228,10 @@
                             </div>
                             <input id="panel-transcript-filter" class="transcript-filter" type="search"
                                 placeholder="Filter lines" aria-label="Filter transcript">
+                            <div class="transcript-actions" role="group" aria-label="Transcript actions">
+                                <button id="transcript-copy" class="btn-ghost btn-xs" type="button">Copy</button>
+                                <button id="transcript-download-srt" class="btn-ghost btn-xs" type="button">Download SRT</button>
+                            </div>
                         </div>
                         <pre id="panel-transcript-content" class="transcript-pre" role="log" aria-live="polite" hidden></pre>
                     </section>
@@ -257,9 +276,12 @@
     <script src="lib/markdown.js"></script>
     <script src="lib/messages.js"></script>
     <script src="lib/settings-schema.js"></script>
+    <script src="lib/browser-api.js"></script>
     <script src="lib/storage.js"></script>
     <script src="lib/sidepanel/state.js"></script>
     <script src="lib/sidepanel/visual-renderers.js"></script>
+    <script src="lib/sidepanel/toc.js"></script>
+    <script src="lib/transcript-export.js"></script>
     <script src="lib/sidepanel/render.js"></script>
     <script src="sidepanel.js"></script>
 </body>

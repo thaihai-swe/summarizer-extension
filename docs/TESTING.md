@@ -9,11 +9,16 @@ There is no automated build or test suite. Validate behavior by loading the exte
 3. Click **Load unpacked** and choose the repository root
 4. Reload the extension after code changes
 
+For Firefox, run `node scripts/prepare-firefox.mjs` and load `.output/firefox/manifest.json`
+from `about:debugging#/runtime/this-firefox`.
+
 ## Summary Coverage
 
 Run each source through a summary:
 - selected text excerpt
 - YouTube video with transcript and chapters
+- YouTube transcript Copy and Download SRT actions
+- Deep/Long result table of contents jumps and active state
 - ordinary webpage
 - long webpage that triggers chunking
 - Coursera or Udemy lesson, where supported
@@ -78,11 +83,12 @@ Verify all modes:
 - Switch to Tab B: verify Tab A's content is not visible
 - Switch back to Tab A: verify the panel refreshes correctly
 - Verify extension icon opens the panel for the currently active tab
+- Firefox temporary add-on: toolbar action opens the native sidebar and a summary survives tab switching
 
 ## Settings Coverage
 
 - Verify output language setting persists and affects generated output
-- Verify Summary Tone, Summary Size, and Summary Length have identical choices in the side panel and Settings page
+- Verify Summary Tone, Coverage, and Detail have identical choices in the side panel and Settings page
 - With both views open, change each summary control in the side panel and verify the Settings-page field updates immediately; save from Settings and verify the side panel updates
 - Verify all nine tones persist after reopening and that Concise, Critical, Witty, and Roast do not normalize to Simple
 - Verify theme and fontScale dropdowns persist and render correctly

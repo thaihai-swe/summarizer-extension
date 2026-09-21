@@ -22,6 +22,10 @@
         followUpQuestions: document.getElementById("panel-follow-up-questions"),
         transcriptContent: document.getElementById("panel-transcript-content"),
         transcriptFilter: document.getElementById("panel-transcript-filter"),
+        transcriptCopyBtn: document.getElementById("transcript-copy"),
+        transcriptSrtBtn: document.getElementById("transcript-download-srt"),
+        resultToc: document.getElementById("result-toc"),
+        resultTocList: document.getElementById("result-toc-list"),
         chatLog: document.getElementById("chat-log"),
         chatInput: document.getElementById("chat-input"),
         chatSend: document.getElementById("chat-send"),
@@ -385,6 +389,49 @@
         URL.revokeObjectURL(url);
     }
 
+    function transcriptFileBaseName(result) {
+        const title = result && result.title || "transcript";
+        return globalThis.SummarizerCleaners && typeof SummarizerCleaners.sanitizeFilename === "function"
+            ? SummarizerCleaners.sanitizeFilename(title)
+            : String(title).replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "") || "transcript";
+    }
+
+    async function copyTranscript() {
+        if (!latestResult || latestResult.sourceType !== "youtube") {
+            setStatus("No transcript available.", "error");
+            return;
+        }
+        const text = SummarizerTranscriptExport.buildPlainTranscript(latestResult);
+        if (!text) {
+            setStatus("No transcript available.", "error");
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(text);
+            setStatus("Transcript copied.", "ready");
+        } catch (_) {
+            setStatus("Could not copy transcript.", "error");
+        }
+    }
+
+    function downloadTranscriptSrt() {
+        if (!latestResult || latestResult.sourceType !== "youtube") {
+            setStatus("No transcript available.", "error");
+            return;
+        }
+        const text = SummarizerTranscriptExport.buildSrt(latestResult);
+        if (!text) {
+            setStatus("No transcript available.", "error");
+            return;
+        }
+        SummarizerTranscriptExport.downloadTextFile(
+            text,
+            transcriptFileBaseName(latestResult) + ".srt",
+            "application/x-subrip;charset=utf-8"
+        );
+        setStatus("SRT download started.", "ready");
+    }
+
     async function clearCurrentTabData() {
         const response = await sendRuntimeMessage({ type: MSG.CLEAR_TAB_DATA });
         if (response && response.ok) {
@@ -488,6 +535,8 @@
     elements.copyBtn?.addEventListener("click", copySummary);
     elements.exportMdBtn?.addEventListener("click", exportMarkdown);
     elements.exportTxtBtn?.addEventListener("click", exportText);
+    elements.transcriptCopyBtn?.addEventListener("click", copyTranscript);
+    elements.transcriptSrtBtn?.addEventListener("click", downloadTranscriptSrt);
     elements.clearBtn?.addEventListener("click", clearCurrentTabData);
     elements.settingsBtn?.addEventListener("click", () => chrome.runtime.openOptionsPage());
 
