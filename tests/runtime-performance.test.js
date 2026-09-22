@@ -299,15 +299,13 @@ test("section contract protects canonical headings while allowing requested cust
 });
 
 test("content manifests load the shell but defer extractors", () => {
-    for (const filename of ["manifest.json", "manifest.firefox.json"]) {
-        const manifest = JSON.parse(fs.readFileSync(path.join(root, filename), "utf8"));
-        const scripts = manifest.content_scripts[0].js;
-        assert.ok(scripts.includes("content.js"));
-        assert.equal(scripts.includes("lib/storage.js"), false);
-        assert.equal(scripts.includes("lib/settings-schema.js"), false);
-        assert.equal(scripts.some((entry) => entry.includes("/extractors/")), false);
-        assert.equal(scripts.includes("lib/extractors.js"), false);
-    }
+    const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.json"), "utf8"));
+    const scripts = manifest.content_scripts[0].js;
+    assert.ok(scripts.includes("content.js"));
+    assert.equal(scripts.includes("lib/storage.js"), false);
+    assert.equal(scripts.includes("lib/settings-schema.js"), false);
+    assert.equal(scripts.some((entry) => entry.includes("/extractors/")), false);
+    assert.equal(scripts.includes("lib/extractors.js"), false);
 });
 
 test("tab manager injects extractors once when the shell requests them", async () => {

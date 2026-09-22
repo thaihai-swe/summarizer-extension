@@ -2351,7 +2351,7 @@ button,
 .inspect-tab,
 .copy-prompt-btn,
 .doc-link-card,
-firefox-output-block-header,
+.output-block-header,
 .chat-send-btn,
 .panel-icon-btn,
 .custom-select {
@@ -2967,14 +2967,14 @@ firefox-output-block-header,
     gap: 10px;
 }
 
-firefox-output-block-item {
+.output-block-item {
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--background);
     overflow: hidden;
 }
 
-firefox-output-block-header {
+.output-block-header {
     width: 100%;
     padding: 10px 12px;
     background: var(--surface-muted);
@@ -3013,22 +3013,22 @@ firefox-output-block-header {
     transition: transform var(--motion-fast);
 }
 
-firefox-output-block-header[aria-expanded="false"] .chevron-icon {
+.output-block-header[aria-expanded="false"] .chevron-icon {
     transform: rotate(-90deg);
 }
 
-firefox-output-block-header[aria-expanded="false"] {
+.output-block-header[aria-expanded="false"] {
     border-bottom-color: transparent;
 }
 
-firefox-output-block-body {
+.output-block-body {
     padding: 12px;
     font-size: 12.5px;
     line-height: 1.55;
     color: var(--text-secondary);
 }
 
-firefox-output-block-body p {
+.output-block-body p {
     margin: 0;
     font-size: 12.5px;
 }
@@ -4754,7 +4754,7 @@ html[data-theme="light"] .benefit-card:hover {
     color: var(--text-secondary);
 }
 
-firefox-output-block-body p,
+.output-block-body p,
 .takeaway-list li,
 .sim-timeline-detail,
 .sim-concept-def {

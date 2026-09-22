@@ -2,10 +2,7 @@
 
 ## Overview
 
-The extension is a Manifest V3 extension with Chrome and Firefox runtime packages. Chrome uses
-the Side Panel API; the Firefox package uses `sidebar_action` and the native sidebar. A small
-browser compatibility facade keeps callback-style legacy modules working against Firefox's
-Promise-based APIs.
+The extension is a Chrome Manifest V3 extension that uses the Side Panel API.
 
 1. content-script extraction
 2. background orchestration and active request state

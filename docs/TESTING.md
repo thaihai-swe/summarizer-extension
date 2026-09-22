@@ -16,11 +16,6 @@ There is no full browser automation suite, so also validate behavior by loading 
 3. Click **Load unpacked** and choose the repository root
 4. Reload the extension after code changes
 
-For Firefox, run `node scripts/prepare-firefox.mjs`. Load `firefox-output/firefox/manifest.json`
-from `about:debugging#/runtime/this-firefox` for unpacked testing, or load the generated
-`firefox-output/deepdigest-firefox-<version>.xpi` as a temporary add-on. The script regenerates both
-artifacts from the current source tree.
-
 ## Summary Coverage
 
 Run each source through a summary:
@@ -102,8 +97,6 @@ Verify all modes:
 - Switch to Tab B: verify Tab A's content is cleared
 - Switch back to Tab A: verify no persisted result is restored
 - Verify extension icon opens the panel for the currently active tab
-- Firefox temporary add-on: toolbar action opens the native sidebar and recent session results restore on tab switching without surviving an extension restart
-
 ## Settings Coverage
 
 - Verify output language setting persists and affects generated output
