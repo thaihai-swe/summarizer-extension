@@ -3,14 +3,10 @@
     let latestResult = null;
     let activeTabId = null;
     let refreshSequence = 0;
-    let workflowPollTimer = null;
-    let isStreaming = false;
-    let currentGroundingMode = "source";
-
-    const SOURCE_CHAT_HINT = "Grounded in this tab’s summary";
-    const OPEN_CHAT_HINT = "Not limited to this source";
-    const SOURCE_CHAT_PLACEHOLDER = "Ask a deeper question about this source. Enter to send, Shift+Enter for a new line.";
-    const OPEN_CHAT_PLACEHOLDER = "Ask anything. This answer will not use the page. Enter to send, Shift+Enter for a new line.";
+    let pendingStreamResult = null;
+    let streamRenderFrame = 0;
+    let streamActive = false;
+    const resultCache = SummarizerSidepanelResultCache.create(4);
 
     const elements = {
         status: document.getElementById("panel-status"),
@@ -40,9 +36,9 @@
         floatingActions: document.getElementById("floating-actions"),
         emptyState: document.getElementById("empty-state"),
         summaryContent: document.getElementById("summary-content"),
+        summaryOverview: document.getElementById("summary-overview"),
         deepDiveSections: document.getElementById("deep-dive-sections"),
         transcriptSection: document.getElementById("transcript-section"),
-        followUpQuestionsSection: document.getElementById("panel-follow-up-questions-wrap"),
         highlightTooltip: document.getElementById("highlight-tooltip"),
         chatHint: document.getElementById("chat-hint"),
         chatSection: document.getElementById("chat-section"),
@@ -54,55 +50,15 @@
         summaryLanguage: document.getElementById("panel-summaryLanguage"),
         summaryTone: document.getElementById("panel-summaryTone"),
         summarySize: document.getElementById("panel-summarySize"),
-        summaryLength: document.getElementById("panel-summaryLength"),
-        workflowStepper: document.getElementById("workflow-stepper")
+        summaryLength: document.getElementById("panel-summaryLength")
     };
-
-    // Stepper step ordering: extract -> chunk -> synthesis -> quality
-    const STEPPER_ORDER = ["extract", "chunk", "synthesis", "quality"];
-
-    function updateStepperFromWorkflow(workflow) {
-        const stepper = elements.workflowStepper;
-        if (!stepper) return;
-
-        const isActive = workflow && (workflow.phase === "extracting" || workflow.phase === "summarizing");
-        stepper.hidden = !isActive;
-
-        if (!isActive) return;
-
-        const currentStep = (workflow.step) || (workflow.phase === "extracting" ? "extract" : "chunk");
-        const currentIndex = STEPPER_ORDER.indexOf(currentStep);
-        const steps = stepper.querySelectorAll(".stepper-step");
-        steps.forEach((stepEl, idx) => {
-            stepEl.classList.remove("is-active", "is-done");
-            if (idx < currentIndex) {
-                stepEl.classList.add("is-done");
-            } else if (idx === currentIndex) {
-                stepEl.classList.add("is-active");
-                // Update detail label for chunking step
-                const detail = stepEl.querySelector(".step-detail");
-                if (detail) {
-                    if (currentStep === "chunk" && workflow.chunkTotal > 1) {
-                        detail.textContent = `${workflow.chunkIndex || 0}/${workflow.chunkTotal}`;
-                    } else if (currentStep === "extract") {
-                        detail.textContent = "Reading...";
-                    } else if (currentStep === "synthesis") {
-                        detail.textContent = "Combining...";
-                    } else if (currentStep === "quality") {
-                        detail.textContent = "Checking...";
-                    } else {
-                        detail.textContent = "";
-                    }
-                }
-            }
-        });
-    }
 
     function setStatus(message, type) {
         if (!elements.status) return;
+        const text = String(message || "");
         const liveStatus = document.getElementById("panel-live-status");
-        if (liveStatus && String(message || "") !== liveStatus.textContent) liveStatus.textContent = String(message || "");
-        elements.status.textContent = message;
+        if (liveStatus && liveStatus.textContent !== text) liveStatus.textContent = text;
+        elements.status.textContent = text;
         elements.status.className = "status-badge-compact";
         if (type) elements.status.classList.add("is-" + type);
         if (elements.shell) {
@@ -110,9 +66,7 @@
             elements.shell.classList.toggle("is-error", type === "error");
             elements.shell.classList.toggle("is-ready", type === "ready" || !type);
         }
-        if (elements.summarizeBtn) {
-            elements.summarizeBtn.setAttribute("aria-busy", type === "busy" ? "true" : "false");
-        }
+        if (elements.summarizeBtn) elements.summarizeBtn.setAttribute("aria-busy", type === "busy" ? "true" : "false");
     }
 
     function setButtonBusy(button, isBusy, busyLabel, defaultLabel) {
@@ -123,26 +77,13 @@
         button.setAttribute("aria-busy", isBusy ? "true" : "false");
     }
 
-    function formatWorkflowStatus(workflow, fallbackResult) {
-        if (!workflow) return fallbackResult ? "Summary ready." : "Ready.";
-        if (workflow.phase === "failed") return workflow.lastError || workflow.statusMessage || "Summary failed.";
-        if (workflow.phase === "completed") return workflow.statusMessage || "Summary ready.";
-        if (workflow.statusMessage) return workflow.statusMessage;
-        if (workflow.phase === "extracting") return "Extracting current tab...";
-        if (workflow.phase === "summarizing") return "Summarizing current tab...";
-        return fallbackResult ? "Summary ready." : "Ready.";
-    }
-
-    function getWorkflowStatusType(workflow) {
-        if (!workflow || workflow.phase === "completed") return "ready";
-        return workflow.phase === "failed" ? "error" : "busy";
-    }
-
-    async function sendRuntimeMessage(message) {
+    function sendRuntimeMessage(message) {
         return new Promise((resolve) => {
             try {
                 chrome.runtime.sendMessage(message, (response) => {
-                    resolve(chrome.runtime.lastError ? { ok: false, error: chrome.runtime.lastError.message } : response);
+                    resolve(chrome.runtime.lastError
+                        ? { ok: false, error: chrome.runtime.lastError.message }
+                        : response);
                 });
             } catch (error) {
                 resolve({ ok: false, error: error.message });
@@ -150,572 +91,345 @@
         });
     }
 
-    async function refreshWorkflowStatusOnly() {
-        const workflowResponse = await sendRuntimeMessage({ type: MSG.GET_ACTIVE_TAB_WORKFLOW });
-        const workflow = workflowResponse && workflowResponse.ok ? workflowResponse.workflow : null;
-        if (workflowResponse && workflowResponse.tabId) activeTabId = workflowResponse.tabId;
-        setStatus(formatWorkflowStatus(workflow, latestResult), getWorkflowStatusType(workflow));
-        updateStepperFromWorkflow(workflow);
-        if (workflow && (workflow.phase === "extracting" || workflow.phase === "summarizing")) {
-            if (!isStreaming) {
-                SummarizerRender.clearAllContent(elements, workflow);
-            }
-        }
-        if (!workflow || workflow.phase === "completed" || workflow.phase === "failed") stopWorkflowPolling();
-    }
-
-    function startWorkflowPolling() {
-        if (workflowPollTimer) clearInterval(workflowPollTimer);
-        workflowPollTimer = setInterval(() => refreshWorkflowStatusOnly().catch(() => {}), 1000);
-    }
-
-    function stopWorkflowPolling() {
-        if (workflowPollTimer) { clearInterval(workflowPollTimer); workflowPollTimer = null; }
-    }
-
-    function normalizeGrounding(value) {
-        return value === "open" ? "open" : "source";
-    }
-
-    function setGroundingMode(mode) {
-        currentGroundingMode = normalizeGrounding(mode);
-        const isOpen = currentGroundingMode === "open";
-        if (elements.groundingSourceBtn) {
-            elements.groundingSourceBtn.classList.toggle("is-active", !isOpen);
-            elements.groundingSourceBtn.setAttribute("aria-checked", String(!isOpen));
-        }
-        if (elements.groundingOpenBtn) {
-            elements.groundingOpenBtn.classList.toggle("is-active", isOpen);
-            elements.groundingOpenBtn.setAttribute("aria-checked", String(isOpen));
-        }
-        if (elements.chatHint) {
-            elements.chatHint.textContent = isOpen ? OPEN_CHAT_HINT : SOURCE_CHAT_HINT;
-        }
-        if (elements.chatInput) {
-            elements.chatInput.placeholder = isOpen ? OPEN_CHAT_PLACEHOLDER : SOURCE_CHAT_PLACEHOLDER;
-        }
-        if (elements.chatSection) {
-            elements.chatSection.classList.toggle("is-open-grounding", isOpen);
-        }
-    }
-
-    function appendChatEntry(role, text, grounding) {
-        const div = document.createElement("div");
-        const isUser = role === "user" || role === "question";
-        div.className = "chat-entry " + (isUser ? "user" : "assistant");
-
-        if (!isUser) {
-            const badge = document.createElement("span");
-            const mode = normalizeGrounding(grounding);
-            badge.className = "chat-badge " + (mode === "open" ? "is-open" : "is-source");
-            badge.textContent = mode === "open" ? "General" : "Source";
-            div.appendChild(badge);
-        }
-
-        const body = document.createElement("div");
-        body.className = "chat-entry-body";
-        body.innerHTML = SummarizerMarkdown.renderMarkdown(text);
-        div.appendChild(body);
-
-        const copyBtn = document.createElement("button");
-        copyBtn.className = "copy-msg";
-        copyBtn.type = "button";
-        copyBtn.textContent = "Copy";
-        copyBtn.addEventListener("click", async () => {
-            await navigator.clipboard.writeText(text);
-            copyBtn.textContent = "Copied!";
-            setTimeout(() => copyBtn.textContent = "Copy", 1200);
-        });
-        div.appendChild(copyBtn);
-
-        elements.chatLog.appendChild(div);
-        div.scrollIntoView({ behavior: "smooth" });
-    }
+    const chat = SummarizerSidepanelChat.create({
+        elements,
+        messageType: MSG.DEEP_DIVE_ACTIVE_TAB,
+        sendRuntimeMessage,
+        getLatestResult: () => latestResult,
+        setStatus,
+        setButtonBusy
+    });
+    const actions = SummarizerSidepanelActions.create({
+        getLatestResult: () => latestResult,
+        setStatus
+    });
 
     function renderResult(result) {
         latestResult = result;
-        SummarizerRender.renderResult(result, elements, askFollowUp);
+        SummarizerRender.renderResult(result, elements, chat.ask);
+        if (elements.floatingActions) elements.floatingActions.hidden = !result;
+        if (elements.summaryContent) elements.summaryContent.hidden = !result;
+        if (elements.emptyState) elements.emptyState.hidden = Boolean(result);
+    }
 
-        elements.floatingActions.hidden = !result;
-        elements.summaryContent.hidden = !result;
-        elements.emptyState.hidden = !!result;
+    function resetSession() {
+        latestResult = null;
+        pendingStreamResult = null;
+        streamActive = false;
+        if (streamRenderFrame) cancelAnimationFrame(streamRenderFrame);
+        streamRenderFrame = 0;
+        chat.reset();
+        renderResult(null);
+        if (elements.cancelBtn) elements.cancelBtn.hidden = true;
     }
 
     async function refreshActiveTabView() {
-        const mySeq = ++refreshSequence;
-        const resultResponse = await sendRuntimeMessage({ type: MSG.GET_ACTIVE_TAB_RESULT });
-        if (mySeq !== refreshSequence) return;
-
-        let localTabId = null;
-        if (resultResponse && resultResponse.ok) {
-            localTabId = resultResponse.tabId;
-            renderResult(resultResponse.result);
+        const sequence = ++refreshSequence;
+        const tabs = await new Promise((resolve) => {
+            try { chrome.tabs.query({ active: true, currentWindow: true }, resolve); }
+            catch (_) { resolve([]); }
+        });
+        if (sequence !== refreshSequence) return;
+        const nextTabId = tabs && tabs[0] && tabs[0].id ? tabs[0].id : null;
+        if (latestResult && latestResult.tabId === nextTabId && activeTabId === nextTabId) return;
+        activeTabId = nextTabId;
+        resetSession();
+        const cachedResult = resultCache.get(nextTabId);
+        if (cachedResult) {
+            renderResult(cachedResult);
+            setStatus("Summary restored.", "ready");
         } else {
-            renderResult(null);
-        }
-
-        const workflowResponse = await sendRuntimeMessage({ type: MSG.GET_ACTIVE_TAB_WORKFLOW });
-        if (mySeq !== refreshSequence) return;
-        const workflow = workflowResponse && workflowResponse.ok ? workflowResponse.workflow : null;
-        if (workflowResponse && workflowResponse.tabId) localTabId = workflowResponse.tabId;
-
-        activeTabId = localTabId;
-        setStatus(formatWorkflowStatus(workflow, latestResult), getWorkflowStatusType(workflow));
-        updateStepperFromWorkflow(workflow);
-        if (elements.cancelBtn) {
-            elements.cancelBtn.hidden = !(workflow && (workflow.phase === "extracting" || workflow.phase === "summarizing"));
-        }
-
-        elements.chatLog.innerHTML = "";
-        if (localTabId) {
-            SummarizerSidepanelState.loadConversationHistory(localTabId, appendChatEntry, elements.chatLog).catch(() => {});
-        }
-
-        if (workflow && workflow.phase !== "completed" && workflow.phase !== "failed") {
-            startWorkflowPolling();
-            SummarizerRender.clearAllContent(elements, workflow);
-        } else {
-            stopWorkflowPolling();
+            setStatus("Ready.", "ready");
         }
     }
 
     async function summarize() {
+        latestResult = null;
+        resultCache.remove(activeTabId);
+        streamActive = true;
         setStatus("Starting summary...", "busy");
-        isStreaming = false;
         setButtonBusy(elements.summarizeBtn, true, "Running...", "Generate");
-        if (elements.fabSummarize) setButtonBusy(elements.fabSummarize, true, "Running...", "Generate");
-
+        setButtonBusy(elements.fabSummarize, true, "Running...", "Generate");
         SummarizerRender.clearAllContent(elements, { lastMode: elements.modeSelect.value });
-        elements.floatingActions.hidden = true;
+        if (elements.floatingActions) elements.floatingActions.hidden = true;
         if (elements.cancelBtn) elements.cancelBtn.hidden = false;
-
+        if (elements.chatSend) elements.chatSend.disabled = true;
+        chat.reset();
         const response = await sendRuntimeMessage({
             type: MSG.SUMMARIZE_ACTIVE_TAB,
             promptMode: elements.modeSelect.value
         });
         if (!response || !response.ok) {
+            streamActive = false;
             setStatus((response && response.error) || "Summary failed.", "error");
-            setButtonBusy(elements.summarizeBtn, false, "Running...", "Generate");
-            if (elements.fabSummarize) setButtonBusy(elements.fabSummarize, false, "Running...", "Generate");
             if (elements.cancelBtn) elements.cancelBtn.hidden = true;
-            return;
+            if (elements.chatSend) elements.chatSend.disabled = false;
         }
-
-        startWorkflowPolling();
         setButtonBusy(elements.summarizeBtn, false, "Running...", "Generate");
-        if (elements.fabSummarize) setButtonBusy(elements.fabSummarize, false, "Running...", "Generate");
+        setButtonBusy(elements.fabSummarize, false, "Running...", "Generate");
     }
 
-    async function askFollowUp(forcedGrounding) {
-        const question = elements.chatInput.value.trim();
-        if (!question) return;
-
-        const grounding = normalizeGrounding(forcedGrounding || currentGroundingMode);
-        elements.chatInput.value = "";
-        appendChatEntry("user", question, grounding);
-        setStatus(grounding === "open" ? "Asking (general)..." : "Asking...", "busy");
-        setButtonBusy(elements.chatSend, true, "...", "Send");
-
-        const response = await sendRuntimeMessage({ type: MSG.DEEP_DIVE_ACTIVE_TAB, question, grounding });
-        if (!response || !response.ok) {
-            setStatus((response && response.error) || "Follow-up failed.", "error");
-            setButtonBusy(elements.chatSend, false, "...", "Send");
-            return;
+    function scheduleStreamRender(result) {
+        if (!streamActive) {
+            streamActive = true;
+            latestResult = null;
+            chat.reset();
+            SummarizerRender.prepareTranscript(elements, null);
+            SummarizerRender.renderFollowUpQuestions([], elements, chat.ask);
+            if (globalThis.SummarizerSidepanelToc) SummarizerSidepanelToc.reset(elements);
+            if (elements.chatSend) elements.chatSend.disabled = true;
         }
-
-        appendChatEntry(
-            "assistant",
-            (response.result && response.result.answer) || response.answer || "No response.",
-            (response.result && response.result.grounding) || grounding
-        );
-        setStatus("Answer received.", "ready");
-        setButtonBusy(elements.chatSend, false, "...", "Send");
-    }
-
-    function buildExportBody(r) {
-        const parts = [];
-        parts.push("## Main Summary", r.summary || "");
-        if (r.keyTakeaways && r.keyTakeaways.length)
-            parts.push("", "## Executive Takeaways", r.keyTakeaways.map((t) => "- " + t).join("\n"));
-        if (r.detailsOfVideo)
-            parts.push("", "## Details of the Video", r.detailsOfVideo);
-        if (r.detailedBreakdown)
-            parts.push("", "## Complete Guided Walkthrough", r.detailedBreakdown);
-        if (r.conceptMapAndPrerequisites)
-            parts.push("", "## Concepts, Definitions & Mental Models", r.conceptMapAndPrerequisites);
-        if (r.evidenceAndDetails)
-            parts.push("", "## Reasoning, Evidence & Claim Audit", r.evidenceAndDetails);
-        if (r.argumentAndInsight)
-            parts.push("", "## Connections, Causes & Tradeoffs", r.argumentAndInsight);
-        if (r.practicalSteps)
-            parts.push("", "## Practical Application", r.practicalSteps);
-        if (r.expertCommentary)
-            parts.push("", "## Caveats, Biases & Open Questions", r.expertCommentary);
-        if (r.reviewKit)
-            parts.push("", "## Memory & Review Kit", r.reviewKit);
-        return parts.join("\n\n");
-    }
-
-    async function copySummary() {
-        if (!latestResult) { setStatus("No summary available.", "error"); return; }
-        const text = "# " + latestResult.title + "\n\n" + buildExportBody(latestResult);
-        await navigator.clipboard.writeText(text);
-        setStatus("Copied to clipboard.", "ready");
-    }
-
-    function exportMarkdown() {
-        if (!latestResult) return;
-        const text = "# " + latestResult.title + "\n\n" + buildExportBody(latestResult);
-        const blob = new Blob([text], { type: "text/markdown" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = (globalThis.SummarizerCleaners ? SummarizerCleaners.sanitizeFilename(latestResult.title) : (latestResult.title || "summary").replace(/[^a-z0-9]/gi, "_")) + ".md";
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-
-    function exportText() {
-        if (!latestResult) return;
-        // Strip markdown heading markers for plain text, keep section labels as plain text
-        const body = buildExportBody(latestResult).replace(/## /g, "").trim();
-        const text = latestResult.title + "\n\n" + body;
-        const blob = new Blob([text], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = (globalThis.SummarizerCleaners ? SummarizerCleaners.sanitizeFilename(latestResult.title) : (latestResult.title || "summary").replace(/[^a-z0-9]/gi, "_")) + ".txt";
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-
-    function transcriptFileBaseName(result) {
-        const title = result && result.title || "transcript";
-        return globalThis.SummarizerCleaners && typeof SummarizerCleaners.sanitizeFilename === "function"
-            ? SummarizerCleaners.sanitizeFilename(title)
-            : String(title).replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "") || "transcript";
-    }
-
-    async function copyTranscript() {
-        if (!latestResult || latestResult.sourceType !== "youtube") {
-            setStatus("No transcript available.", "error");
-            return;
-        }
-        const text = SummarizerTranscriptExport.buildPlainTranscript(latestResult);
-        if (!text) {
-            setStatus("No transcript available.", "error");
-            return;
-        }
-        try {
-            await navigator.clipboard.writeText(text);
-            setStatus("Transcript copied.", "ready");
-        } catch (_) {
-            setStatus("Could not copy transcript.", "error");
-        }
-    }
-
-    function downloadTranscriptSrt() {
-        if (!latestResult || latestResult.sourceType !== "youtube") {
-            setStatus("No transcript available.", "error");
-            return;
-        }
-        const text = SummarizerTranscriptExport.buildSrt(latestResult);
-        if (!text) {
-            setStatus("No transcript available.", "error");
-            return;
-        }
-        SummarizerTranscriptExport.downloadTextFile(
-            text,
-            transcriptFileBaseName(latestResult) + ".srt",
-            "application/x-subrip;charset=utf-8"
-        );
-        setStatus("SRT download started.", "ready");
-    }
-
-    async function clearCurrentTabData() {
-        const response = await sendRuntimeMessage({ type: MSG.CLEAR_TAB_DATA });
-        if (response && response.ok) {
-            renderResult(null);
-            elements.chatLog.innerHTML = "";
-            setStatus("Cleared.", "ready");
-        } else {
-            setStatus((response && response.error) || "Failed to clear.", "error");
-        }
+        pendingStreamResult = result;
+        if (streamRenderFrame) return;
+        streamRenderFrame = requestAnimationFrame(() => {
+            streamRenderFrame = 0;
+            const next = pendingStreamResult;
+            pendingStreamResult = null;
+            if (!next) return;
+            renderResult(next);
+            setStatus("Generating summary...", "busy");
+        });
     }
 
     function setupReadingProgress() {
         const progressBar = document.getElementById("reading-progress-bar");
-        const shell = elements.shell;
-        if (!progressBar || !shell) return;
-        shell.addEventListener("scroll", () => {
-            const maxScroll = shell.scrollHeight - shell.clientHeight;
-            const progress = maxScroll > 0 ? (shell.scrollTop / maxScroll) * 100 : 0;
-            progressBar.style.width = Math.min(100, Math.max(0, progress)) + "%";
-            if (activeTabId) sessionStorage.setItem(`scroll_${activeTabId}`, shell.scrollTop);
-        });
+        if (!progressBar || !elements.shell) return;
+        let frame = 0;
+        elements.shell.addEventListener("scroll", () => {
+            if (frame) return;
+            frame = requestAnimationFrame(() => {
+                frame = 0;
+                const maxScroll = elements.shell.scrollHeight - elements.shell.clientHeight;
+                const progress = maxScroll > 0 ? elements.shell.scrollTop / maxScroll * 100 : 0;
+                progressBar.style.width = Math.min(100, Math.max(0, progress)) + "%";
+            });
+        }, { passive: true });
     }
 
     function setupHighlightToAsk() {
         const tooltip = elements.highlightTooltip;
-        const shell = elements.shell;
-        if (!tooltip || !shell) return;
-
-        shell.addEventListener("mouseup", () => {
+        if (!tooltip || !elements.shell) return;
+        elements.shell.addEventListener("mouseup", () => {
             const selection = window.getSelection();
             const text = selection.toString().trim();
-            if (text && text.length > 5) {
-                const range = selection.getRangeAt(0);
-                const rect = range.getBoundingClientRect();
-                const shellRect = shell.getBoundingClientRect();
-                tooltip.style.left = (rect.left + rect.width / 2) + "px";
-                tooltip.style.top = (rect.top - shellRect.top + shell.scrollTop - 4) + "px";
-                tooltip.style.display = "block";
-                tooltip.onclick = () => {
-                    elements.chatInput.value = `Tell me more about: "${text}"`;
-                    elements.chatInput.focus();
-                    tooltip.style.display = "none";
-                    askFollowUp("source");
-                };
-            } else {
+            if (!text || text.length <= 5 || !selection.rangeCount) {
                 tooltip.style.display = "none";
+                return;
             }
+            const rect = selection.getRangeAt(0).getBoundingClientRect();
+            const shellRect = elements.shell.getBoundingClientRect();
+            tooltip.style.left = (rect.left + rect.width / 2) + "px";
+            tooltip.style.top = (rect.top - shellRect.top + elements.shell.scrollTop - 4) + "px";
+            tooltip.style.display = "block";
+            tooltip.onclick = () => {
+                elements.chatInput.value = `Tell me more about: "${text}"`;
+                elements.chatInput.focus();
+                tooltip.style.display = "none";
+                chat.ask("source");
+            };
         });
-        document.addEventListener("mousedown", (e) => { if (e.target !== tooltip) tooltip.style.display = "none"; });
+        document.addEventListener("mousedown", (event) => {
+            if (event.target !== tooltip) tooltip.style.display = "none";
+        });
     }
 
-    function setupTranscriptToggle() {
+    function setupTranscript() {
         const toggle = document.getElementById("transcript-toggle");
-        const content = document.getElementById("panel-transcript-content");
-        if (!toggle || !content) return;
+        if (!toggle || !elements.transcriptContent) return;
         toggle.addEventListener("click", () => {
             const expanded = toggle.getAttribute("aria-expanded") === "true";
+            if (expanded) {
+                elements.transcriptContent.hidden = true;
+            } else {
+                SummarizerRender.renderTranscript(elements);
+                elements.transcriptContent.hidden = false;
+            }
             toggle.setAttribute("aria-expanded", String(!expanded));
-            content.hidden = expanded;
-            toggle.querySelector(".transcript-toggle-icon").textContent = expanded ? "\u25b6" : "\u25bc";
+            const icon = toggle.querySelector(".transcript-toggle-icon");
+            if (icon) icon.textContent = expanded ? "\u25b6" : "\u25bc";
             const hint = toggle.querySelector(".transcript-toggle-hint");
             if (hint) hint.textContent = expanded ? hint.dataset.collapsedLabel : hint.dataset.expandedLabel;
         });
-    }
-    function setupTranscriptFilter() {
-        if (!elements.transcriptFilter) return;
-        elements.transcriptFilter.addEventListener("input", () => {
-            SummarizerRender.filterTranscript(elements, elements.transcriptFilter.value);
-        });
+        if (elements.transcriptFilter) {
+            let timer = 0;
+            elements.transcriptFilter.addEventListener("input", () => {
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    SummarizerRender.renderTranscript(elements);
+                    SummarizerRender.filterTranscript(elements, elements.transcriptFilter.value);
+                }, 120);
+            });
+        }
     }
 
     function setupKeyboardShortcuts() {
-        document.addEventListener("keydown", (e) => {
-            if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable) return;
-            if (e.key === "j") { elements.shell.scrollBy({ top: 80, behavior: "smooth" }); e.preventDefault(); }
-            if (e.key === "k") { elements.shell.scrollBy({ top: -80, behavior: "smooth" }); e.preventDefault(); }
-            if (e.key === "/") { elements.transcriptFilter?.focus(); e.preventDefault(); }
-            if (e.key === "Escape") { elements.highlightTooltip.style.display = "none"; }
+        document.addEventListener("keydown", (event) => {
+            const target = event.target;
+            if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) return;
+            if (event.key === "j") { elements.shell.scrollBy({ top: 80, behavior: "smooth" }); event.preventDefault(); }
+            if (event.key === "k") { elements.shell.scrollBy({ top: -80, behavior: "smooth" }); event.preventDefault(); }
+            if (event.key === "/") { elements.transcriptFilter?.focus(); event.preventDefault(); }
+            if (event.key === "Escape" && elements.highlightTooltip) elements.highlightTooltip.style.display = "none";
         });
     }
 
-    // Event Listeners
-    if (elements.modeSelect) {
-        elements.modeSelect.addEventListener("change", async () => {
-            try { await SummarizerStorage.saveSettings({ promptMode: elements.modeSelect.value }); } catch (_) {}
+    function populateOptions(select, settingKey) {
+        if (!select) return;
+        const values = SummarizerSettingsSchema.getValidValues(settingKey);
+        if (!values) return;
+        const fragment = document.createDocumentFragment();
+        Array.from(values).forEach((value) => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = value;
+            fragment.appendChild(option);
         });
+        select.replaceChildren(fragment);
     }
-    elements.summarizeBtn.addEventListener("click", summarize);
-    if (elements.cancelBtn) {
-        elements.cancelBtn.addEventListener("click", async () => {
-            if (activeTabId) {
-                await sendRuntimeMessage({ type: MSG.CANCEL_SUMMARIZE, tabId: activeTabId });
+
+    async function setupDisplayControls() {
+        populateOptions(elements.summaryTone, "summaryTone");
+        populateOptions(elements.summarySize, "summarySize");
+        populateOptions(elements.summaryLength, "summaryLength");
+        try {
+            const settings = await SummarizerStorage.getSettings();
+            if (elements.panelTheme) elements.panelTheme.value = settings.theme || "system";
+            if (elements.panelFontScale) elements.panelFontScale.value = settings.fontScale || "md";
+            if (elements.summaryLanguage) {
+                const languages = Array.from(new Set(["English", "Vietnamese"].concat(
+                    String(settings.customLanguages || "").split(",").map((item) => item.trim()).filter(Boolean)
+                )));
+                const fragment = document.createDocumentFragment();
+                languages.forEach((language) => {
+                    const option = document.createElement("option");
+                    option.value = language;
+                    option.textContent = language;
+                    fragment.appendChild(option);
+                });
+                elements.summaryLanguage.replaceChildren(fragment);
+                elements.summaryLanguage.value = settings.summaryLanguage || "English";
             }
-            setButtonBusy(elements.summarizeBtn, false, "Running...", "Generate");
-            setStatus("Cancelled.", "ready");
-            stopWorkflowPolling();
-            elements.cancelBtn.hidden = true;
-        });
-    }
-    elements.fabSummarize?.addEventListener("click", summarize);
-    elements.copyBtn?.addEventListener("click", copySummary);
-    elements.exportMdBtn?.addEventListener("click", exportMarkdown);
-    elements.exportTxtBtn?.addEventListener("click", exportText);
-    elements.transcriptCopyBtn?.addEventListener("click", copyTranscript);
-    elements.transcriptSrtBtn?.addEventListener("click", downloadTranscriptSrt);
-    elements.clearBtn?.addEventListener("click", clearCurrentTabData);
-    elements.settingsBtn?.addEventListener("click", () => chrome.runtime.openOptionsPage());
+            if (elements.summaryTone) elements.summaryTone.value = settings.summaryTone || "Simple";
+            if (elements.summarySize) elements.summarySize.value = settings.summarySize || "Medium";
+            if (elements.summaryLength) elements.summaryLength.value = settings.summaryLength || "Medium";
+            SummarizerTheme.applyThemeToDocument(settings.theme || "system");
+            SummarizerTheme.applyFontScaleToDocument(settings.fontScale || "md");
+        } catch (_) {}
 
-    elements.chatSend.addEventListener("click", () => askFollowUp());
-    elements.chatInput.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); askFollowUp(); }
+        const persist = (element, key, apply) => {
+            if (!element) return;
+            element.addEventListener("change", async () => {
+                if (apply) apply(element.value);
+                try {
+                    const settings = await SummarizerStorage.saveSettings({ [key]: element.value });
+                    await sendRuntimeMessage({ type: MSG.SETTINGS_UPDATED, settings });
+                } catch (_) {}
+            });
+        };
+        persist(elements.panelTheme, "theme", SummarizerTheme.applyThemeToDocument);
+        persist(elements.panelFontScale, "fontScale", SummarizerTheme.applyFontScaleToDocument);
+        persist(elements.summaryLanguage, "summaryLanguage");
+        persist(elements.summaryTone, "summaryTone");
+        persist(elements.summarySize, "summarySize");
+        persist(elements.summaryLength, "summaryLength");
+    }
+
+    elements.modeSelect?.addEventListener("change", async () => {
+        try { await SummarizerStorage.saveSettings({ promptMode: elements.modeSelect.value }); } catch (_) {}
     });
-    if (elements.groundingSourceBtn) {
-        elements.groundingSourceBtn.addEventListener("click", () => setGroundingMode("source"));
-    }
-    if (elements.groundingOpenBtn) {
-        elements.groundingOpenBtn.addEventListener("click", () => setGroundingMode("open"));
-    }
+    elements.summarizeBtn?.addEventListener("click", summarize);
+    elements.fabSummarize?.addEventListener("click", summarize);
+    elements.cancelBtn?.addEventListener("click", async () => {
+        if (activeTabId) await sendRuntimeMessage({ type: MSG.CANCEL_SUMMARIZE, tabId: activeTabId });
+        setButtonBusy(elements.summarizeBtn, false, "Running...", "Generate");
+        setButtonBusy(elements.fabSummarize, false, "Running...", "Generate");
+        setStatus("Cancelled.", "ready");
+        elements.cancelBtn.hidden = true;
+    });
+    elements.copyBtn?.addEventListener("click", actions.copySummary);
+    elements.exportMdBtn?.addEventListener("click", actions.exportMarkdown);
+    elements.exportTxtBtn?.addEventListener("click", actions.exportText);
+    elements.transcriptCopyBtn?.addEventListener("click", actions.copyTranscript);
+    elements.transcriptSrtBtn?.addEventListener("click", actions.downloadTranscriptSrt);
+    elements.clearBtn?.addEventListener("click", () => {
+        resultCache.remove(activeTabId);
+        resetSession();
+        setStatus("Cleared.", "ready");
+    });
+    elements.settingsBtn?.addEventListener("click", () => chrome.runtime.openOptionsPage());
+    elements.chatSend?.addEventListener("click", () => chat.ask());
+    elements.chatInput?.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); chat.ask(); }
+    });
+    elements.groundingSourceBtn?.addEventListener("click", () => chat.setGroundingMode("source"));
+    elements.groundingOpenBtn?.addEventListener("click", () => chat.setGroundingMode("open"));
 
     chrome.runtime.onMessage.addListener((message) => {
         if (message.type === MSG.SUMMARY_UPDATED) {
-            isStreaming = false;
+            if (message.tabId) resultCache.remember(message.tabId, message.result);
             if (message.tabId && activeTabId && message.tabId !== activeTabId) return;
+            if (streamRenderFrame) cancelAnimationFrame(streamRenderFrame);
+            streamRenderFrame = 0;
+            pendingStreamResult = null;
+            if (message.tabId) activeTabId = message.tabId;
+            streamActive = false;
             if (elements.cancelBtn) elements.cancelBtn.hidden = true;
-            renderResult(message.result);
+            if (elements.chatSend) elements.chatSend.disabled = false;
             if (elements.transcriptFilter) elements.transcriptFilter.value = "";
-            elements.chatLog.innerHTML = "";
-            if (message.tabId) {
-                activeTabId = message.tabId;
-                SummarizerSidepanelState.loadConversationHistory(message.tabId, appendChatEntry, elements.chatLog);
-            }
+            chat.reset();
+            renderResult(message.result);
             setStatus("Summary updated.", "ready");
-            stopWorkflowPolling();
-            if (elements.workflowStepper) elements.workflowStepper.hidden = true;
-        }
-        if (message.type === MSG.SUMMARY_ERROR) {
-            isStreaming = false;
-            if (elements.cancelBtn) elements.cancelBtn.hidden = true;
+            setButtonBusy(elements.summarizeBtn, false, "Running...", "Generate");
+            setButtonBusy(elements.fabSummarize, false, "Running...", "Generate");
+        } else if (message.type === MSG.SUMMARY_CHUNK) {
             if (message.tabId && activeTabId && message.tabId !== activeTabId) return;
-            let errorMessage = message.error || "Summary failed.";
-            if (message.code === "AUTH_ERROR" || (errorMessage && errorMessage.includes("API key"))) {
-                errorMessage = "Invalid API key. Please update it in Settings.";
-            } else if (message.code === "RATE_LIMIT" || (errorMessage && errorMessage.includes("rate limit"))) {
-                errorMessage = "Provider rate limit reached. Wait a moment or switch providers.";
-            } else if (message.code === "CANCELLED" || (errorMessage && errorMessage.includes("cancelled"))) {
-                errorMessage = "Summary cancelled.";
+            if (message.tabId) activeTabId = message.tabId;
+            scheduleStreamRender(message.result);
+        } else if (message.type === MSG.SUMMARY_ERROR) {
+            if (message.tabId && activeTabId && message.tabId !== activeTabId) return;
+            const hadPartialResult = streamActive;
+            if (streamRenderFrame) cancelAnimationFrame(streamRenderFrame);
+            streamRenderFrame = 0;
+            pendingStreamResult = null;
+            streamActive = false;
+            if (hadPartialResult) renderResult(null);
+            if (elements.cancelBtn) elements.cancelBtn.hidden = true;
+            if (elements.chatSend) elements.chatSend.disabled = false;
+            let text = message.error || "Summary failed.";
+            if (message.code === "AUTH_ERROR" || text.includes("API key")) text = "Invalid API key. Please update it in Settings.";
+            else if (message.code === "RATE_LIMIT" || text.includes("rate limit")) text = "Provider rate limit reached. Wait a moment or switch providers.";
+            else if (message.code === "CANCELLED" || text.toLowerCase().includes("cancelled")) text = "Summary cancelled.";
+            setStatus(text, message.code === "CANCELLED" ? "ready" : "error");
+            setButtonBusy(elements.summarizeBtn, false, "Running...", "Generate");
+            setButtonBusy(elements.fabSummarize, false, "Running...", "Generate");
+        } else if (message.type === MSG.SETTINGS_UPDATED) {
+            const settings = message.settings || {};
+            if (settings.theme !== undefined) {
+                SummarizerTheme.applyThemeToDocument(settings.theme);
+                if (elements.panelTheme) elements.panelTheme.value = settings.theme;
             }
-            setStatus(errorMessage, "error");
-            stopWorkflowPolling();
-            if (elements.workflowStepper) elements.workflowStepper.hidden = true;
-        }
-        if (message.type === MSG.SETTINGS_UPDATED) {
-            const t = message.settings;
-            if (t) {
-                if (t.theme !== undefined) {
-                    SummarizerTheme.applyThemeToDocument(t.theme);
-                    if (elements.panelTheme) elements.panelTheme.value = t.theme;
-                }
-                if (t.fontScale !== undefined) {
-                    SummarizerTheme.applyFontScaleToDocument(t.fontScale);
-                    if (elements.panelFontScale) elements.panelFontScale.value = t.fontScale;
-                }
+            if (settings.fontScale !== undefined) {
+                SummarizerTheme.applyFontScaleToDocument(settings.fontScale);
+                if (elements.panelFontScale) elements.panelFontScale.value = settings.fontScale;
             }
             SummarizerSidepanelState.loadSettings(elements).catch(() => {});
-        }
-        if (message.type === MSG.SUMMARY_CHUNK) {
-            if (message.tabId && activeTabId && message.tabId !== activeTabId) return;
-            isStreaming = true;
-            if (message.tabId) activeTabId = message.tabId;
-            renderResult(message.result);
-            setStatus("Generating summary...", "busy");
         }
     });
 
     chrome.tabs.onActivated.addListener(() => refreshActiveTabView().catch(() => {}));
+    chrome.tabs.onRemoved.addListener((tabId) => resultCache.remove(tabId));
     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         if (tab.active && (changeInfo.status === "loading" || changeInfo.status === "complete")) {
             refreshActiveTabView().catch(() => {});
         }
     });
 
-
-    async function setupDisplayControls() {
-        const themeEl = elements.panelTheme;
-        const fontEl = elements.panelFontScale;
-        const languageEl = elements.summaryLanguage;
-        const toneEl = elements.summaryTone;
-        const sizeEl = elements.summarySize;
-        const lengthEl = elements.summaryLength;
-        if (!themeEl && !fontEl && !languageEl && !toneEl && !sizeEl && !lengthEl) return;
-
-        function populateSettingOptions(selectEl, settingKey) {
-            if (!selectEl) return;
-            const values = SummarizerSettingsSchema.getValidValues(settingKey);
-            if (!values) return;
-            selectEl.innerHTML = "";
-            Array.from(values).forEach((value) => {
-                const opt = document.createElement("option");
-                opt.value = value;
-                opt.textContent = value;
-                selectEl.appendChild(opt);
-            });
-        }
-
-        populateSettingOptions(toneEl, "summaryTone");
-        populateSettingOptions(sizeEl, "summarySize");
-        populateSettingOptions(lengthEl, "summaryLength");
-
-        try {
-            const settings = await SummarizerStorage.getSettings();
-            if (themeEl) themeEl.value = settings.theme || "system";
-            if (fontEl) fontEl.value = settings.fontScale || "md";
-            if (languageEl) {
-                populateLanguageOptions(languageEl, settings);
-                languageEl.value = settings.summaryLanguage || "English";
-                if (!languageEl.value) languageEl.value = "English";
-            }
-            if (toneEl) toneEl.value = settings.summaryTone || "Simple";
-            if (sizeEl) sizeEl.value = settings.summarySize || "Medium";
-            if (lengthEl) lengthEl.value = settings.summaryLength || "Medium";
-            SummarizerTheme.applyThemeToDocument(settings.theme || "system");
-            SummarizerTheme.applyFontScaleToDocument(settings.fontScale || "md");
-        } catch (_) {}
-
-        function populateLanguageOptions(selectEl, settings) {
-            const customList = String(settings.customLanguages || "").split(",").map((l) => String(l || "").trim()).filter(Boolean);
-            const langs = Array.from(new Set(["English", "Vietnamese", ...customList]));
-            selectEl.innerHTML = "";
-            langs.forEach((lang) => {
-                const opt = document.createElement("option");
-                opt.value = lang;
-                opt.textContent = lang;
-                selectEl.appendChild(opt);
-            });
-        }
-
-        async function persistSetting(partial) {
-            try {
-                await SummarizerStorage.saveSettings(partial);
-            } catch (_) {}
-        }
-
-        if (themeEl) {
-            themeEl.addEventListener("change", async () => {
-                SummarizerTheme.applyThemeToDocument(themeEl.value);
-                await persistSetting({ theme: themeEl.value });
-            });
-        }
-        if (fontEl) {
-            fontEl.addEventListener("change", async () => {
-                SummarizerTheme.applyFontScaleToDocument(fontEl.value);
-                await persistSetting({ fontScale: fontEl.value });
-            });
-        }
-        if (languageEl) {
-            languageEl.addEventListener("change", async () => {
-                await persistSetting({ summaryLanguage: languageEl.value });
-            });
-        }
-        if (toneEl) {
-            toneEl.addEventListener("change", async () => {
-                await persistSetting({ summaryTone: toneEl.value });
-            });
-        }
-        if (sizeEl) {
-            sizeEl.addEventListener("change", async () => {
-                await persistSetting({ summarySize: sizeEl.value });
-            });
-        }
-        if (lengthEl) {
-            lengthEl.addEventListener("change", async () => {
-                await persistSetting({ summaryLength: lengthEl.value });
-            });
-        }
-    }
-
-    // Init
-    setGroundingMode("source");
+    chat.setGroundingMode("source");
     setupReadingProgress();
-    setupDisplayControls();
     setupHighlightToAsk();
-    setupTranscriptToggle();
-    setupTranscriptFilter();
+    setupTranscript();
     setupKeyboardShortcuts();
+    setupDisplayControls();
     SummarizerSidepanelState.loadSettings(elements).catch(() => {});
     SummarizerTheme.watchSystemTheme(() => {
         SummarizerStorage.getSettings().then((settings) => {

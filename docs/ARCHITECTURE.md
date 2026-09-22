@@ -2,13 +2,10 @@
 
 ## Overview
 
-The extension is a Manifest V3 extension with Chrome and Firefox runtime packages. Chrome uses
-the Side Panel API; the Firefox package uses `sidebar_action` and the native sidebar. A small
-browser compatibility facade keeps callback-style legacy modules working against Firefox's
-Promise-based APIs.
+The extension is a Chrome Manifest V3 extension that uses the Side Panel API.
 
 1. content-script extraction
-2. background orchestration and per-tab state
+2. background orchestration and active request state
 3. prompt construction and provider generation
 4. side-panel rendering and options management
 
@@ -17,7 +14,7 @@ Promise-based APIs.
 ```text
 side panel -> background -> content script -> extractor
            -> prompt builder -> provider -> cleaner/parser
-           -> quality gate -> storage -> side panel
+           -> quality gate -> side panel
 ```
 
 Extraction priority is:
@@ -39,11 +36,11 @@ Extraction priority is:
 
 ### Background
 
-- `lib/background/summary-service.js`: extraction, prompt calls, retries, semantic chunking, synthesis, streaming, quality repair, follow-ups
+- `lib/background/summary-service.js`: summary orchestration, quality repair, cancellation ownership, follow-ups
+- `lib/background/generation-service.js`: provider execution, retry, semantic chunking, synthesis, and throttled streaming
+- `lib/background/result-builder.js`: full results and compact stream/floating-UI projections
 - `lib/background/tab-manager.js`: active-tab routing, content-script injection, side-panel open, tab cleanup
-- `lib/background/workflow-store.js`: per-tab workflow phases
 - `lib/background/ui-notifier.js`: progress and result notifications
-- `lib/tab-cache-service.js`: in-memory per-tab result/conversation cache restored on tab switch
 
 ### Extraction
 
@@ -71,7 +68,8 @@ Extraction priority is:
 - `lib/providers/gemini.js`, `openai.js`, `local.js`: endpoint-specific provider implementations (the local provider covers Ollama and OpenAI-compatible/LM Studio-style endpoints)
 - `lib/cleaners.js`: response cleaning and heading-based parsing
 - `lib/markdown.js`: rendered Markdown
-- `sidepanel.js`: Markdown/plain-text export actions
+- `lib/sidepanel/chat.js`: grounding, bounded follow-up context, and in-session conversation
+- `lib/sidepanel/actions.js`: summary/transcript copy and export actions
 
 ### Quality, chunking, and settings
 
@@ -81,7 +79,7 @@ Extraction priority is:
 
 ### UI and persistence
 
-- `lib/storage.js`: browser local storage wrappers, schema-backed settings, and tab-scoped data
+- `lib/storage.js`: cached browser-local settings with serialized writes and schema normalization
 - `lib/sidepanel/state.js`, `lib/sidepanel/render.js`: side-panel state/render helpers
 - `lib/sidepanel/toc.js`: Deep/Long result table of contents and scroll tracking
 - `lib/transcript-export.js`: timestamped transcript copy and SRT serialization
@@ -105,19 +103,18 @@ The envelope applies safety rules, settings (including output language), source 
 
 ## Output Contract
 
-Standard summaries use parser-safe headings such as `Summary`, `Key Takeaways`, `Main Points`, `Detailed Breakdown`, `Expert Commentary`, and `Follow-up Questions`. YouTube also uses `Details of the Video`.
+Standard summaries use the canonical headings `Main Summary`, `Executive Takeaways`, `Complete Guided Walkthrough`, `Caveats, Biases & Open Questions`, `Memory & Review Kit`, and `Follow-up Questions`. YouTube also uses `Details of the Video`. Custom prompt-requested `##` sections are preserved and rendered after these canonical sections without entering the quality repair contract.
 
-Deep summaries add:
+Analysis and deep summaries add:
 
-- `Evidence and Details`
+- `Reasoning, Evidence & Claim Audit`
 - `Connections, Causes & Tradeoffs` (parsed into `argumentAndInsight`)
-- `Concept Map and Prerequisites` / `Concepts, Definitions & Mental Models`
-- `Causal and Knowledge Flow`
-- `Perspectives and Uncertainty`
+- `Concepts, Definitions & Mental Models`
+- `Practical Application` when the source or mode supports it
 
-`lib/cleaners.js` maps these headings to the saved result object. Heading changes require parser and UI review.
+`lib/cleaners.js` maps these headings to the result object held by the active side-panel session. Heading changes require parser and UI review.
 
-Saved results may also include:
+Session results may also include:
 
 ```js
 {
@@ -135,17 +132,17 @@ Saved results may also include:
 `lib/settings-schema.js` owns defaults, valid enums, and field normalization. `lib/storage.js` delegates to the schema when loaded and exposes:
 
 - `getSettings()` / `saveSettings()`
-Unknown keys pass through so older stored fields remain intact. Storage keys themselves are unchanged.
+Unknown settings keys pass through so older preferences remain intact. Legacy result, conversation, and workflow keys are removed during extension install/update.
 
 ## Quality Gate and Repair
 
-After parsing, `lib/summary-quality.js`:
+After parsing, `lib/summary-quality.js` evaluates output before notifying the side panel:
 
 1. Builds a required/recommended section contract from source type, size, and length.
 2. Scores section length, list counts, timestamps (YouTube), placeholders, and coverage.
 3. For Deep/Long failures, runs one targeted repair request for weak/missing sections only.
 4. Merges repaired sections without discarding healthy ones.
-5. Attaches quality metadata for the side-panel badge and weak-section styling.
+5. Attaches quality metadata for internal repair and weak-section styling; redundant quality badges are not shown in the side panel.
 
 
 ## User Gestures and Side Panel Opening
@@ -154,10 +151,11 @@ To open the Chrome side panel from a context menu or keyboard command, the call 
 
 ## Side Panel Lifecycle
 
-- Results, conversations, and workflow state are keyed by tab ID.
-- Switching tabs refreshes the panel from the newly active tab and ignores stale messages whose `tabId` does not match.
-- Closing a tab clears that tab's saved result, conversation, and workflow state.
+- The active panel keeps the current result and follow-up conversation in memory for the current session.
+- Switching tabs clears the panel result and conversation; stale messages whose `tabId` does not match are ignored.
+- Reloading the panel or extension does not restore result, conversation, or workflow state.
 - Transcript is collapsed by default and shows only `[mm:ss]` / `[hh:mm:ss]` timestamps.
+- Transcript rows are created only on first expansion, avoiding hidden long-list DOM work during result rendering.
 - Section expansion policy:
   - Brief/Medium: first substantive section expanded
   - Deep: first three substantive sections expanded
@@ -167,9 +165,9 @@ To open the Chrome side panel from a context menu or keyboard command, the call 
 
 ## Storage and Lifecycle
 
-Results, conversations, and workflow state are keyed by tab ID. A new summary clears the prior conversation for that tab. Closing a tab removes its saved result, conversation, and workflow state.
+Only settings are persisted. Results, conversations, and workflow progress are session-only; the side panel keeps a bounded in-memory cache of recent results for tab switching and clears entries when tabs close.
 
-The extension requests `unlimitedStorage` and uses `chrome.storage.local`; data is local to the browser profile.
+The extension uses `chrome.storage.local` for settings; provider credentials and preferences remain local to the browser profile.
 
 ## Provider Interface
 
@@ -179,4 +177,6 @@ Providers remain prompt-agnostic. The registry supplies provider-specific settin
 generateText(prompt, providerSettings, onChunk?)
 ```
 
-Final generation passes stream tokens when the provider supports it. Chunking/synthesis intermediate requests stay buffered. Streamed text is parsed incrementally and rendered in the side panel via `SUMMARY_CHUNK`, then finalized with `SUMMARY_UPDATED`. Cancellation uses a per-tab `AbortController` merged into the provider signal.
+Final generation passes stream tokens when the provider supports it. Chunking/synthesis intermediate requests stay buffered. Accumulated text is parsed and emitted as a compact `SUMMARY_CHUNK` projection at most every 250 ms, then finalized with `SUMMARY_UPDATED`. Cancellation uses an identity-checked per-tab `AbortController` merged into the provider signal.
+
+The manifest loads only the lightweight page UI/message shell on ordinary pages. The shell requests only public `theme` and `showFloatingUi` values from the background; provider settings remain in extension contexts. `tab-manager.js` injects extractor modules on the first extraction request for each document, then retries the request once. This keeps extraction code off pages that are never summarized.

@@ -55,7 +55,7 @@ Selected text has priority over all other source types. When no selection exists
 
 - **Brief**: essential conclusion and three takeaways
 - **Medium**: standard structured result
-- **Deep**: comprehensive summary with Evidence and Details, Connections Causes & Tradeoffs, Concept Map and Prerequisites, Causal and Knowledge Flow, and Perspectives and Uncertainty
+- **Deep**: comprehensive summary with Reasoning, Evidence & Claim Audit, Connections, Causes & Tradeoffs, Concepts, Definitions & Mental Models, and Memory & Review Kit
 
 ## Summary Tones
 
@@ -89,17 +89,16 @@ The formula is:
 
 Completed summaries may display:
 
-- **Main Summary** / **Summary** – main conclusion
-- **Key Takeaways** – bulleted main insights
-- **Main Points** – detailed summary of the key content
+- **Main Summary** – main conclusion
+- **Executive Takeaways** – bulleted main insights
 - **Details of the Video** (YouTube only) – walkthrough of the video narrative
-- **Detailed Breakdown** / **Complete Guided Walkthrough** – topic-by-topic explanation
-- **Expert Commentary** – analysis and evaluation
-- **Evidence and Details** (Deep) – supporting evidence and claims
+- **Complete Guided Walkthrough** – topic-by-topic explanation
+- **Caveats, Biases & Open Questions** – limitations and unresolved issues
+- **Memory & Review Kit** (Deep/Study) – review prompts and recall aids
+- **Reasoning, Evidence & Claim Audit** (Deep) – supporting evidence and claims
 - **Connections, Causes & Tradeoffs** (Deep) – dependencies and tradeoffs
-- **Concept Map and Prerequisites** (Deep) – structured concept hierarchy
-- **Causal and Knowledge Flow** (Deep) – causal links in the material
-- **Perspectives and Uncertainty** (Deep) – alternative viewpoints and open questions
+- **Concepts, Definitions & Mental Models** (Deep) – structured concept hierarchy
+- **Practical Application** (when supported) – source-grounded actions and decisions
 - **Follow-up Questions** – suggested questions for deeper exploration
 
 ## Section Expansion
@@ -112,17 +111,11 @@ Sections are collapsible. Initial expansion depends on size and length:
 
 Expand All and Collapse All buttons appear when multiple Deep sections are available.
 
+Custom prompt presets may request additional `##` sections. These appear after the standard sections and are included in Markdown and plain-text exports.
+
 ## Transcript
 
 When the source is a YouTube video, the transcript is displayed collapsed by default. Click the transcript toggle button to expand it. Timestamps are shown as `[mm:ss]` or `[hh:mm:ss]`. Use **Copy** to copy the timestamped transcript or **Download SRT** to save subtitle cues for a video editor or media player.
-
-## Quality Badge
-
-After a Deep or Long summary completes, a small badge at the top left of the summary area shows the coverage score (e.g. "Coverage solid  92%"). If the score is low, it shows "Coverage needs work" with short descriptions.
-
-## Execution Metadata
-
-After a summary completes, a badge below the title shows total token usage (if reported by the provider) and the time it took to generate.
 
 ## Output Language
 
@@ -132,10 +125,10 @@ Select a language (`English` or `Vietnamese`) in the side-panel language dropdow
 
 Ask questions in the side panel after a summary completes. Use the toggle in the Follow-up header to choose between two modes:
 
-- **Source (default)**: Answers are strictly grounded in the saved summary, relevant excerpts, recent conversation, and source content.
+- **Source (default)**: Answers are strictly grounded in the current session summary, relevant excerpts, recent conversation, and source content.
 - **General**: Answers leverage the model's broader knowledge base without requiring or referencing the tab's source content.
 
-Suggested question chips follow the currently selected mode. The text selection "Ask about this" tooltip remains **Source** mode because it is explicitly tied to the selected source text. A new summary clears prior follow-up history for that tab.
+Suggested question chips follow the currently selected mode. The text selection "Ask about this" tooltip remains **Source** mode because it is explicitly tied to the selected source text. Follow-up history lasts only for the active panel session and is cleared by a new summary, tab switch, panel reload, or extension restart.
 
 ## Providers
 
@@ -145,9 +138,9 @@ Suggested question chips follow the currently selected mode. The text selection 
 
 ## Tab Lifecycle
 
-- Results are per-tab. Switching tabs shows that tab's saved summary.
-- The side panel content updates on tab switch.
-- Closing a tab clears its saved result and conversation.
+- Results exist only for the active panel session.
+- Switching tabs clears the current result and conversation.
+- Panel or extension reloads do not restore previous summaries or conversations.
 
 ## Export
 

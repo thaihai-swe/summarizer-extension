@@ -90,6 +90,18 @@
             .slice(0, 5)
             .map((item) => `<li>${SummarizerMarkdown.escapeHtml(item)}</li>`)
             .join("");
+        const isConcepts = String(state.latestResult.promptMode || "").toLowerCase() === "concepts";
+        const overviewMarkup = isConcepts
+            ? "<p class=\"summary\">Open the side panel to view the Concepts mode result.</p>"
+            : `
+      <section>
+        <h4>Main Summary</h4>
+        <div class="summary">${SummarizerMarkdown.renderMarkdown(state.latestResult.summary || "")}</div>
+      </section>
+      <section>
+        <h4>Executive Takeaways</h4>
+        <ul>${takeaways || "<li>No takeaways returned.</li>"}</ul>
+      </section>`;
 
         state.panel.innerHTML = `
       <div class="head">
@@ -99,14 +111,7 @@
       <p class="meta">${SummarizerMarkdown.escapeHtml(state.latestResult.sourceType || "")}${
             state.latestResult.promptMode ? " · " + SummarizerMarkdown.escapeHtml(state.latestResult.promptMode) : ""
         }</p>
-      <section>
-        <h4>Summary</h4>
-        <div class="summary">${SummarizerMarkdown.renderMarkdown(state.latestResult.summary || "")}</div>
-      </section>
-      <section>
-        <h4>Key Takeaways</h4>
-        <ul>${takeaways || "<li>No takeaways returned.</li>"}</ul>
-      </section>
+      ${overviewMarkup}
       <div class="actions">
         <button type="button" data-copy>Copy</button>
         <button type="button" data-retry>Retry</button>
@@ -144,7 +149,7 @@
                     "",
                     result.summary || "",
                     "",
-                    "Key Takeaways",
+                    "Executive Takeaways",
                     ...(result.keyTakeaways || []).map((item) => "- " + item)
                 ].join("\n");
                 await navigator.clipboard.writeText(text);
@@ -392,25 +397,27 @@
         state.panel = null;
     }
 
+    function applyPublicSettings(settings) {
+        state.enabled = Boolean(settings && settings.showFloatingUi);
+        state.theme = settings && settings.theme || "system";
+        if (state.enabled) {
+            createUi();
+            applyTheme(state.theme);
+            if (!state.stopThemeWatch && globalThis.SummarizerTheme && SummarizerTheme.watchSystemTheme) {
+                state.stopThemeWatch = SummarizerTheme.watchSystemTheme(() => {
+                    if ((state.theme || "system") === "system") applyTheme("system");
+                });
+            }
+        } else {
+            destroyUi();
+        }
+    }
+
     async function syncUiEnabled() {
         try {
-            const settings = await SummarizerStorage.getSettings();
-            state.enabled = settings.showFloatingUi !== false;
-            state.theme = settings.theme || "system";
-
-            if (state.enabled) {
-                createUi();
-                applyTheme(state.theme);
-                if (!state.stopThemeWatch && globalThis.SummarizerTheme && SummarizerTheme.watchSystemTheme) {
-                    state.stopThemeWatch = SummarizerTheme.watchSystemTheme(() => {
-                        if ((state.theme || "system") === "system") {
-                            applyTheme("system");
-                        }
-                    });
-                }
-            } else {
-                destroyUi();
-            }
+            const response = await chrome.runtime.sendMessage({ type: MSG.GET_PUBLIC_SETTINGS });
+            if (!response || !response.ok) throw new Error("Public settings are unavailable.");
+            applyPublicSettings(response.settings);
         } catch (error) {
             console.warn("[Summarizer] Failed to sync floating UI:", error);
         }
@@ -418,6 +425,14 @@
 
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (message.type === MSG.FETCH_COURSE_CONTENT) {
+            if (!globalThis.SummarizerSelectedTextExtractor || !globalThis.SummarizerCourseExtractor) {
+                sendResponse({
+                    ok: false,
+                    code: "EXTRACTORS_NOT_READY",
+                    error: "Extractors are not loaded yet."
+                });
+                return true;
+            }
             const selectedText = SummarizerSelectedTextExtractor.extractSelectedText();
             if (selectedText) {
                 sendResponse({ ok: true, data: selectedText });
@@ -440,6 +455,7 @@
             if (!extractors || typeof extractors.extractBestContent !== "function") {
                 sendResponse({
                     ok: false,
+                    code: "EXTRACTORS_NOT_READY",
                     error: "The page extraction module is not ready. Refresh the page and try again."
                 });
                 return true;
@@ -472,11 +488,7 @@
         }
 
         if (message.type === MSG.SETTINGS_UPDATED) {
-            if (message.settings && message.settings.theme) {
-                state.theme = message.settings.theme;
-                applyTheme(state.theme);
-            }
-            syncUiEnabled().catch(() => { });
+            applyPublicSettings(message.settings || {});
         }
     });
 

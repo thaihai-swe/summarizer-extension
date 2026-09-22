@@ -2,5 +2,4 @@
 *.diff
 .hallmark/
 _site/
-.output/
 dist/

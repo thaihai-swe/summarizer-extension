@@ -495,7 +495,7 @@
                     "Section contract: the exact ordered headings the model must return.",
                     "",
                     "Worked example:",
-                    "A medium webpage summary asks for Summary, Key Takeaways, Main Points, Detailed Breakdown, Expert Commentary, and Follow-up Questions.",
+                    "A medium webpage summary asks for Main Summary, Executive Takeaways, Complete Guided Walkthrough, Caveats, Biases & Open Questions, and Follow-up Questions.",
                     "",
                     "Practice:",
                     "Rewrite a vague instruction into a grounded section-level instruction that does not invent missing facts."

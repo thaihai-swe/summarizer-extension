@@ -65,7 +65,7 @@
 ## Quality Gate Repair Fails
 
 - Check the service-worker console for repair prompt errors.
-- The repair runs once per summary; if it fails, the original output is saved without quality improvements.
+- The repair runs once per summary; if it fails, the original output is returned without quality improvements.
 - Brief mode does not trigger repair.
 
 ## Semantic Chunking Skipped
@@ -80,9 +80,9 @@
 - Stale messages from previous tabs are ignored by `tabId` match.
 - If content does not refresh, reload the extension from `chrome://extensions/`.
 
-## Saved Result or Follow-Up Problems
+## Result or Follow-Up Problems
 
-- Results and conversation are tab-specific.
+- Results and conversation exist only in the active panel session.
 - A new summary clears old follow-up history.
-- Closing a tab clears stored data for that tab.
-- Switch tabs and switch back to retrigger a fresh panel state.
+- Switching tabs clears the current panel state.
+- Reloading the panel or extension does not restore prior results or conversation.

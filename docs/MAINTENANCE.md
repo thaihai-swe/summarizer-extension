@@ -49,7 +49,13 @@
 
 ## State Changes
 
-Keep results, conversations, and workflow state scoped to tab ID. Preserve cleanup when tabs close and conversation reset when summaries regenerate.
+Keep results and conversations scoped to the active side-panel session. Do not reintroduce persistent storage for results, conversations, or workflow progress. The side panel may retain a small bounded in-memory result cache so switching tabs restores recent results; clear the entry when a tab is closed or a new summary replaces it.
+
+## Runtime Performance
+
+- Keep always-loaded content scripts limited to the lightweight page shell; add extraction dependencies to the on-demand list in `tab-manager.js`.
+- Keep stream and floating-UI payload projections in `result-builder.js`; do not attach full sources to cross-context progress messages.
+- Render long transcript DOM only after expansion and batch high-frequency scroll, filter, and stream updates.
 
 
 ## Custom Prompt Presets

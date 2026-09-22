@@ -1,17 +1,12 @@
 # Storage & Data Management
 
-The extension uses `chrome.storage.local` through `lib/storage.js` for persistent settings and data. In-memory caching for faster tab switching is managed by `lib/tab-cache-service.js`.
+The extension uses `chrome.storage.local` through `lib/storage.js` for persistent settings only. Results, follow-up conversations, and workflow state are session-only and are held only while the active side panel/background workflow is alive.
+
+Each extension context caches normalized settings after its first read. `chrome.storage.onChanged` refreshes that cache, and writes are serialized so rapid control changes cannot overwrite one another. Callers receive defensive copies and cannot mutate the cached settings object.
 
 ## Storage Keys
 
 - `summarizerSettings`: global settings
-- `summarizerResultsByTab`: saved results keyed by tab ID
-- `summarizerConversationsByTab`: follow-up history keyed by tab ID
-- `summarizerWorkflowByTab`: workflow status keyed by tab ID
-
-## In-Memory Cache Keys
-
-`lib/tab-cache-service.js` keeps an in-memory map of saved results keyed by tab ID.
 
 ## Settings
 
@@ -29,7 +24,7 @@ preserving source grounding, safety rules, output language, and parser-safe head
 
 ## Result execution metadata
 
-Saved results may include an `execution` object:
+Session results may include an `execution` object:
 
 ```js
 {
@@ -100,14 +95,14 @@ Legacy `density` values are ignored during normalization and are removed the nex
 
 ## Results Object
 
-Results contain source metadata, content snapshots, parsed standard sections, and Deep sections. See `docs/API.md` and `lib/cleaners.js` for the complete result shape.
+Results contain source metadata, content snapshots, parsed standard sections, and Deep sections. They are kept in the open side panel session only. See `docs/API.md` and `lib/cleaners.js` for the complete result shape.
 
 ## Lifecycle
 
-- Follow-up conversation entries store `{ question, answer, type: "user-question", grounding: "source" | "open", timestamp }`. Older entries without `grounding` are treated as source-grounded.
-- A new summary clears the follow-up conversation for that tab.
-- Closing a tab clears its result, conversation, workflow, and in-memory cache.
-- Switching tabs restores cached data. Results and conversations are isolated by tab ID.
+- Follow-up conversation entries use `{ question, answer, type: "user-question", grounding: "source" | "open" }` in the active panel session.
+- A new summary clears the active follow-up conversation.
+- Closing or switching tabs clears the active result and conversation from the panel.
+- Reloading the panel or extension does not restore result, conversation, or workflow state.
 - Settings are global.
 
 ## Settings Validation and Schema Helpers
@@ -121,7 +116,7 @@ Results contain source metadata, content snapshots, parsed standard sections, an
 
 ## Result Metadata and Quality Block
 
-Saved results include:
+Session results include:
 
 ```js
 {
@@ -138,4 +133,4 @@ Saved results include:
 }
 ```
 
-Older saved results without quality metadata continue to render normally without a quality badge.
+Older result objects without quality metadata continue to render normally without a quality badge.

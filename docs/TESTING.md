@@ -1,6 +1,13 @@
 # Testing Guide
 
-There is no automated build or test suite. Validate behavior by loading the extension unpacked.
+Run the focused runtime checks first:
+
+```bash
+node --test tests/runtime-performance.test.js
+node scripts/print-prompt-snapshots.js
+```
+
+There is no full browser automation suite, so also validate behavior by loading the extension unpacked.
 
 ## Load and Reload
 
@@ -8,9 +15,6 @@ There is no automated build or test suite. Validate behavior by loading the exte
 2. Enable Developer mode
 3. Click **Load unpacked** and choose the repository root
 4. Reload the extension after code changes
-
-For Firefox, run `node scripts/prepare-firefox.mjs` and load `.output/firefox/manifest.json`
-from `about:debugging#/runtime/this-firefox`.
 
 ## Summary Coverage
 
@@ -36,7 +40,7 @@ For each, verify the correct source type, title, URL, and summary sections are s
 ## Prompt Mode Coverage
 
 Verify all modes:
-- summarize: clear overview with Summary and Key Takeaways
+- summarize: clear overview with Main Summary and Executive Takeaways
 - analyze: claims/evidence separation and Missing Context & Limitations
 - explain: progressive explanation
 - debate: `[Pro]`, `[Con]`, `[Balanced]` prefixes
@@ -67,24 +71,32 @@ Verify all modes:
 - Switch to **General**, click a suggested question chip, and verify it executes in **General** mode; switch back to **Source** and verify the same chip uses source grounding
 - Use highlight tooltip "Ask about this" and verify it executes in **Source** mode
 - Generate a new summary and verify old conversation clears
-- Open multiple tabs and verify saved results remain isolated
-- Close a summarized tab and verify its state clears
+- Switch tabs and verify the current panel result and conversation clear
+- Reload the panel or extension and verify no prior result or conversation is restored
 
 ## Streaming and Cancellation Coverage
 
 - Verify SUMMARY_CHUNK messages arrive and the side panel renders incremental sections
+- Verify chunk messages arrive no more than four times per second and contain no source, transcript, or raw model-output fields
+- Verify transcript rows do not exist until the transcript is expanded; then verify filtering and line copy
 - Verify Cancel button appears during generation
-- Cancel mid-generation and confirm no partial result is saved
-- Verify the workflow state shows cancelled
+- Cancel mid-generation and confirm no partial result is shown as complete
+- Cancel during the retry delay and Gemini direct-video generation; confirm no fallback request continues
+
+## Loading and Payload Coverage
+
+- On a newly loaded ordinary page, verify extractor globals are absent before the first summary request
+- Generate once and verify extractors are injected and extraction retries successfully
+- Generate again and verify the already-loaded extractors are reused
+- Verify the floating page UI receives only title/source/mode/summary/takeaway fields
+- Verify content-script settings updates contain no provider credentials
 
 ## Tab Switch Coverage
 
 - Open the side panel on Tab A, start a summary
-- Switch to Tab B: verify Tab A's content is not visible
-- Switch back to Tab A: verify the panel refreshes correctly
+- Switch to Tab B: verify Tab A's content is cleared
+- Switch back to Tab A: verify no persisted result is restored
 - Verify extension icon opens the panel for the currently active tab
-- Firefox temporary add-on: toolbar action opens the native sidebar and a summary survives tab switching
-
 ## Settings Coverage
 
 - Verify output language setting persists and affects generated output

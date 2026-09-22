@@ -14,10 +14,10 @@ Browser extension for summarizing YouTube videos, webpages, selected text, PDFs,
 - Summarizes course lessons:
   - Udemy lesson pages
   - Coursera lesson and supplement pages
-- Supports follow-up Q&A in Source mode (grounded in the saved summary) or General mode (open knowledge, not limited to the page)
+- Supports follow-up Q&A in Source mode (grounded in the current session summary) or General mode (open knowledge, not limited to the page)
 - Exports summaries as Markdown or plain text
 - Copies YouTube transcripts and downloads timestamped SRT subtitle files
-- Supports Chrome Side Panel and a Firefox native sidebar package
+- Supports Chrome's Side Panel API
 - Creates reusable Custom Prompt Presets from the Options page
 - Starts summaries from the page context menu or `Ctrl+Shift+S` (`Cmd+Shift+S` on macOS)
 - Shows available token usage and generation duration after completion
@@ -38,12 +38,14 @@ The `local` provider supports a configurable OpenAI-compatible or Ollama-style e
 ## Current Summary Behavior
 
 - Side panel is the primary UI
-- Results, conversations, and workflow state are stored per tab
-- Closing a tab clears that tab's saved result, conversation, and workflow state
-- Switching tabs refreshes the side panel from the newly active tab
+- Results, follow-up history, and workflow progress are session-only
+- Switching tabs clears the current panel state
+- Panel or extension reloads do not restore previous summaries or conversations
 - Normal YouTube and webpage summaries usually use 1 provider request
 - Long sources can use semantic chunking (up to 4 chunk requests plus synthesis)
 - Final responses stream into the side panel when the selected provider supports streaming
+- Extractor modules load on the first summary request instead of on every webpage
+- Transcript rows render only when the collapsed transcript is opened
 - Deep/Long summaries run a quality gate and may trigger one targeted repair pass
 - Context-menu and keyboard launches open the side panel synchronously before summary work begins
 
@@ -88,6 +90,8 @@ The codebase is split into small modules instead of monolithic extractor or prom
 - Background orchestration:
   - [background.js](/background.js)
   - [lib/background/tab-manager.js](/lib/background/tab-manager.js)
+  - [lib/background/generation-service.js](/lib/background/generation-service.js)
+  - [lib/background/result-builder.js](/lib/background/result-builder.js)
   - [lib/background/summary-service.js](/lib/background/summary-service.js)
   - [lib/background/ui-notifier.js](/lib/background/ui-notifier.js)
 - Side panel UI:

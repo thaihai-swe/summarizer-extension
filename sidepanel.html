@@ -104,59 +104,6 @@
                 </fieldset>
             </div>
 
-            <!-- Multi-Phase Generation Stepper (visible during active generation) -->
-            <div id="workflow-stepper" class="workflow-stepper" aria-live="polite" aria-label="Generation progress" hidden>
-                <div class="stepper-track">
-                    <div class="stepper-step" data-step="extract">
-                        <div class="stepper-node" aria-hidden="true">
-                            <svg class="step-icon step-icon-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 8 6 11 13 4"/></svg>
-                            <svg class="step-icon step-icon-active" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/></svg>
-                            <span class="step-icon step-icon-idle" aria-hidden="true">1</span>
-                        </div>
-                        <div class="stepper-label">
-                            <span class="step-name">Extract</span>
-                            <span class="step-detail"></span>
-                        </div>
-                    </div>
-                    <div class="stepper-connector" aria-hidden="true"></div>
-                    <div class="stepper-step" data-step="chunk">
-                        <div class="stepper-node" aria-hidden="true">
-                            <svg class="step-icon step-icon-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 8 6 11 13 4"/></svg>
-                            <svg class="step-icon step-icon-active" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/></svg>
-                            <span class="step-icon step-icon-idle" aria-hidden="true">2</span>
-                        </div>
-                        <div class="stepper-label">
-                            <span class="step-name">Analyze</span>
-                            <span class="step-detail"></span>
-                        </div>
-                    </div>
-                    <div class="stepper-connector" aria-hidden="true"></div>
-                    <div class="stepper-step" data-step="synthesis">
-                        <div class="stepper-node" aria-hidden="true">
-                            <svg class="step-icon step-icon-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 8 6 11 13 4"/></svg>
-                            <svg class="step-icon step-icon-active" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/></svg>
-                            <span class="step-icon step-icon-idle" aria-hidden="true">3</span>
-                        </div>
-                        <div class="stepper-label">
-                            <span class="step-name">Synthesize</span>
-                            <span class="step-detail"></span>
-                        </div>
-                    </div>
-                    <div class="stepper-connector" aria-hidden="true"></div>
-                    <div class="stepper-step" data-step="quality">
-                        <div class="stepper-node" aria-hidden="true">
-                            <svg class="step-icon step-icon-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 8 6 11 13 4"/></svg>
-                            <svg class="step-icon step-icon-active" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/></svg>
-                            <span class="step-icon step-icon-idle" aria-hidden="true">4</span>
-                        </div>
-                        <div class="stepper-label">
-                            <span class="step-name">Quality</span>
-                            <span class="step-detail"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <section class="workspace">
                 <div id="empty-state" class="empty-state">
                     <svg class="empty-illustration" viewBox="0 0 120 120" fill="none" aria-hidden="true">
@@ -178,7 +125,6 @@
 
                 <div id="summary-content" hidden>
                     <header class="result-header">
-                        <p class="section-kicker">Current result</p>
                         <h2 id="panel-title" class="summary-title">Main Summary</h2>
                     </header>
 
@@ -190,7 +136,7 @@
                         <ol id="result-toc-list" class="result-toc-list"></ol>
                     </nav>
 
-                    <div class="summary-overview">
+                    <div id="summary-overview" class="summary-overview">
                         <article id="summary-overview-card" class="content-card lead-card" data-toc-label="Main Summary" aria-labelledby="summary-heading">
                             <div class="section-head">
                                 <h3 id="summary-heading">Main Summary</h3>
@@ -281,8 +227,11 @@
     <script src="lib/sidepanel/state.js"></script>
     <script src="lib/sidepanel/visual-renderers.js"></script>
     <script src="lib/sidepanel/toc.js"></script>
+    <script src="lib/sidepanel/result-cache.js"></script>
     <script src="lib/transcript-export.js"></script>
     <script src="lib/sidepanel/render.js"></script>
+    <script src="lib/sidepanel/chat.js"></script>
+    <script src="lib/sidepanel/actions.js"></script>
     <script src="sidepanel.js"></script>
 </body>
 

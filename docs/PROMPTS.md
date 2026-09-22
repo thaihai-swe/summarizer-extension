@@ -37,7 +37,8 @@ Summary-result prompts ask the model to use Markdown bold syntax (`**text**`) sp
 Important constraints:
 
 - Source grounding rules remain active, but prompts no longer instruct the model to produce bracketed claim labels such as `[DIRECTLY STATED]`, `[PARAPHRASE]`, `[INFERENCE]`, or `[OPINION]`.
-- Heading names (e.g. `Connections, Causes & Tradeoffs`) are parsed directly; do not change them without updating `lib/cleaners.js` and `lib/sidepanel/render.js`.
+- Canonical heading names (e.g. `Connections, Causes & Tradeoffs`) are parsed directly; do not rename, omit, or reorder them without updating `lib/cleaners.js`, `lib/sidepanel/render.js`, and the quality contract.
+- Custom prompt instructions may request additional top-level `##` sections. The model appends those sections after the canonical contract and preserves their requested headings exactly. The parser keeps them in `result.sections[]`; nested `###` headings remain inside the parent section content.
 - Providers remain prompt-agnostic. They do not interpret settings or split sections.
 
 ## Summary tone behavior
@@ -88,7 +89,7 @@ Entry:
 - `lib/prompts/builders.js` → `buildDeepDivePrompt(context, question, settings)`
 
 Behavior:
-- Grounds follow-up answers in the saved summary, Deep fields, conversation history, and relevant source context.
+- Grounds follow-up answers in the current session summary, Deep fields, conversation history, and relevant source context.
 - Instructs the model to refuse queries unrelated to the source or summary.
 - Sections: `Answer`, `Evidence From Source`, `Caveats / Open Questions`.
 
@@ -124,6 +125,7 @@ Behavior:
 - Options stores named `{ id, name, systemPrompt, userPrompt }` presets.
 - Selecting a preset sets `promptMode` to that preset id.
 - The selected preset is applied inside the shared prompt envelope as additional system/user guidance.
+- Prompt builders derive preset-specific settings without mutating the cached or caller-owned settings object.
 - Presets do not replace source grounding, safety rules, language rules, section contracts, or parser-safe headings.
 
 ### 6. Prompt enhancement prompt
@@ -140,20 +142,22 @@ Behavior:
 Every prompt includes a section contract matching these exact headers:
 
 ### Standard Headings
-- `Main Summary` / `Summary` (mapped to `summary`)
-- `Key Takeaways` (mapped to `keyTakeaways`)
-- `Main Points` (mapped to `mainPoints`)
+- `Main Summary` (mapped to `summary`)
+- `Executive Takeaways` (mapped to `keyTakeaways`)
 - `Details of the Video` (YouTube only; mapped to `detailsOfVideo`)
-- `Detailed Breakdown` / `Complete Guided Walkthrough` (mapped to `detailedBreakdown`)
-- `Expert Commentary` (mapped to `expertCommentary`)
+- `Complete Guided Walkthrough` (mapped to `detailedBreakdown`)
+- `Caveats, Biases & Open Questions` (mapped to `expertCommentary`)
+- `Memory & Review Kit` (mapped to `reviewKit` when enabled)
 - `Follow-up Questions` (mapped to `followUpQuestions`)
 
-### Deep Headings
-- `Evidence and Details` (mapped to `evidenceAndDetails`)
+### Analysis Headings
+- `Reasoning, Evidence & Claim Audit` (mapped to `evidenceAndDetails`)
 - `Connections, Causes & Tradeoffs` (mapped to `argumentAndInsight`)
-- `Concept Map and Prerequisites` / `Concepts, Definitions & Mental Models` (mapped to `conceptMapAndPrerequisites`)
-- `Causal and Knowledge Flow` (mapped to `causalAndKnowledgeFlow`)
-- `Perspectives and Uncertainty` (mapped to `perspectivesAndUncertainty`)
+- `Concepts, Definitions & Mental Models` (mapped to `conceptMapAndPrerequisites`)
+- `Practical Application` (mapped to `practicalSteps` when applicable)
+
+### Concepts Headings
+- `Concept Map`, `Core Definitions`, `Prerequisites & Misconceptions`, `Practical Steps`, `Pitfalls & Warnings`, and `Resources & Tools` (concepts mode)
 
 ## Output Language Rules
 
@@ -174,7 +178,9 @@ The quality gate also checks source coverage signals in addition to section leng
 
 Prompt instructions do not request bracketed classification labels. Debate and study modes use normal prose, tables, and descriptive subheadings instead.
 
-Follow-up retrieval uses up to five relevant passage matches with two neighboring units around each match and an 8,000-character excerpt budget. The parser accepts additional safe aliases for evidence audits, tradeoffs, practical implications, limitations, and debate sections while preserving canonical internal section keys.
+Follow-up retrieval uses up to five relevant passage matches with two neighboring units around each match and an 8,000-character excerpt budget. The parser recognizes the canonical headings listed above and preserves requested custom top-level sections in `result.sections[]`.
+
+Custom sections render after canonical sections and are included in Markdown/plain-text exports. They contribute to source-coverage diagnostics but are not added to automatic quality-repair targets.
 
 ## Dynamic summary sizing
 

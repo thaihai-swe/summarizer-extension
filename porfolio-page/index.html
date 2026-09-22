@@ -98,7 +98,7 @@
     <section class="hero-section" id="top" aria-labelledby="hero-title">
       <div class="hero-bg-glow" aria-hidden="true"></div>
       <div class="hero-grid-pattern" aria-hidden="true"></div>
-      
+
       <div class="container hero-container">
         <div class="hero-badges">
           <span class="hero-badge hero-badge-accent">
@@ -219,7 +219,7 @@
           <!-- Left: Simulation Controls -->
           <div class="sim-controls-panel">
             <h3 class="sim-panel-title">Demo Controls</h3>
-            
+
             <div class="control-group">
               <label for="sim-source-select" class="control-label">Source Feed</label>
               <select id="sim-source-select" class="custom-select">
@@ -622,7 +622,7 @@
                 <th scope="row">Follow-up questions</th>
                 <td>Ungrounded chat</td>
                 <td>Usually none</td>
-                <td>Grounded in the saved summary and source</td>
+                <td>Grounded in the current session summary and source</td>
               </tr>
               <tr>
                 <th scope="row">Local / private inference</th>
@@ -706,7 +706,7 @@
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 </div>
                 <h3>Web Articles</h3>
-                <p>Employs Mozilla Readability heuristics and a DOM accessibility fallback to strip ads, sidebars, and boilerplates.</p>
+                <p>Employs Readability heuristics and a DOM accessibility fallback to strip ads, sidebars, and boilerplates.</p>
                 <div class="feature-pill-row">
                   <span class="micro-pill">Readability API</span>
                   <span class="micro-pill">Ad-filtered</span>
@@ -968,7 +968,7 @@
             </summary>
             <div class="arch-content-body">
               <p>
-                When generating in <em>Deep</em> or <em>Long</em> modes, the quality gate inspects the parsed AST for section depth, minimum bullet counts, and placeholder avoidance. If a specific section (e.g. <em>Perspectives and Uncertainty</em>) falls below the threshold, a targeted repair prompt regenerates only that section — preserving healthy content and saving 80% of token compute.
+                When generating in <em>Deep</em> or <em>Long</em> modes, the quality gate inspects the parsed AST for section depth, minimum bullet counts, and placeholder avoidance. If a specific section (e.g. <em>Reasoning, Evidence &amp; Claim Audit</em>) falls below the threshold, a targeted repair prompt regenerates only that section — preserving healthy content and saving 80% of token compute.
               </p>
             </div>
           </details>
@@ -983,7 +983,7 @@
             </summary>
             <div class="arch-content-body">
               <p>
-                Because the Chrome side panel remains mounted when a user switches browser tabs, all caches, ongoing workflows, and follow-up conversation histories are keyed by <code>tabId</code>. Switching tabs instantaneously pulls that tab's stored snapshot from an in-memory cache and <code>chrome.storage.local</code>, ignoring cross-talk from background tabs.
+                The Chrome side panel keeps only the active session result and follow-up context in memory. Switching tabs clears the current panel state, avoiding persistent storage work and stale cross-tab data.
               </p>
             </div>
           </details>
@@ -1028,12 +1028,12 @@ You are an expert analytical research assistant. Your task is to transform the p
 4. Tone: Analytical, concise, objective, and dense with actionable insight.
 
 ## MANDATORY HEADING CONTRACT:
-## Summary
-## Key Takeaways
+## Main Summary
+## Executive Takeaways
 ## Details of the Video / Content
 ## Connections, Causes & Tradeoffs (for Deep depth)
-## Evidence and Examples
-## Perspectives and Uncertainty
+## Reasoning, Evidence &amp; Claim Audit
+## Caveats, Biases &amp; Open Questions
 ## Follow-up Questions
 
 {sourceSpecificTemplate}</code></pre>
@@ -1068,7 +1068,7 @@ You are an expert analytical research assistant. Your task is to transform the p
           <div class="decision-box">
             <div class="decision-num">02</div>
             <h3>Heading Alias Contract vs JSON Mode</h3>
-            <p><strong>Decision:</strong> Used markdown headings (<code>## Key Takeaways</code>) instead of JSON Schema generation.</p>
+            <p><strong>Decision:</strong> Used markdown headings (<code>## Executive Takeaways</code>) instead of JSON Schema generation.</p>
             <p><strong>Rationale:</strong> Allows incremental streaming rendering to the user within 300ms. JSON requires buffering the full payload before parsing, which degrades perceived performance.</p>
             <div class="decision-pills">
               <span class="dpill green">Streaming friendly</span>
@@ -1131,7 +1131,7 @@ You are an expert analytical research assistant. Your task is to transform the p
           <article class="security-card">
             <div class="sec-badge sec-badge-success">Transient memory</div>
             <h3>Tab close wipes that tab</h3>
-            <p>Results, follow-up chat, and workflow phase are keyed by tab ID and cleared when the tab goes away. No hidden reading history.</p>
+            <p>Results, follow-up chat, and workflow progress stay in the active side-panel session only. Switching tabs or closing the panel clears them; no hidden reading history.</p>
           </article>
         </div>
       </div>
@@ -1230,7 +1230,7 @@ You are an expert analytical research assistant. Your task is to transform the p
           </details>
           <details class="faq-item">
             <summary>Is browsing history recorded or sent anywhere?</summary>
-            <p>No analytics and no hidden scrape. Content is sent to the provider you configured, and only after you generate. Closing a tab clears that tab’s result, conversation, and workflow state.</p>
+            <p>No analytics and no hidden scrape. Content is sent to the provider you configured, and only after you generate. Results and follow-up context remain session-only and are cleared when the panel session ends.</p>
           </details>
         </div>
       </div>
@@ -1391,7 +1391,7 @@ You are an expert analytical research assistant. Your task is to transform the p
       // 1. Theme Toggle Logic
       var themeToggleBtn = document.getElementById('theme-toggle');
       var htmlEl = document.documentElement;
-      
+
       // Check saved theme or system preference
       var savedTheme = localStorage.getItem('deepdigest-theme');
       if (savedTheme) {
@@ -1690,7 +1690,7 @@ You are an expert analytical research assistant. Your task is to transform the p
 
       function updateSimulation(sourceKey, isAnimated) {
         var data = demoData[sourceKey] || demoData.youtube;
-        
+
         if (simUrlDisplay) simUrlDisplay.textContent = data.url;
         if (simPageTitle) simPageTitle.textContent = data.title;
         if (panelBadgeSource) panelBadgeSource.textContent = data.badge;
@@ -1705,7 +1705,7 @@ You are an expert analytical research assistant. Your task is to transform the p
           if (textSummary) textSummary.textContent = "Streaming tokens...";
           if (textTakeaways) textTakeaways.innerHTML = "<li>Analyzing key takeaways...</li>";
           if (conceptsSection) conceptsSection.hidden = true;
-          
+
           playStepper(function() {
             renderData(data);
             if (panelStatusLabel) panelStatusLabel.textContent = "Summary complete (Quality Validated)";
@@ -1725,7 +1725,7 @@ You are an expert analytical research assistant. Your task is to transform the p
 
       function renderData(data) {
         if (textSummary) textSummary.textContent = data.summary;
-        
+
         if (textTakeaways) {
           var takeawaysHtml = data.takeaways.map(function(item) {
             return "<li>" + item + "</li>";
@@ -1807,7 +1807,7 @@ You are an expert analytical research assistant. Your task is to transform the p
           var targetId = header.getAttribute('data-target');
           var body = document.getElementById(targetId);
           var isExpanded = header.getAttribute('aria-expanded') === 'true';
-          
+
           header.setAttribute('aria-expanded', String(!isExpanded));
           if (body) {
             body.hidden = isExpanded;
@@ -1843,12 +1843,12 @@ You are an expert analytical research assistant. Your task is to transform the p
 4. Tone: Analytical, concise, objective, and dense with actionable insight.
 
 ## MANDATORY HEADING CONTRACT:
-## Summary
-## Key Takeaways
+## Main Summary
+## Executive Takeaways
 ## Details of the Video / Content
 ## Connections, Causes & Tradeoffs (for Deep depth)
-## Evidence and Examples
-## Perspectives and Uncertainty
+## Reasoning, Evidence &amp; Claim Audit
+## Caveats, Biases &amp; Open Questions
 ## Follow-up Questions
 
 {sourceSpecificTemplate}`,

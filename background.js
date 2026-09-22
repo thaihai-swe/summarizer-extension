@@ -22,22 +22,20 @@ if (typeof importScripts === "function") {
         "lib/providers/openai.js",
         "lib/providers/local.js",
         "lib/provider-registry.js",
-        "lib/tab-cache-service.js",
+        "lib/background/result-builder.js",
         "lib/background/tab-manager.js",
-        "lib/background/workflow-store.js",
         "lib/background/ui-notifier.js",
+        "lib/background/generation-service.js",
         "lib/background/summary-service.js"
     );
 }
 
 const MSG = SummarizerMessages.types;
 const openSidePanelsByWindow = new Map();
+
 function openSidePanelForTab(tabId) {
     if (!tabId) return Promise.resolve();
-    if (SummarizerBrowserApi.hasFirefoxSidebar && SummarizerBrowserApi.hasFirefoxSidebar()) {
-        return SummarizerBrowserApi.openPrimarySidebar({ tabId }).catch(() => {});
-    }
-    if (!SummarizerBrowserApi.hasChromeSidePanel || !SummarizerBrowserApi.hasChromeSidePanel()) return Promise.resolve();
+    if (!SummarizerBrowserApi.hasChromeSidePanel()) return Promise.resolve();
     // Must be called synchronously from a user gesture (context menu / command).
     // Do not await anything before this call or Chrome rejects it.
     const openPromise = typeof chrome.sidePanel.open === "function"
@@ -51,7 +49,6 @@ async function startSummaryFromTab(tabId, options = {}) {
     if (!tabId) throw new Error("No active tab found.");
     if (options.promptMode) await SummarizerStorage.saveSettings({ promptMode: options.promptMode });
     const result = await SummarizerSummaryService.summarizeForTab(tabId);
-    SummarizerTabCacheService.cacheResult(tabId, result);
     return result;
 }
 
@@ -64,11 +61,6 @@ function createContextMenus() {
 
 
 SummarizerBrowserApi.configurePrimarySidebarBehavior().catch(() => { });
-
-async function pruneClosedTabState() {
-    const tabs = await chrome.tabs.query({});
-    await SummarizerStorage.pruneClosedTabData(tabs.map((tab) => tab.id).filter(Boolean));
-}
 
 if (chrome.contextMenus && chrome.contextMenus.onClicked) {
     chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -103,22 +95,23 @@ if (chrome.commands && chrome.commands.onCommand) {
 chrome.runtime.onInstalled.addListener(() => {
     createContextMenus();
     SummarizerBrowserApi.configurePrimarySidebarBehavior().catch(() => { });
-    pruneClosedTabState().catch(() => { });
+    // Remove data written by releases that persisted per-tab session state.
+    // This runs only during install/update, not on every service-worker wake.
+    SummarizerStorage.clearLegacySessionData().catch(() => { });
 });
 
 chrome.runtime.onStartup.addListener(() => {
     createContextMenus();
     SummarizerBrowserApi.configurePrimarySidebarBehavior().catch(() => { });
-    pruneClosedTabState().catch(() => { });
 });
 
-if (SummarizerBrowserApi.hasChromeSidePanel && SummarizerBrowserApi.hasChromeSidePanel() && chrome.sidePanel.onOpened && typeof chrome.sidePanel.onOpened.addListener === "function") {
+if (SummarizerBrowserApi.hasChromeSidePanel() && chrome.sidePanel.onOpened && typeof chrome.sidePanel.onOpened.addListener === "function") {
     chrome.sidePanel.onOpened.addListener((info) => {
         openSidePanelsByWindow.set(info.windowId, info);
     });
 }
 
-if (SummarizerBrowserApi.hasChromeSidePanel && SummarizerBrowserApi.hasChromeSidePanel() && chrome.sidePanel.onClosed && typeof chrome.sidePanel.onClosed.addListener === "function") {
+if (SummarizerBrowserApi.hasChromeSidePanel() && chrome.sidePanel.onClosed && typeof chrome.sidePanel.onClosed.addListener === "function") {
     chrome.sidePanel.onClosed.addListener((info) => {
         openSidePanelsByWindow.delete(info.windowId);
     });
@@ -126,7 +119,7 @@ if (SummarizerBrowserApi.hasChromeSidePanel && SummarizerBrowserApi.hasChromeSid
 
 chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
     const openPanel = openSidePanelsByWindow.get(windowId);
-    if (!openPanel || openPanel.tabId === tabId || !SummarizerBrowserApi.hasChromeSidePanel || !SummarizerBrowserApi.hasChromeSidePanel() || typeof chrome.sidePanel.close !== "function") {
+    if (!openPanel || openPanel.tabId === tabId || !SummarizerBrowserApi.hasChromeSidePanel() || typeof chrome.sidePanel.close !== "function") {
         return;
     }
 
@@ -137,11 +130,8 @@ chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
     }
 });
 
-// Clear cache when tabs are closed
 chrome.tabs.onRemoved.addListener((tabId) => {
     SummarizerSummaryService.releaseTab(tabId);
-    SummarizerTabCacheService.clearTabCache(tabId);
-    SummarizerStorage.clearTabData(tabId).catch(() => { });
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -151,44 +141,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 const tabId =
                     message.tabId || (sender.tab && sender.tab.id) || (await SummarizerTabManager.getActiveTab()).id;
                 await SummarizerBrowserApi.setSidePanelEnabledForTab(tabId, true);
-                if (message.mode) {
-                    await SummarizerStorage.saveSettings({ promptMode: message.mode });
+                const promptMode = message.promptMode || message.mode;
+                if (promptMode) {
+                    await SummarizerStorage.saveSettings({ promptMode });
                 }
                 const result = await SummarizerSummaryService.summarizeForTab(tabId);
-                // Cache result for tab
-                SummarizerTabCacheService.cacheResult(tabId, result);
-                sendResponse({ ok: true, result });
-                return;
-            }
-
-            case MSG.GET_ACTIVE_TAB_RESULT: {
-                const tab = await SummarizerTabManager.getActiveTab();
-                // Try cache first for better performance
-                let result = SummarizerTabCacheService.getCachedResult(tab.id);
-                if (!result) {
-                    result = await SummarizerStorage.getResultForTab(tab.id);
-                    if (result) {
-                        // Repopulate cache from storage
-                        SummarizerTabCacheService.cacheResult(tab.id, result);
-                    }
-                }
-                sendResponse({ ok: true, result, tabId: tab.id });
-                return;
-            }
-
-            case MSG.GET_ACTIVE_TAB_WORKFLOW: {
-                const tab = await SummarizerTabManager.getActiveTab();
-                const workflow = await SummarizerWorkflowStore.getState(tab.id);
-                sendResponse({ ok: true, workflow, tabId: tab.id });
-                return;
-            }
-
-            case MSG.CLEAR_TAB_DATA: {
-                const tabId =
-                    message.tabId || (sender.tab && sender.tab.id) || (await SummarizerTabManager.getActiveTab()).id;
-                SummarizerTabCacheService.clearTabCache(tabId);
-                await SummarizerStorage.clearTabData(tabId);
-                sendResponse({ ok: true, tabId });
+                sendResponse(sender.tab
+                    ? { ok: true, result: SummarizerResultBuilder.buildFloatingResult(result) }
+                    : { ok: true, tabId });
                 return;
             }
 
@@ -202,6 +162,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
             case MSG.OPEN_SIDE_PANEL: {
                 sendResponse(await SummarizerTabManager.openSidePanel());
+                return;
+            }
+
+            case MSG.GET_PUBLIC_SETTINGS: {
+                const settings = await SummarizerStorage.getSettings();
+                sendResponse({
+                    ok: true,
+                    settings: {
+                        theme: settings.theme || "system",
+                        showFloatingUi: Boolean(settings.showFloatingUi)
+                    }
+                });
                 return;
             }
 
@@ -220,7 +192,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 const tabId =
                     message.tabId || (sender.tab && sender.tab.id) || (await SummarizerTabManager.getActiveTab()).id;
                 const grounding = message.grounding === "open" ? "open" : "source";
-                const result = await SummarizerSummaryService.answerFollowUp(tabId, message.question || "", { grounding });
+                const result = await SummarizerSummaryService.answerFollowUp(tabId, message.question || "", {
+                    grounding,
+                    result: message.result,
+                    conversationHistory: message.conversationHistory
+                });
                 sendResponse({ ok: true, result });
                 return;
             }
@@ -232,9 +208,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const tabId = (message && message.tabId) || (sender.tab && sender.tab.id);
         const errorMessage = error && error.message ? error.message : "Unexpected error.";
         const tabWasClosed = /tab was closed before summarization completed/i.test(errorMessage);
-        if (tabId && !tabWasClosed) {
-            SummarizerWorkflowStore.markFailed(tabId, error.message || "Unexpected error.").catch(() => { });
-        }
         if (!tabWasClosed) {
             SummarizerUiNotifier.notifyError(error, tabId);
         }
