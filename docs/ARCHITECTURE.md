@@ -2,7 +2,7 @@
 
 ## Overview
 
-The extension is a Chrome Manifest V3 extension that uses the Side Panel API.
+The extension is a WXT-built Manifest V3 extension targeting Chrome and Firefox. Chrome uses the Side Panel API; Firefox uses the Sidebar API.
 
 1. content-script extraction
 2. background orchestration and active request state
@@ -29,10 +29,15 @@ Extraction priority is:
 
 ### Entrypoints
 
-- `background.js`: service-worker message routing, context-menu/command launch, synchronous side-panel open
-- `content.js`: page extraction and floating UI
-- `sidepanel.js`: side-panel controller
-- `options.js`: settings page controller
+- `entrypoints/background/index.js`: service-worker message routing, context-menu/command launch, synchronous sidebar open
+- `entrypoints/content.content.js`: page extraction and floating UI
+- `entrypoints/sidepanel/main.js`: side-panel/sidebar controller
+- `entrypoints/options/main.js`: settings page controller
+- `wxt.config.mjs`: browser-specific generated manifest configuration
+
+The browser adapter in `lib/browser-api.js` detects Chrome's tab-scoped `sidePanel`
+and Firefox's window-scoped `sidebarAction` without changing message shapes or
+per-tab result state.
 
 ### Background
 
@@ -84,8 +89,8 @@ Extraction priority is:
 - `lib/sidepanel/toc.js`: Deep/Long result table of contents and scroll tracking
 - `lib/transcript-export.js`: timestamped transcript copy and SRT serialization
 - `lib/ui/theme.js`: theme support
-- `sidepanel.html`, `sidepanel.css`: side-panel markup and styles
-- `options.html`, `options.css`: options page markup and styles
+- `entrypoints/sidepanel/index.html`, `entrypoints/sidepanel/style.css`: side-panel/sidebar markup and styles
+- `entrypoints/options/index.html`, `entrypoints/options/style.css`: options page markup and styles
 
 ## Prompt Architecture
 
@@ -147,7 +152,7 @@ After parsing, `lib/summary-quality.js` evaluates output before notifying the si
 
 ## User Gestures and Side Panel Opening
 
-To open the Chrome side panel from a context menu or keyboard command, the call to `chrome.sidePanel.open()` must execute synchronously within the user-gesture context. If there is an `await` before the API call, Chrome discards the user gesture token and blocks the side panel from opening. DeepDigest centralizes this in `background.js` via a synchronous `openSidePanelForTab` call before starting the summary process.
+To open the Chrome side panel from a context menu or keyboard command, the call to `chrome.sidePanel.open()` must execute synchronously within the user-gesture context. If there is an `await` before the API call, Chrome discards the user gesture token and blocks the side panel from opening. DeepDigest centralizes this in the browser adapter and calls it before starting summary work. Firefox uses `sidebarAction.open()` and keeps the sidebar window-scoped while tab-specific result state remains in the session cache.
 
 ## Side Panel Lifecycle
 

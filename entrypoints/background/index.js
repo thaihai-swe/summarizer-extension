@@ -1,48 +1,41 @@
-if (typeof importScripts === "function") {
-    importScripts(
-        "lib/browser-api.js",
-        "lib/messages.js",
-        "lib/settings-schema.js",
-        "lib/storage.js",
-        "lib/cleaners.js",
-        "lib/semantic-chunker.js",
-        "lib/summary-quality.js",
-        "lib/debug.js",
-        "lib/prompts/common.js",
-        "lib/prompts/templates/youtube.js",
-        "lib/prompts/templates/webpage.js",
-        "lib/prompts/templates/course.js",
-        "lib/prompts/templates/selected-text.js",
-        "lib/prompts/templates/pdf.js",
-        "lib/prompts/templates/prompt-enhance.js",
-        "lib/prompts/builders.js",
-        "lib/prompts.js",
-        "lib/providers/shared.js",
-        "lib/providers/gemini.js",
-        "lib/providers/openai.js",
-        "lib/providers/local.js",
-        "lib/provider-registry.js",
-        "lib/background/result-builder.js",
-        "lib/background/tab-manager.js",
-        "lib/background/ui-notifier.js",
-        "lib/background/generation-service.js",
-        "lib/background/summary-service.js"
-    );
-}
+import "../../lib/browser-api.js";
+import "../../lib/messages.js";
+import "../../lib/settings-schema.js";
+import "../../lib/storage.js";
+import "../../lib/cleaners.js";
+import "../../lib/semantic-chunker.js";
+import "../../lib/summary-quality.js";
+import "../../lib/debug.js";
+import "../../lib/prompts/common.js";
+import "../../lib/prompts/templates/youtube.js";
+import "../../lib/prompts/templates/webpage.js";
+import "../../lib/prompts/templates/course.js";
+import "../../lib/prompts/templates/selected-text.js";
+import "../../lib/prompts/templates/pdf.js";
+import "../../lib/prompts/templates/prompt-enhance.js";
+import "../../lib/prompts/builders.js";
+import "../../lib/prompts.js";
+import "../../lib/providers/shared.js";
+import "../../lib/providers/gemini.js";
+import "../../lib/providers/openai.js";
+import "../../lib/providers/local.js";
+import "../../lib/provider-registry.js";
+import "../../lib/background/result-builder.js";
+import "../../lib/background/tab-manager.js";
+import "../../lib/background/ui-notifier.js";
+import "../../lib/background/generation-service.js";
+import "../../lib/background/summary-service.js";
 
+export default defineBackground(() => {
 const MSG = SummarizerMessages.types;
 const openSidePanelsByWindow = new Map();
 
 function openSidePanelForTab(tabId) {
     if (!tabId) return Promise.resolve();
-    if (!SummarizerBrowserApi.hasChromeSidePanel()) return Promise.resolve();
+    if (!SummarizerBrowserApi.hasSupportedSidebar()) return Promise.resolve();
     // Must be called synchronously from a user gesture (context menu / command).
     // Do not await anything before this call or Chrome rejects it.
-    const openPromise = typeof chrome.sidePanel.open === "function"
-        ? chrome.sidePanel.open({ tabId }).catch(() => {})
-        : Promise.resolve();
-    const enablePromise = SummarizerBrowserApi.setSidePanelEnabledForTab(tabId, true).catch(() => {});
-    return Promise.all([openPromise, enablePromise]);
+    return SummarizerBrowserApi.openPrimarySidebar({ tabId }).catch(() => {});
 }
 
 async function startSummaryFromTab(tabId, options = {}) {
@@ -215,4 +208,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
 
     return true;
+});
 });

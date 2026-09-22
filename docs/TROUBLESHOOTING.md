@@ -2,16 +2,16 @@
 
 ## Context menu or shortcut does not open the side panel
 
-- Reload the extension from `chrome://extensions/` after changing the manifest or `background.js`.
+- Rebuild with `npm run build:chrome` or `npm run build:firefox`, then reload the generated output.
 - Confirm the shortcut is assigned at `chrome://extensions/shortcuts`.
 - Use the context menu on a normal page or selected text; restricted browser pages cannot be summarized.
-- If the console reports `sidePanel.open() may only be called in response to a user gesture`, verify the extension is using the current `background.js` and that no stale service worker is running. The open call must happen before asynchronous extraction or provider work.
+- If the console reports `sidePanel.open() may only be called in response to a user gesture`, verify the generated build is current and that no stale service worker is running. The open call must happen before asynchronous extraction or provider work.
 
 ## Extension Does Not Load
 
 1. Open `chrome://extensions/`.
 2. Enable Developer mode.
-3. Confirm the repository root contains a valid `manifest.json`.
+3. Confirm the selected `.output/*-mv3` directory contains the generated `manifest.json`.
 4. Click Reload after changes.
 5. Inspect manifest or service-worker errors displayed on the extensions page.
 

@@ -2,13 +2,19 @@
 
 ## 1. Load the Extension
 
-1. Open `chrome://extensions/`
-2. Turn on **Developer mode**
-3. Click **Load unpacked** and select the repository root directory
+1. Run `npm install` and `npm run build:chrome`.
+2. Open `chrome://extensions/`
+3. Turn on **Developer mode**
+4. Click **Load unpacked** and select `.output/chrome-mv3`
 
 After loading, Chrome registers the **Summarize with DeepDigest** page/selection context-menu
 item and the `Ctrl+Shift+S` command (`Cmd+Shift+S` on macOS). If a shortcut conflicts with
 another extension, open `chrome://extensions/shortcuts` and assign a different key.
+
+For Firefox, run `npm run build:firefox`, open `about:debugging`, select **This Firefox**,
+click **Load Temporary Add-on**, and select `.output/firefox-mv3/manifest.json`.
+The Firefox manifest declares the page content and provider credentials that may be transmitted
+to the selected summarization endpoint, as required by current Firefox distribution rules.
 
 ## 2. Configure a Provider
 Click the extension icon to open the side panel, then open Options from the side-panel settings button. Configure one of the supported providers.

@@ -1,5 +1,8 @@
 # Documentation Index
 
+The extension is built with WXT. Use `npm run build:chrome` or `npm run build:firefox`
+to generate the unpacked browser-specific output under `.output/`.
+
 | File | Audience | Purpose |
 |---|---|---|
 | `SETUP.md` | User | Loading the extension, shortcuts, provider configuration, output language, theme, and font scale |

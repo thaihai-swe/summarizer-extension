@@ -8,7 +8,7 @@ Summaries can start from:
 - Context menu item `Summarize with DeepDigest`
 - Keyboard command `summarize_page` (`Ctrl+Shift+S` / `Cmd+Shift+S`)
 
-Context-menu and keyboard paths call `chrome.sidePanel.open()` synchronously, then run the same summary workflow as the side-panel button.
+Context-menu and keyboard paths call the browser sidebar adapter synchronously, then run the same summary workflow as the side-panel button. The adapter uses `chrome.sidePanel` on Chrome and `browser.sidebarAction` on Firefox.
 
 ## Summary Generation
 

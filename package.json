@@ -1,0 +1,25 @@
+{
+  "name": "deepdigest-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deep, structured summaries for Chrome and Firefox.",
+  "scripts": {
+    "dev": "wxt",
+    "dev:chrome": "wxt -b chrome",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:chrome": "wxt build -b chrome",
+    "build:firefox": "wxt build -b firefox",
+    "zip:chrome": "wxt zip -b chrome",
+    "zip:firefox": "wxt zip -b firefox",
+    "test": "node --test tests/runtime-performance.test.js",
+    "test:prompts": "node scripts/print-prompt-snapshots.js",
+    "check:build": "node scripts/check-build-manifests.js",
+    "check:syntax": "find . -path './node_modules' -prune -o -path './.output' -prune -o -path './.wxt' -prune -o -name '*.js' -print0 | xargs -0 -n1 node --check",
+    "check": "npm run test && npm run check:syntax",
+    "postinstall": "wxt prepare"
+  },
+  "devDependencies": {
+    "wxt": "^0.21.4"
+  }
+}

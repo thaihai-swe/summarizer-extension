@@ -1,4 +1,9 @@
-(function () {
+import "../lib/browser-api.js";
+import "../lib/messages.js";
+import "../lib/markdown.js";
+import "../lib/ui/theme.js";
+
+function startContentScript() {
     const MSG = SummarizerMessages.types;
     const state = {
         host: null,
@@ -499,4 +504,12 @@
     });
 
     syncUiEnabled().catch(() => { });
-})();
+}
+
+export default defineContentScript({
+    matches: ["<all_urls>"],
+    runAt: "document_idle",
+    main() {
+        startContentScript();
+    }
+});

@@ -1382,3 +1382,15 @@
         fields.saveStatus.setAttribute("data-state", "error");
     });
 })();
+import "../../lib/ui/theme.js";
+import "../../lib/messages.js";
+import "../../lib/settings-schema.js";
+import "../../lib/browser-api.js";
+import "../../lib/storage.js";
+import "../../lib/prompts/common.js";
+import "../../lib/prompts/templates/youtube.js";
+import "../../lib/prompts/templates/webpage.js";
+import "../../lib/prompts/templates/course.js";
+import "../../lib/prompts/templates/selected-text.js";
+import "../../lib/prompts/templates/prompt-enhance.js";
+import "../../lib/prompts/builders.js";

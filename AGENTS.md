@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This repository is a Chrome extension that summarizes YouTube videos, webpages, selected text, and course lesson pages using Gemini, OpenAI, or a local LLM endpoint.
+This repository is a WXT-built Chrome and Firefox extension that summarizes YouTube videos, webpages, selected text, and course lesson pages using Gemini, OpenAI, or a local LLM endpoint.
 
 Use this file as the working contract for Codex-style agents making changes in this repo.
 
@@ -11,7 +11,7 @@ Use this file as the working contract for Codex-style agents making changes in t
 - Prefer small, surgical edits over broad rewrites.
 - Preserve the current architecture: extractor -> prompt builder -> provider -> parse/save -> side panel render.
 - Keep the side panel as the primary UI.
-- Do not reintroduce streaming summary behavior unless explicitly requested.
+- Preserve the existing streaming summary behavior; do not redesign it unless explicitly requested.
 - Avoid changing storage keys or message shapes unless the task requires it.
 - If you add a new user-visible behavior, update the relevant docs in `docs/`.
 
@@ -19,11 +19,11 @@ Use this file as the working contract for Codex-style agents making changes in t
 
 ### Runtime entrypoints
 
-- `manifest.json`: extension manifest
-- `background.js`: background/service worker entry
-- `content.js`: content script and floating UI hooks
-- `sidepanel.js`: side panel entry
-- `options.js`: settings page entry
+- `wxt.config.mjs`: generated manifest and browser-specific configuration
+- `entrypoints/background/index.js`: background/service worker entry
+- `entrypoints/content.content.js`: content script and floating UI hooks
+- `entrypoints/sidepanel/`: side panel/sidebar entry
+- `entrypoints/options/`: settings page entry
 
 ### Core modules
 
@@ -31,13 +31,12 @@ Use this file as the working contract for Codex-style agents making changes in t
 - `lib/extractors/`: source-specific extraction logic
 - `lib/prompts/builders.js`: prompt routing and assembly
 - `lib/prompts/templates/`: source-specific prompt templates
-- `lib/background/summary-service.js`: summary orchestration
 - `lib/background/tab-manager.js`: active-tab routing and extraction requests
-- `lib/background/workflow-store.js`: workflow phase persistence
+- `lib/background/summary-service.js`: workflow phase and summary orchestration
 - `lib/background/ui-notifier.js`: UI update fanout
 - `lib/provider-registry.js`: provider dispatch
 - `lib/providers/`: provider implementations
-- `lib/storage.js`: Chrome local storage helpers
+- `lib/storage.js`: browser-local storage helpers
 - `lib/sidepanel/`: side panel state/render helpers
 
 ### Prompt Inventory
@@ -83,23 +82,32 @@ Use this file as the working contract for Codex-style agents making changes in t
 
 ### Change workflow or tab state behavior
 
-- Inspect `lib/background/summary-service.js`, `lib/background/tab-manager.js`, and `lib/background/workflow-store.js`.
+- Inspect `lib/background/summary-service.js` and `lib/background/tab-manager.js`.
 - Be careful with per-tab cleanup and follow-up conversation reset behavior.
 
 ### Change UI behavior
 
-- Side panel UI lives in `sidepanel.js`, `lib/sidepanel/`, `sidepanel.html`, and `sidepanel.css`.
-- Options UI lives in `options.js`, `options.html`, and `options.css`.
+- Side panel UI lives in `entrypoints/sidepanel/` and `lib/sidepanel/`.
+- Options UI lives in `entrypoints/options/`.
 - Preserve existing visual patterns unless the task is explicitly a redesign.
 
 ## Validation
 
-There is no confirmed build step in this repository. Validate changes by loading the extension unpacked in Chrome:
+Build both browser targets before loading an unpacked output:
+
+```bash
+npm install
+npm run check
+npm run build:chrome
+npm run build:firefox
+```
+
+Validate Chrome by loading the generated output:
 
 1. Open `chrome://extensions/`
 2. Enable Developer mode
 3. Click `Load unpacked`
-4. Select the repo root
+4. Select `.output/chrome-mv3`
 5. Reload the extension after code changes
 
 Manual checks to prioritize:
@@ -116,7 +124,7 @@ Manual checks to prioritize:
 ## Debugging Notes
 
 - Page-level extraction logs appear in the page DevTools console.
-- Background/provider logs appear in the extension service worker console from `chrome://extensions`.
+- Background/provider logs appear in the extension service worker console from `chrome://extensions` (Chrome) or `about:debugging` (Firefox).
 - Helpful references:
   - `docs/ARCHITECTURE.md`
   - `docs/WORKFLOW.md`

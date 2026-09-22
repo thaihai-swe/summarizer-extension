@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Assemble a GitHub Pages-ready site from porfolio-page/.
+# Assemble a GitHub Pages-ready site from portfolio-page/.
 # Rewrites parent-relative icon/docs links so they resolve at the site root.
 set -euo pipefail
 
@@ -11,9 +11,9 @@ DOCS_BASE="https://github.com/${REPO}/blob/main/docs/"
 rm -rf "$SITE"
 mkdir -p "$SITE/icons"
 
-cp "$ROOT/porfolio-page/index.html" "$SITE/index.html"
-cp "$ROOT/porfolio-page/common.css" "$SITE/common.css"
-cp "$ROOT/icons/"icon-*.png "$SITE/icons/"
+cp "$ROOT/portfolio-page/index.html" "$SITE/index.html"
+cp "$ROOT/portfolio-page/common.css" "$SITE/common.css"
+cp "$ROOT/public/icons/"icon-*.png "$SITE/icons/"
 # Prevent Jekyll from ignoring files that start with underscore.
 touch "$SITE/.nojekyll"
 

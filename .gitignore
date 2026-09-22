@@ -3,3 +3,6 @@
 .hallmark/
 _site/
 dist/
+.output/
+.wxt/
+node_modules/

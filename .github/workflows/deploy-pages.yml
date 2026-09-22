@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'porfolio-page/**'
-      - 'icons/**'
+      - 'portfolio-page/**'
+      - 'public/icons/**'
       - 'scripts/prepare-pages.sh'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:

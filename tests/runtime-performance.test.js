@@ -61,6 +61,33 @@ test("result projections do not duplicate transcript or raw model output", () =>
     );
 });
 
+test("browser adapter detects Chrome side panels and Firefox sidebars", () => {
+    const chromeContext = {
+        globalThis: null,
+        chrome: {
+            sidePanel: { open() {}, setOptions() {} }
+        }
+    };
+    chromeContext.globalThis = chromeContext;
+    runScript("lib/browser-api.js", chromeContext);
+    assert.equal(chromeContext.SummarizerBrowserApi.hasChromeSidePanel(), true);
+    assert.equal(chromeContext.SummarizerBrowserApi.hasFirefoxSidebar(), false);
+    assert.equal(chromeContext.SummarizerBrowserApi.hasSupportedSidebar(), true);
+
+    const firefoxContext = {
+        globalThis: null,
+        browser: {
+            runtime: { id: "deepdigest@example.com" },
+            sidebarAction: { open() {} }
+        }
+    };
+    firefoxContext.globalThis = firefoxContext;
+    runScript("lib/browser-api.js", firefoxContext);
+    assert.equal(firefoxContext.SummarizerBrowserApi.hasChromeSidePanel(), false);
+    assert.equal(firefoxContext.SummarizerBrowserApi.hasFirefoxSidebar(), true);
+    assert.equal(firefoxContext.SummarizerBrowserApi.hasSupportedSidebar(), true);
+});
+
 test("section content normalization preserves list-shaped content", () => {
     const context = { globalThis: null };
     context.globalThis = context;
@@ -299,13 +326,12 @@ test("section contract protects canonical headings while allowing requested cust
 });
 
 test("content manifests load the shell but defer extractors", () => {
-    const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.json"), "utf8"));
-    const scripts = manifest.content_scripts[0].js;
-    assert.ok(scripts.includes("content.js"));
-    assert.equal(scripts.includes("lib/storage.js"), false);
-    assert.equal(scripts.includes("lib/settings-schema.js"), false);
-    assert.equal(scripts.some((entry) => entry.includes("/extractors/")), false);
-    assert.equal(scripts.includes("lib/extractors.js"), false);
+    const source = fs.readFileSync(path.join(root, "entrypoints/content.content.js"), "utf8");
+    assert.match(source, /lib\/browser-api\.js/);
+    assert.match(source, /lib\/messages\.js/);
+    assert.doesNotMatch(source, /lib\/extractors\.js/);
+    assert.doesNotMatch(source, /lib\/storage\.js/);
+    assert.doesNotMatch(source, /lib\/settings-schema\.js/);
 });
 
 test("tab manager injects extractors once when the shell requests them", async () => {
@@ -342,8 +368,8 @@ test("tab manager injects extractors once when the shell requests them", async (
     assert.equal(result.content, "ready");
     assert.equal(messageCount, 2);
     assert.equal(injections.length, 1);
-    assert.ok(injections[0].includes("lib/extractors.js"));
-    assert.equal(injections[0].includes("content.js"), false);
+    assert.equal(injections[0].length, 1);
+    assert.equal(injections[0][0], "extractors.js");
 });
 
 test("settings reads are cached and rapid writes are serialized", async () => {

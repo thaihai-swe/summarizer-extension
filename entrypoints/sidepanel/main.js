@@ -438,3 +438,18 @@
     });
     refreshActiveTabView().catch(() => {});
 })();
+import "../../lib/ui/theme.js";
+import "../../lib/cleaners.js";
+import "../../lib/markdown.js";
+import "../../lib/messages.js";
+import "../../lib/settings-schema.js";
+import "../../lib/browser-api.js";
+import "../../lib/storage.js";
+import "../../lib/sidepanel/state.js";
+import "../../lib/sidepanel/visual-renderers.js";
+import "../../lib/sidepanel/toc.js";
+import "../../lib/sidepanel/result-cache.js";
+import "../../lib/transcript-export.js";
+import "../../lib/sidepanel/render.js";
+import "../../lib/sidepanel/chat.js";
+import "../../lib/sidepanel/actions.js";

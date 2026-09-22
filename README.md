@@ -1,6 +1,6 @@
 # DeepDigest
 
-Browser extension for summarizing YouTube videos, webpages, selected text, PDFs, academic papers, and course lesson content with Gemini, OpenAI, or a local LLM endpoint.
+Chrome and Firefox extension for summarizing YouTube videos, webpages, selected text, PDFs, academic papers, and course lesson content with Gemini, OpenAI, or a local LLM endpoint.
 
 ## User Overview
 
@@ -17,15 +17,11 @@ Browser extension for summarizing YouTube videos, webpages, selected text, PDFs,
 - Supports follow-up Q&A in Source mode (grounded in the current session summary) or General mode (open knowledge, not limited to the page)
 - Exports summaries as Markdown or plain text
 - Copies YouTube transcripts and downloads timestamped SRT subtitle files
-- Supports Chrome's Side Panel API
+- Uses Chrome's Side Panel API and Firefox's Sidebar API
 - Creates reusable Custom Prompt Presets from the Options page
 - Starts summaries from the page context menu or `Ctrl+Shift+S` (`Cmd+Shift+S` on macOS)
 - Shows available token usage and generation duration after completion
 - Logs extraction, provider requests, and provider responses to the console for debugging
-
-## Example Output
-
-![example-output](example-output.png)
 
 ## Supported Providers
 
@@ -88,28 +84,29 @@ The codebase is split into small modules instead of monolithic extractor or prom
   - [lib/prompts/common.js](/lib/prompts/common.js)
   - [lib/prompts/templates/](/lib/prompts/templates)
 - Background orchestration:
-  - [background.js](/background.js)
+  - [entrypoints/background/index.js](/entrypoints/background/index.js)
   - [lib/background/tab-manager.js](/lib/background/tab-manager.js)
   - [lib/background/generation-service.js](/lib/background/generation-service.js)
   - [lib/background/result-builder.js](/lib/background/result-builder.js)
   - [lib/background/summary-service.js](/lib/background/summary-service.js)
   - [lib/background/ui-notifier.js](/lib/background/ui-notifier.js)
 - Side panel UI:
-  - [sidepanel.js](/sidepanel.js)
+  - [entrypoints/sidepanel/main.js](/entrypoints/sidepanel/main.js)
   - [lib/sidepanel/state.js](/lib/sidepanel/state.js)
   - [lib/sidepanel/render.js](/lib/sidepanel/render.js)
   - [lib/sidepanel/visual-renderers.js](/lib/sidepanel/visual-renderers.js)
 
 ## Load Locally
 
-1. Open `chrome://extensions/`
-2. Enable Developer mode
-3. Click Load unpacked
-4. Select this project folder
+1. Run `npm install` and `npm run build:chrome`
+2. Open `chrome://extensions/`
+3. Enable Developer mode
+4. Click Load unpacked
+5. Select `.output/chrome-mv3`
 
 ## Portfolio site (GitHub Pages)
 
-The case-study page in [porfolio-page/index.html](porfolio-page/index.html) is published for free with GitHub Pages. The workflow in [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml) copies that page, its CSS, and extension icons into `_site/`, then deploys the bundle.
+The case-study page in [portfolio-page/index.html](portfolio-page/index.html) is published for free with GitHub Pages. The workflow in [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml) copies that page, its CSS, and extension icons into `_site/`, then deploys the bundle.
 
 ### Preview locally
 
@@ -139,6 +136,9 @@ New to the codebase? Follow this path:
 4. **Explore the modules:** Start with [lib/extractors.js](/lib/extractors.js)
 5. **Make a change:** Review [Maintenance](docs/MAINTENANCE.md), [Testing](docs/TESTING.md), and [Debugging](docs/DEBUGGING.md)
 6. **Debug your changes:** Use [Debugging Guide](docs/DEBUGGING.md)
+
+Build Firefox with `npm run build:firefox`, then load `.output/firefox-mv3/manifest.json`
+from `about:debugging` → **This Firefox** → **Load Temporary Add-on**.
 
 ## Notes
 

@@ -6,7 +6,7 @@
 - **Extension service worker console**: background workflow, prompts, providers, storage, quality gate
 - **Side-panel DevTools**: rendering, streaming updates, and panel interaction issues
 
-Open the service worker console from `chrome://extensions/` by finding DeepDigest and clicking its service-worker link.
+Open the service worker console from `chrome://extensions/` (Chrome), or from `about:debugging` → **This Firefox** (Firefox).
 
 ## Common Failures
 
@@ -58,9 +58,9 @@ Open the service worker console from `chrome://extensions/` by finding DeepDiges
 
 ## Context menu / shortcut open failures
 
-If `sidePanel.open()` fails with a user-gesture error:
+If the sidebar open call fails with a user-gesture error:
 
-1. Confirm the service worker reloaded after the latest `background.js` change.
+1. Confirm the generated service worker reloaded after the latest WXT build.
 2. Verify `openSidePanelForTab()` runs before any `await`.
 3. Reproduce from context menu and keyboard command separately.
 4. Check the service worker console for the rejected open promise or follow-on summary error.

@@ -3,17 +3,20 @@
 Run the focused runtime checks first:
 
 ```bash
-node --test tests/runtime-performance.test.js
-node scripts/print-prompt-snapshots.js
+npm run check
+npm run test:prompts
+npm run build:chrome
+npm run build:firefox
+npm run check:build
 ```
 
 There is no full browser automation suite, so also validate behavior by loading the extension unpacked.
 
 ## Load and Reload
 
-1. Open `chrome://extensions/`
+1. Run `npm run build:chrome` and open `chrome://extensions/`
 2. Enable Developer mode
-3. Click **Load unpacked** and choose the repository root
+3. Click **Load unpacked** and choose `.output/chrome-mv3`
 4. Reload the extension after code changes
 
 ## Summary Coverage

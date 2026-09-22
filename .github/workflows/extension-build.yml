@@ -1,0 +1,58 @@
+name: Build Extension Targets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'entrypoints/**'
+      - 'lib/**'
+      - 'public/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'wxt.config.mjs'
+      - '.github/workflows/extension-build.yml'
+  pull_request:
+    paths:
+      - 'entrypoints/**'
+      - 'lib/**'
+      - 'public/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'wxt.config.mjs'
+      - '.github/workflows/extension-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run runtime checks
+        run: npm run check
+
+      - name: Build Chrome target
+        run: npm run build:chrome
+
+      - name: Build Firefox target
+        run: npm run build:firefox
+
+      - name: Check generated manifests
+        run: npm run check:build
