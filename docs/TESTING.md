@@ -16,8 +16,10 @@ There is no full browser automation suite, so also validate behavior by loading 
 3. Click **Load unpacked** and choose the repository root
 4. Reload the extension after code changes
 
-For Firefox, run `node scripts/prepare-firefox.mjs` and load `.output/firefox/manifest.json`
-from `about:debugging#/runtime/this-firefox`.
+For Firefox, run `node scripts/prepare-firefox.mjs`. Load `firefox-output/firefox/manifest.json`
+from `about:debugging#/runtime/this-firefox` for unpacked testing, or load the generated
+`firefox-output/deepdigest-firefox-<version>.xpi` as a temporary add-on. The script regenerates both
+artifacts from the current source tree.
 
 ## Summary Coverage
 

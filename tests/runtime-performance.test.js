@@ -316,7 +316,7 @@ test("tab manager injects extractors once when the shell requests them", async (
     const context = {
         globalThis: null,
         SummarizerMessages: { types: { EXTRACT_CONTENT: "EXTRACT_CONTENT", FETCH_COURSE_CONTENT: "FETCH_COURSE_CONTENT" } },
-        SummarizerDebug: { logExtraction() {} },
+        SummarizerDebug: { logExtraction() { } },
         SummarizerBrowserApi: {},
         chrome: {
             runtime: { lastError: null },
@@ -437,7 +437,7 @@ test("provider stream timeout controllers stay active until response bodies are 
                 parseOpenAiSseLine: () => "",
                 parseOllamaJsonlLine: () => "",
                 validateNonEmptyResponse: (text) => text,
-                recordUsage() {}
+                recordUsage() { }
             }
         };
         context.globalThis = context;
@@ -445,7 +445,7 @@ test("provider stream timeout controllers stay active until response bodies are 
         const result = await context[providerName].generateText(
             "prompt",
             Object.assign({ summaryLength: "Medium", summarySize: "Medium" }, providerSettings),
-            () => {},
+            () => { },
             { usage: {} }
         );
         assert.equal(result, "streamed response");
@@ -476,7 +476,7 @@ test("stream failures are not retried as hidden duplicate requests after output 
             },
             isTransientProviderError: () => true
         },
-        SummarizerDebug: { logExtraction() {} }
+        SummarizerDebug: { logExtraction() { } }
     };
     context.globalThis = context;
     runScript("lib/background/generation-service.js", context);

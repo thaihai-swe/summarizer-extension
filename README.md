@@ -56,6 +56,7 @@ Start with the full index: [docs/README.md](docs/README.md)
 **User docs**
 - [User Guide](docs/USER_GUIDE.md)
 - [Setup](docs/SETUP.md)
+- [Firefox Development and XPI Guide](docs/FIREFOX.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 
 **Developer docs**

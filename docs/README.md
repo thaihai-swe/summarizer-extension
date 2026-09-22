@@ -3,6 +3,7 @@
 | File | Audience | Purpose |
 |---|---|---|
 | `SETUP.md` | User | Loading the extension, shortcuts, provider configuration, output language, theme, and font scale |
+| `FIREFOX.md` | User/Developer | Firefox prerequisites, unpacked loading, XPI builds, reloads, and debugging |
 | `USER_GUIDE.md` | User | Using the side panel, launch shortcuts, custom presets, modes, sections, expansion, transcript, metadata, language, providers, tab lifecycle |
 | `TROUBLESHOOTING.md` | User | Common failures, shortcut/context-menu issues, provider errors, display issues, quality gate, semantic chunking |
 | `API.md` | Developer | Message types, context-menu/command entry points, streaming contract, extraction/settings/result shapes, session workflow |

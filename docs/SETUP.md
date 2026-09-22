@@ -12,10 +12,15 @@ another extension, open `chrome://extensions/shortcuts` and assign a different k
 
 ### Firefox
 
+See the detailed [Firefox Development and XPI Guide](FIREFOX.md) for prerequisites, build,
+reload, and debugging instructions.
+
 Run `node scripts/prepare-firefox.mjs`, then open `about:debugging#/runtime/this-firefox` and
-choose **Load Temporary Add-on**. Select `.output/firefox/manifest.json`. Firefox uses its
+choose **Load Temporary Add-on**. Select `firefox-output/firefox/manifest.json` for unpacked testing,
+or select `firefox-output/deepdigest-firefox-<version>.xpi` to load the generated XPI. Firefox uses its
 native sidebar, while Chrome continues to use the Side Panel API. Re-run the preparation
-script after source changes before reloading the temporary add-on.
+script after source changes before reloading the temporary add-on; the XPI version is taken
+from `manifest.firefox.json`.
 
 The Firefox manifest declares `websiteContent` because summaries send extracted source content
 to the provider selected in Settings. Review this declaration and the AMO data-collection

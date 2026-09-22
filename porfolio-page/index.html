@@ -98,7 +98,7 @@
     <section class="hero-section" id="top" aria-labelledby="hero-title">
       <div class="hero-bg-glow" aria-hidden="true"></div>
       <div class="hero-grid-pattern" aria-hidden="true"></div>
-      
+
       <div class="container hero-container">
         <div class="hero-badges">
           <span class="hero-badge hero-badge-accent">
@@ -219,7 +219,7 @@
           <!-- Left: Simulation Controls -->
           <div class="sim-controls-panel">
             <h3 class="sim-panel-title">Demo Controls</h3>
-            
+
             <div class="control-group">
               <label for="sim-source-select" class="control-label">Source Feed</label>
               <select id="sim-source-select" class="custom-select">
@@ -1391,7 +1391,7 @@ You are an expert analytical research assistant. Your task is to transform the p
       // 1. Theme Toggle Logic
       var themeToggleBtn = document.getElementById('theme-toggle');
       var htmlEl = document.documentElement;
-      
+
       // Check saved theme or system preference
       var savedTheme = localStorage.getItem('deepdigest-theme');
       if (savedTheme) {
@@ -1690,7 +1690,7 @@ You are an expert analytical research assistant. Your task is to transform the p
 
       function updateSimulation(sourceKey, isAnimated) {
         var data = demoData[sourceKey] || demoData.youtube;
-        
+
         if (simUrlDisplay) simUrlDisplay.textContent = data.url;
         if (simPageTitle) simPageTitle.textContent = data.title;
         if (panelBadgeSource) panelBadgeSource.textContent = data.badge;
@@ -1705,7 +1705,7 @@ You are an expert analytical research assistant. Your task is to transform the p
           if (textSummary) textSummary.textContent = "Streaming tokens...";
           if (textTakeaways) textTakeaways.innerHTML = "<li>Analyzing key takeaways...</li>";
           if (conceptsSection) conceptsSection.hidden = true;
-          
+
           playStepper(function() {
             renderData(data);
             if (panelStatusLabel) panelStatusLabel.textContent = "Summary complete (Quality Validated)";
@@ -1725,7 +1725,7 @@ You are an expert analytical research assistant. Your task is to transform the p
 
       function renderData(data) {
         if (textSummary) textSummary.textContent = data.summary;
-        
+
         if (textTakeaways) {
           var takeawaysHtml = data.takeaways.map(function(item) {
             return "<li>" + item + "</li>";
@@ -1802,12 +1802,12 @@ You are an expert analytical research assistant. Your task is to transform the p
       }
 
       // Accordion toggle inside simulator
-      document.querySelectorAll('.output-block-header').forEach(function(header) {
+      document.querySelectorAll('firefox-output-block-header').forEach(function(header) {
         header.addEventListener('click', function() {
           var targetId = header.getAttribute('data-target');
           var body = document.getElementById(targetId);
           var isExpanded = header.getAttribute('aria-expanded') === 'true';
-          
+
           header.setAttribute('aria-expanded', String(!isExpanded));
           if (body) {
             body.hidden = isExpanded;

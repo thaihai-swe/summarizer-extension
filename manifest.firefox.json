@@ -42,36 +42,7 @@
         "128": "icons/icon-128.png"
     },
     "background": {
-        "scripts": [
-            "lib/browser-api.js",
-            "lib/messages.js",
-            "lib/settings-schema.js",
-            "lib/storage.js",
-            "lib/cleaners.js",
-            "lib/semantic-chunker.js",
-            "lib/summary-quality.js",
-            "lib/debug.js",
-            "lib/prompts/common.js",
-            "lib/prompts/templates/youtube.js",
-            "lib/prompts/templates/webpage.js",
-            "lib/prompts/templates/course.js",
-            "lib/prompts/templates/selected-text.js",
-            "lib/prompts/templates/pdf.js",
-            "lib/prompts/templates/prompt-enhance.js",
-            "lib/prompts/builders.js",
-            "lib/prompts.js",
-            "lib/providers/shared.js",
-            "lib/providers/gemini.js",
-            "lib/providers/openai.js",
-            "lib/providers/local.js",
-            "lib/provider-registry.js",
-            "lib/background/result-builder.js",
-            "lib/background/tab-manager.js",
-            "lib/background/ui-notifier.js",
-            "lib/background/generation-service.js",
-            "lib/background/summary-service.js",
-            "background.js"
-        ]
+        "scripts": ["background.js"]
     },
     "sidebar_action": {
         "default_title": "DeepDigest",
