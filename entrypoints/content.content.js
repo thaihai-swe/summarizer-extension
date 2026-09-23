@@ -56,73 +56,86 @@ function startContentScript() {
         }
     }
 
+    function createElement(tagName, className, text) {
+        const element = document.createElement(tagName);
+        if (className) element.className = className;
+        if (text !== undefined) element.textContent = text;
+        return element;
+    }
+
     function renderPanel() {
         if (!state.panel) {
             return;
         }
 
+        state.panel.replaceChildren();
+        const head = createElement("div", "head");
+        const title = createElement("strong", "", state.latestError
+            ? "Summary Error"
+            : state.latestResult ? state.latestResult.title || "Summary" : "Floating Summary");
+        const close = createElement("button", "close-btn", "Close");
+        close.type = "button";
+        close.dataset.close = "";
+        head.append(title, close);
+        state.panel.appendChild(head);
+
         if (state.latestError) {
-            state.panel.innerHTML = `
-        <div class="head">
-          <strong>Summary Error</strong>
-          <button class="close-btn" type="button" data-close>Close</button>
-        </div>
-        <p class="error">${SummarizerMarkdown.escapeHtml(state.latestError)}</p>
-        <div class="actions">
-          <button type="button" data-retry class="btn-primary">Retry</button>
-        </div>
-      `;
+            state.panel.appendChild(createElement("p", "error", state.latestError));
+            const actions = createElement("div", "actions");
+            const retry = createElement("button", "btn-primary", "Retry");
+            retry.type = "button";
+            retry.dataset.retry = "";
+            actions.appendChild(retry);
+            state.panel.appendChild(actions);
             wirePanelButtons();
             return;
         }
 
         if (!state.latestResult) {
-            state.panel.innerHTML = `
-        <div class="head">
-          <strong>Floating Summary</strong>
-          <button class="close-btn" type="button" data-close>Close</button>
-        </div>
-        <p>No summary yet. Use the floating button or the side panel.</p>
-        <div class="actions">
-          <button type="button" data-retry class="btn-primary">Generate</button>
-        </div>
-      `;
+            state.panel.appendChild(createElement("p", "", "No summary yet. Use the floating button or the side panel."));
+            const actions = createElement("div", "actions");
+            const retry = createElement("button", "btn-primary", "Generate");
+            retry.type = "button";
+            retry.dataset.retry = "";
+            actions.appendChild(retry);
+            state.panel.appendChild(actions);
             wirePanelButtons();
             return;
         }
 
-        const takeaways = (state.latestResult.keyTakeaways || [])
-            .slice(0, 5)
-            .map((item) => `<li>${SummarizerMarkdown.escapeHtml(item)}</li>`)
-            .join("");
         const isConcepts = String(state.latestResult.promptMode || "").toLowerCase() === "concepts";
-        const overviewMarkup = isConcepts
-            ? "<p class=\"summary\">Open the side panel to view the Concepts mode result.</p>"
-            : `
-      <section>
-        <h4>Main Summary</h4>
-        <div class="summary">${SummarizerMarkdown.renderMarkdown(state.latestResult.summary || "")}</div>
-      </section>
-      <section>
-        <h4>Executive Takeaways</h4>
-        <ul>${takeaways || "<li>No takeaways returned.</li>"}</ul>
-      </section>`;
+        const meta = createElement("p", "meta", String(state.latestResult.sourceType || "")
+            + (state.latestResult.promptMode ? " · " + state.latestResult.promptMode : ""));
+        state.panel.appendChild(meta);
+        if (isConcepts) {
+            state.panel.appendChild(createElement("p", "summary", "Open the side panel to view the Concepts mode result."));
+        } else {
+            const summarySection = createElement("section");
+            summarySection.appendChild(createElement("h4", "", "Main Summary"));
+            const summary = createElement("div", "summary");
+            summary.appendChild(SummarizerMarkdown.renderMarkdown(state.latestResult.summary || ""));
+            summarySection.appendChild(summary);
+            state.panel.appendChild(summarySection);
 
-        state.panel.innerHTML = `
-      <div class="head">
-        <strong>${SummarizerMarkdown.escapeHtml(state.latestResult.title || "Summary")}</strong>
-        <button class="close-btn" type="button" data-close>Close</button>
-      </div>
-      <p class="meta">${SummarizerMarkdown.escapeHtml(state.latestResult.sourceType || "")}${
-            state.latestResult.promptMode ? " · " + SummarizerMarkdown.escapeHtml(state.latestResult.promptMode) : ""
-        }</p>
-      ${overviewMarkup}
-      <div class="actions">
-        <button type="button" data-copy>Copy</button>
-        <button type="button" data-retry>Retry</button>
-        <button type="button" data-sidepanel class="btn-primary">Open Side Panel</button>
-      </div>
-    `;
+            const takeawaySection = createElement("section");
+            takeawaySection.appendChild(createElement("h4", "", "Executive Takeaways"));
+            const list = createElement("ul");
+            const takeaways = (state.latestResult.keyTakeaways || []).slice(0, 5);
+            if (!takeaways.length) takeaways.push("No takeaways returned.");
+            takeaways.forEach((item) => list.appendChild(createElement("li", "", item)));
+            takeawaySection.appendChild(list);
+            state.panel.appendChild(takeawaySection);
+        }
+
+        const actions = createElement("div", "actions");
+        [["Copy", "copy", ""], ["Retry", "retry", ""], ["Open Side Panel", "sidepanel", "btn-primary"]]
+            .forEach(([label, action, className]) => {
+                const button = createElement("button", className, label);
+                button.type = "button";
+                button.dataset[action] = "";
+                actions.appendChild(button);
+            });
+        state.panel.appendChild(actions);
 
         wirePanelButtons();
     }
@@ -231,9 +244,8 @@ function startContentScript() {
         state.shadow = state.host.attachShadow({ mode: "open" });
         const sharedTokens = (globalThis.SummarizerTheme && SummarizerTheme.sharedTokens) || "";
 
-        state.shadow.innerHTML = `
-      <style>
-        ${sharedTokens}
+        const style = document.createElement("style");
+        style.textContent = sharedTokens + `
         :host { all: initial; font-family: var(--font-sans); }
         .fab {
           background: var(--accent-primary, #9A3412);
@@ -350,21 +362,36 @@ function startContentScript() {
             transition-duration: 0.01ms !important;
           }
         }
-      </style>
-      <button class="fab" type="button" aria-expanded="false" aria-controls="float-panel" aria-label="Open DeepDigest">
-        <span class="fab-icon" aria-hidden="true">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-            <circle cx="12" cy="12" r="4"/>
-          </svg>
-        </span>
-        <span class="fab-label">Summarize</span>
-      </button>
-      <div class="panel" id="float-panel" role="dialog" aria-modal="true" aria-label="DeepDigest floating panel"></div>
-    `;
+        `;
+        state.shadow.appendChild(style);
 
-        state.button = state.shadow.querySelector(".fab");
-        state.panel = state.shadow.querySelector(".panel");
+        state.button = createElement("button", "fab");
+        state.button.type = "button";
+        state.button.setAttribute("aria-expanded", "false");
+        state.button.setAttribute("aria-controls", "float-panel");
+        state.button.setAttribute("aria-label", "Open DeepDigest");
+        const icon = createElement("span", "fab-icon");
+        icon.setAttribute("aria-hidden", "true");
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        [["width", "15"], ["height", "15"], ["viewBox", "0 0 24 24"], ["fill", "none"],
+            ["stroke", "currentColor"], ["stroke-width", "2.2"], ["stroke-linecap", "round"],
+            ["stroke-linejoin", "round"]].forEach(([name, value]) => svg.setAttribute(name, value));
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83");
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", "12");
+        circle.setAttribute("cy", "12");
+        circle.setAttribute("r", "4");
+        svg.append(path, circle);
+        icon.appendChild(svg);
+        state.button.append(icon, createElement("span", "fab-label", "Summarize"));
+
+        state.panel = createElement("div", "panel");
+        state.panel.id = "float-panel";
+        state.panel.setAttribute("role", "dialog");
+        state.panel.setAttribute("aria-modal", "true");
+        state.panel.setAttribute("aria-label", "DeepDigest floating panel");
+        state.shadow.append(state.button, state.panel);
 
         state.button.addEventListener("click", () => {
             if (state.latestResult || state.latestError) {

@@ -9,7 +9,7 @@
     "dev:firefox": "wxt -b firefox",
     "build": "wxt build",
     "build:chrome": "wxt build -b chrome",
-    "build:firefox": "wxt build -b firefox",
+    "build:firefox": "wxt zip -b firefox",
     "zip:chrome": "wxt zip -b chrome",
     "zip:firefox": "wxt zip -b firefox",
     "test": "node --test tests/runtime-performance.test.js",

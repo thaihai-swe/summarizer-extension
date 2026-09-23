@@ -57,6 +57,9 @@ export default defineConfig({
               data_collection_permissions: {
                 required: ["websiteContent", "authenticationInfo"]
               }
+            },
+            gecko_android: {
+              strict_min_version: "142.0"
             }
           }
         }

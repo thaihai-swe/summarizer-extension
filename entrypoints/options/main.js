@@ -704,9 +704,13 @@
             `Language: ${settings.summaryLanguage || "English"}`,
             `${chars.toLocaleString()} chars`
         ];
-        fields.promptMeta.innerHTML = chips
-            .map((chip) => `<span class="prompt-meta-chip">${chip}</span>`)
-            .join("");
+        fields.promptMeta.replaceChildren();
+        chips.forEach((chip) => {
+            const node = document.createElement("span");
+            node.className = "prompt-meta-chip";
+            node.textContent = chip;
+            fields.promptMeta.appendChild(node);
+        });
     }
 
     function updateCurrentPromptPreview() {
@@ -742,7 +746,7 @@
                 node.textContent = message;
             });
             if (fields.promptMeta) {
-                fields.promptMeta.innerHTML = "";
+                fields.promptMeta.replaceChildren();
             }
         }
     }
@@ -850,7 +854,7 @@
 
     function renderPromptPresets() {
         if (!fields.presetsList) return;
-        fields.presetsList.innerHTML = "";
+        fields.presetsList.replaceChildren();
         if (!customPromptPresets.length) {
             const empty = document.createElement("p");
             empty.className = "preset-empty-state";
@@ -881,7 +885,7 @@
         if (!selectEl) return;
         const values = SummarizerSettingsSchema.getValidValues(settingKey);
         if (!values) return;
-        selectEl.innerHTML = "";
+        selectEl.replaceChildren();
         Array.from(values).forEach((value) => {
             const option = document.createElement("option");
             option.value = value;
@@ -903,7 +907,7 @@
             const customList = String(customVal || "").split(",").map((l) => String(l || "").trim()).filter(Boolean);
             const langs = Array.from(new Set(["English", "Vietnamese", ...customList]));
             const currVal = fields.summaryLanguage.value || "English";
-            fields.summaryLanguage.innerHTML = "";
+            fields.summaryLanguage.replaceChildren();
             langs.forEach((lang) => {
                 const opt = document.createElement("option");
                 opt.value = lang;

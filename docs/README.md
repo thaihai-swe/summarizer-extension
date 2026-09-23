@@ -1,7 +1,8 @@
 # Documentation Index
 
 The extension is built with WXT. Use `npm run build:chrome` or `npm run build:firefox`
-to generate the unpacked browser-specific output under `.output/`.
+to generate the unpacked browser-specific output under `.output/`. The Firefox build also
+creates an uploadable `.zip` package there for Firefox Add-ons (AMO).
 
 | File | Audience | Purpose |
 |---|---|---|

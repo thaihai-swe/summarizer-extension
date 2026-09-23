@@ -28,7 +28,6 @@ import "../../lib/background/summary-service.js";
 
 export default defineBackground(() => {
 const MSG = SummarizerMessages.types;
-const openSidePanelsByWindow = new Map();
 
 function openSidePanelForTab(tabId) {
     if (!tabId) return Promise.resolve();
@@ -98,30 +97,34 @@ chrome.runtime.onStartup.addListener(() => {
     SummarizerBrowserApi.configurePrimarySidebarBehavior().catch(() => { });
 });
 
-if (SummarizerBrowserApi.hasChromeSidePanel() && chrome.sidePanel.onOpened && typeof chrome.sidePanel.onOpened.addListener === "function") {
-    chrome.sidePanel.onOpened.addListener((info) => {
-        openSidePanelsByWindow.set(info.windowId, info);
-    });
-}
+if (import.meta.env.CHROME) {
+    const openSidePanelsByWindow = new Map();
 
-if (SummarizerBrowserApi.hasChromeSidePanel() && chrome.sidePanel.onClosed && typeof chrome.sidePanel.onClosed.addListener === "function") {
-    chrome.sidePanel.onClosed.addListener((info) => {
-        openSidePanelsByWindow.delete(info.windowId);
-    });
-}
-
-chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
-    const openPanel = openSidePanelsByWindow.get(windowId);
-    if (!openPanel || openPanel.tabId === tabId || !SummarizerBrowserApi.hasChromeSidePanel() || typeof chrome.sidePanel.close !== "function") {
-        return;
+    if (chrome.sidePanel && chrome.sidePanel.onOpened && typeof chrome.sidePanel.onOpened.addListener === "function") {
+        chrome.sidePanel.onOpened.addListener((info) => {
+            openSidePanelsByWindow.set(info.windowId, info);
+        });
     }
 
-    const options = openPanel.tabId ? { tabId: openPanel.tabId } : { windowId };
-    chrome.sidePanel.close(options).catch(() => { });
-    if (openPanel.tabId) {
-        SummarizerBrowserApi.setSidePanelEnabledForTab(openPanel.tabId, false).catch(() => { });
+    if (chrome.sidePanel && chrome.sidePanel.onClosed && typeof chrome.sidePanel.onClosed.addListener === "function") {
+        chrome.sidePanel.onClosed.addListener((info) => {
+            openSidePanelsByWindow.delete(info.windowId);
+        });
     }
-});
+
+    chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
+        const openPanel = openSidePanelsByWindow.get(windowId);
+        if (!openPanel || openPanel.tabId === tabId || !SummarizerBrowserApi.hasChromeSidePanel() || typeof chrome.sidePanel.close !== "function") {
+            return;
+        }
+
+        const options = openPanel.tabId ? { tabId: openPanel.tabId } : { windowId };
+        chrome.sidePanel.close(options).catch(() => { });
+        if (openPanel.tabId) {
+            SummarizerBrowserApi.setSidePanelEnabledForTab(openPanel.tabId, false).catch(() => { });
+        }
+    });
+}
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     SummarizerSummaryService.releaseTab(tabId);

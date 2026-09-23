@@ -11,8 +11,11 @@ After loading, Chrome registers the **Summarize with DeepDigest** page/selection
 item and the `Ctrl+Shift+S` command (`Cmd+Shift+S` on macOS). If a shortcut conflicts with
 another extension, open `chrome://extensions/shortcuts` and assign a different key.
 
-For Firefox, run `npm run build:firefox`, open `about:debugging`, select **This Firefox**,
-click **Load Temporary Add-on**, and select `.output/firefox-mv3/manifest.json`.
+For temporary Firefox testing, run `npm run build:firefox`, open `about:debugging`, select
+**This Firefox**, click **Load Temporary Add-on**, and select
+`.output/firefox-mv3/manifest.json`. The build also creates a Firefox `.zip` in `.output/`;
+upload that archive to Firefox Add-ons (AMO). The extension supports Firefox desktop 140+
+and Firefox for Android 142+.
 The Firefox manifest declares the page content and provider credentials that may be transmitted
 to the selected summarization endpoint, as required by current Firefox distribution rules.
 
