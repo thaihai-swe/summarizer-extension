@@ -1,31 +1,101 @@
 /* ==========================================================================
-   DeepDigest Design System Tokens
-   Style: Editorial Book / Warm Parchment & Antique Leather
-   Density: High-Density Workbench (8/10) | Motion: Subtle (3/10) | Variance: Modern (5/10)
-   Accessibility: WCAG 2.2 AA / AAA Compliant (4.5:1+ body text, 3:1+ UI controls)
+   DeepDigest — Master Design System Tokens
+   Architecture: 3-Layer Design Tokens (Primitive → Semantic → Component)
+   Theme: Precision Studio (Warm Parchment & Nocturne Obsidian)
+   Standards: WCAG 2.2 AA / AAA Compliant, Reduced-Motion Supported
    ========================================================================== */
 
 :root {
-  /* --------------------------------------------------------------------------
-     1. TYPOGRAPHY & FONTS
-     -------------------------------------------------------------------------- */
+  /* ==========================================================================
+     LAYER 1: PRIMITIVE TOKENS (Foundational Values)
+     ========================================================================== */
+
+  /* 1.1 Color Palette Primitives */
+  /* Neutral / Warm Stone Scale */
+  --primitive-stone-25:  #FCFAF7;
+  --primitive-stone-50:  #FAF8F5;
+  --primitive-stone-100: #F3EFEA;
+  --primitive-stone-200: #E7E2DA;
+  --primitive-stone-300: #D6CEBE;
+  --primitive-stone-400: #A8A196;
+  --primitive-stone-500: #78716C;
+  --primitive-stone-600: #57534E;
+  --primitive-stone-700: #44403C;
+  --primitive-stone-800: #292524;
+  --primitive-stone-900: #1C1917;
+  --primitive-stone-950: #0C0A09;
+
+  /* Nocturne Obsidian Scale (Dark Theme Foundations) */
+  --primitive-obsidian-950: #0D0B0A;
+  --primitive-obsidian-900: #12100E;
+  --primitive-obsidian-850: #171513;
+  --primitive-obsidian-800: #1F1C1A;
+  --primitive-obsidian-750: #272421;
+  --primitive-obsidian-700: #332F2B;
+  --primitive-obsidian-600: #443F3A;
+
+  /* Brand Ember & Amber Scale */
+  --primitive-amber-50:  #FFFBEB;
+  --primitive-amber-100: #FEF3C7;
+  --primitive-amber-200: #FDE68A;
+  --primitive-amber-300: #FCD34D;
+  --primitive-amber-400: #FBBF24;
+  --primitive-amber-500: #F59E0B;
+  --primitive-amber-600: #D97706;
+  --primitive-amber-700: #B45309;
+  --primitive-amber-800: #92400E;
+
+  /* Terracotta Ember Scale (Primary Brand) */
+  --primitive-terracotta-50:  #FFF7ED;
+  --primitive-terracotta-100: #FFEDD5;
+  --primitive-terracotta-200: #FED7AA;
+  --primitive-terracotta-300: #FDBA74;
+  --primitive-terracotta-400: #FB923C;
+  --primitive-terracotta-500: #F97316;
+  --primitive-terracotta-600: #EA580C;
+  --primitive-terracotta-700: #C2410C;
+  --primitive-terracotta-800: #9A3412;
+  --primitive-terracotta-900: #7C2D12;
+  --primitive-terracotta-950: #431407;
+
+  /* Semantic Status Primitives */
+  --primitive-emerald-50:  #ECFDF5;
+  --primitive-emerald-100: #D1FAE5;
+  --primitive-emerald-500: #10B981;
+  --primitive-emerald-600: #059669;
+  --primitive-emerald-700: #047857;
+
+  --primitive-rose-50:     #FFF1F2;
+  --primitive-rose-100:    #FFE4E6;
+  --primitive-rose-500:    #F43F5E;
+  --primitive-rose-600:    #E11D48;
+  --primitive-rose-700:    #BE123C;
+
+  --primitive-indigo-50:   #EEF2FF;
+  --primitive-indigo-100:  #E0E7FF;
+  --primitive-indigo-500:  #6366F1;
+  --primitive-indigo-600:  #4F46E5;
+  --primitive-indigo-700:  #4338CA;
+
+  /* 1.2 Typography Primitives */
   --font-display: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
   --font-reading: "Newsreader", "Lora", "Georgia", "Charter", "Iowan Old Style", serif;
   --font-sans: var(--font-body);
 
-  /* Base Type Scale (Multiplied by --font-scale-multiplier for dynamic scaling) */
+  /* Dynamic Base Type Scale */
   --font-scale-multiplier: 1;
-  --font-size-2xs: calc(10px * var(--font-scale-multiplier));
-  --font-size-xs: calc(11px * var(--font-scale-multiplier));
-  --font-size-sm: calc(12px * var(--font-scale-multiplier));
-  --font-size-base: calc(13.5px * var(--font-scale-multiplier));
-  --font-size-md: calc(14px * var(--font-scale-multiplier));
-  --font-size-lg: calc(15.5px * var(--font-scale-multiplier));
-  --font-size-xl: calc(17.5px * var(--font-scale-multiplier));
+  --font-size-3xs: calc(9.5px * var(--font-scale-multiplier));
+  --font-size-2xs: calc(10.5px * var(--font-scale-multiplier));
+  --font-size-xs:  calc(11.5px * var(--font-scale-multiplier));
+  --font-size-sm:  calc(12.5px * var(--font-scale-multiplier));
+  --font-size-base:calc(13.5px * var(--font-scale-multiplier));
+  --font-size-md:  calc(14.5px * var(--font-scale-multiplier));
+  --font-size-lg:  calc(16px * var(--font-scale-multiplier));
+  --font-size-xl:  calc(18px * var(--font-scale-multiplier));
   --font-size-2xl: calc(21px * var(--font-scale-multiplier));
-  --font-size-3xl: calc(25px * var(--font-scale-multiplier));
+  --font-size-3xl: calc(26px * var(--font-scale-multiplier));
   --font-size-4xl: calc(32px * var(--font-scale-multiplier));
 
   --line-height-none: 1;
@@ -40,198 +110,277 @@
   --font-weight-bold: 700;
   --font-weight-black: 800;
 
-  /* --------------------------------------------------------------------------
-     2. SPACING SCALE (4px mathematical rhythm)
-     -------------------------------------------------------------------------- */
-  --space-0: 0px;
+  /* 1.3 Spacing Scale (4px Mathematical Rhythm) */
+  --space-0:   0px;
   --space-0-5: 2px;
-  --space-1: 4px;
+  --space-1:   4px;
   --space-1-5: 6px;
-  --space-2: 8px;
+  --space-2:   8px;
   --space-2-5: 10px;
-  --space-3: 12px;
+  --space-3:   12px;
   --space-3-5: 14px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-7:   28px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
 
-  /* --------------------------------------------------------------------------
-     3. RADII & GEOMETRY
-     -------------------------------------------------------------------------- */
+  /* 1.4 Radii & Curvature */
   --radius-2xs: 3px;
-  --radius-xs: 5px;
-  --radius-sm: 7px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
-  --radius-full: 9999px;
+  --radius-xs:  5px;
+  --radius-sm:  7px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  18px;
+  --radius-2xl: 22px;
+  --radius-full:9999px;
 
-  /* --------------------------------------------------------------------------
-     4. MOTION & TIMING (Subtle tier)
-     -------------------------------------------------------------------------- */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* 1.5 Motion & Easing Curves */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
   --dur-instant: 50ms;
-  --dur-fast: 140ms;
-  --dur-base: 220ms;
-  --dur-slow: 320ms;
-
-  --reading-progress-h: 3px;
-  --panel-padding: 16px;
-  --header-height: 56px;
-
-  /* --------------------------------------------------------------------------
-     5. SEMANTIC PALETTE: Light Theme (Warm Parchment & Antique Leather)
-     -------------------------------------------------------------------------- */
-  --color-paper: #FAF8F5;
-  --color-paper-2: #F2EFE9;
-  --color-paper-elevated: #FFFFFF;
-  
-  --color-ink: #1C1917;
-  --color-ink-2: #44403C;
-  --color-ink-tertiary: #78716C;
-  
-  --color-rule: #E7E2DA;
-  --color-rule-strong: #D6CEBE;
-  
-  /* Brand Accent: Bookbinder Amber-Terracotta */
-  --color-accent: #9A3412;
-  --color-accent-hover: #7C2D12;
-  --color-accent-light: #F5EBE1;
-  --color-accent-subtle: #FAF4EE;
-  
-  --color-focus: #9A3412;
-  --color-focus-ring: 0 0 0 3px rgba(154, 52, 18, 0.22);
-  
-  /* Semantic Status Colors */
-  --color-success: #16A34A;
-  --color-success-hover: #15803D;
-  --color-success-light: #DCFCE7;
-  
-  --color-warning: #D97706;
-  --color-warning-hover: #B45309;
-  --color-warning-light: #FEF3C7;
-  
-  --color-error: #DC2626;
-  --color-error-hover: #B91C1C;
-  --color-error-light: #FEE2E2;
-
-  /* Semantic Aliases */
-  --bg: var(--color-paper);
-  --surface: var(--color-paper-elevated);
-  --surface-raised: var(--color-paper-elevated);
-  --surface-muted: var(--color-paper-2);
-  --surface-hover: var(--color-accent-subtle);
-  --text: var(--color-ink);
-  --text-secondary: var(--color-ink-2);
-  --text-tertiary: var(--color-ink-tertiary);
-  --border: var(--color-rule);
-  --border-strong: var(--color-rule-strong);
-  --border-light: var(--color-rule);
-  --accent-primary: var(--color-accent);
-  --accent-secondary: var(--color-accent-hover);
-  --accent-light: var(--color-accent-light);
-  --accent-muted: var(--color-accent-light);
-  --accent-subtle: var(--color-accent-subtle);
-  --success: var(--color-success);
-  --success-light: var(--color-success-light);
-  --warning: var(--color-warning);
-  --warning-light: var(--color-warning-light);
-  --error: var(--color-error);
-  --error-light: var(--color-error-light);
-
-  --color-bg: var(--color-paper);
-  --color-bg-elevated: var(--color-paper-elevated);
-  --color-bg-muted: var(--color-paper-2);
-  --color-bg-hover: var(--color-accent-subtle);
-  --color-text-primary: var(--color-ink);
-  --color-text-secondary: var(--color-ink-2);
-  --color-text-tertiary: var(--color-ink-tertiary);
-  --color-text-inverse: #FFFFFF;
-  --color-on-brand: #FFFFFF;
-  --color-border: var(--color-rule);
-  --color-border-strong: var(--color-rule-strong);
-  --color-border-focus: var(--color-focus);
-  --color-brand: var(--color-accent);
-  --color-brand-hover: var(--color-accent-hover);
-  --color-brand-light: var(--color-accent-light);
-  --color-brand-muted: var(--color-accent-light);
-  --focus-ring: var(--color-focus-ring);
-
-  /* Elevation Shadows */
-  --shadow-xs: 0 1px 2px rgba(28, 25, 23, 0.05);
-  --shadow-sm: 0 1px 3px rgba(28, 25, 23, 0.07), 0 1px 2px rgba(28, 25, 23, 0.04);
-  --shadow-md: 0 4px 12px -2px rgba(28, 25, 23, 0.09), 0 2px 5px -1px rgba(28, 25, 23, 0.04);
-  --shadow-lg: 0 12px 24px -4px rgba(28, 25, 23, 0.11), 0 4px 8px -2px rgba(28, 25, 23, 0.05);
-  --shadow-xl: 0 20px 40px -6px rgba(28, 25, 23, 0.15);
-
-  --elevation-1: var(--shadow-sm);
-  --elevation-2: var(--shadow-md);
-  --elevation-3: var(--shadow-lg);
-
+  --dur-fast:    130ms;
+  --dur-base:    200ms;
+  --dur-slow:    300ms;
   --duration-fast: var(--dur-fast);
   --duration-base: var(--dur-base);
   --duration-slow: var(--dur-slow);
-}
 
-/* ----------------------------------------------------------------------------
-   5. SEMANTIC PALETTE: Dark Theme (Nocturne Study & Gilt Foil)
-   ---------------------------------------------------------------------------- */
-:root[data-theme="dark"],
-:host([data-theme="dark"]) {
-  --color-paper: #141210;
-  --color-paper-2: #1C1917;
-  --color-paper-elevated: #262320;
-  
-  --color-ink: #F5F3EF;
-  --color-ink-2: #D6D3D1;
-  --color-ink-tertiary: #A8A29E;
-  
-  --color-rule: #34302C;
-  --color-rule-strong: #4E4842;
-  
-  --color-accent: #E07A5F;
-  --color-accent-hover: #F4987E;
-  --color-accent-light: #3A231C;
-  --color-accent-subtle: #221612;
-  
-  --color-focus: #E07A5F;
-  --color-focus-ring: 0 0 0 3px rgba(224, 122, 95, 0.35);
-  
-  --color-success: #22C55E;
-  --color-success-hover: #4ADE80;
-  --color-success-light: #052E16;
-  
-  --color-warning: #F59E0B;
-  --color-warning-hover: #FBBF24;
-  --color-warning-light: #451A03;
-  
-  --color-error: #EF4444;
-  --color-error-hover: #F87171;
-  --color-error-light: #450A0A;
+  /* ==========================================================================
+     LAYER 2: SEMANTIC TOKENS — LIGHT THEME (Warm Parchment & Antique Leather)
+     ========================================================================== */
 
-  --color-text-inverse: #09090B;
-  --color-on-brand: #09090B;
+  /* Canvas & Surface Layers */
+  --color-paper:          var(--primitive-stone-50);
+  --color-paper-2:        var(--primitive-stone-100);
+  --color-paper-elevated: #FFFFFF;
+  
+  --bg:                   var(--color-paper);
+  --surface:              var(--color-paper-elevated);
+  --surface-raised:       #FFFFFF;
+  --surface-muted:        var(--color-paper-2);
+  --surface-hover:        rgba(154, 52, 18, 0.04);
+  --color-bg:             var(--color-paper);
+  --color-bg-elevated:    var(--color-paper-elevated);
+  --color-bg-muted:       var(--color-paper-2);
+  --color-bg-hover:       var(--surface-hover);
 
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 6px 18px -2px rgba(0, 0, 0, 0.65), 0 2px 6px -1px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 14px 30px -4px rgba(0, 0, 0, 0.75), 0 4px 10px -2px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 24px 48px -8px rgba(0, 0, 0, 0.9);
+  /* Ink & Typography */
+  --color-ink:            var(--primitive-stone-900);
+  --color-ink-2:          var(--primitive-stone-700);
+  --color-ink-tertiary:   var(--primitive-stone-500);
+  --text:                 var(--color-ink);
+  --text-secondary:       var(--color-ink-2);
+  --text-tertiary:        var(--color-ink-tertiary);
+  --color-text-primary:   var(--color-ink);
+  --color-text-secondary: var(--color-ink-2);
+  --color-text-tertiary:  var(--color-ink-tertiary);
+  --color-text-inverse:   #FFFFFF;
+  --color-on-brand:       #FFFFFF;
+
+  /* Rule Lines & Borders */
+  --color-rule:           rgba(28, 25, 23, 0.08);
+  --color-rule-strong:    rgba(28, 25, 23, 0.16);
+  --border:               var(--color-rule);
+  --border-strong:        var(--color-rule-strong);
+  --border-light:         rgba(28, 25, 23, 0.05);
+  --color-border:         var(--color-rule);
+  --color-border-strong:  var(--color-rule-strong);
+  --color-border-focus:   var(--primitive-terracotta-700);
+
+  /* Brand Accents */
+  --color-accent:         var(--primitive-terracotta-700);
+  --color-accent-hover:   var(--primitive-terracotta-800);
+  --color-accent-light:   var(--primitive-terracotta-50);
+  --color-accent-subtle:  rgba(194, 65, 12, 0.06);
+  --accent-primary:       var(--color-accent);
+  --accent-secondary:     var(--color-accent-hover);
+  --accent-light:         var(--color-accent-light);
+  --accent-muted:         var(--color-accent-light);
+  --accent-subtle:        var(--color-accent-subtle);
+  --color-brand:          var(--color-accent);
+  --color-brand-hover:    var(--color-accent-hover);
+  --color-brand-light:    var(--color-accent-light);
+  --color-brand-muted:    var(--color-accent-light);
+
+  /* Focus & Interactive */
+  --color-focus:          var(--primitive-terracotta-700);
+  --color-focus-ring:     0 0 0 3px rgba(194, 65, 12, 0.22);
+  --focus-ring:           var(--color-focus-ring);
+
+  /* Feedback & Status */
+  --color-success:        var(--primitive-emerald-600);
+  --color-success-hover:  var(--primitive-emerald-700);
+  --color-success-light:  var(--primitive-emerald-50);
+  --success:              var(--color-success);
+  --success-light:        var(--color-success-light);
+
+  --color-warning:        var(--primitive-amber-600);
+  --color-warning-hover:  var(--primitive-amber-700);
+  --color-warning-light:  var(--primitive-amber-50);
+  --warning:              var(--color-warning);
+  --warning-light:        var(--color-warning-light);
+
+  --color-error:          var(--primitive-rose-600);
+  --color-error-hover:    var(--primitive-rose-700);
+  --color-error-light:    var(--primitive-rose-50);
+  --error:                var(--color-error);
+  --error-light:          var(--color-error-light);
+
+  /* Elevation Shadows (Layered light physics) */
+  --shadow-xs: 0 1px 2px rgba(28, 25, 23, 0.04);
+  --shadow-sm: 0 1px 3px rgba(28, 25, 23, 0.06), 0 1px 2px rgba(28, 25, 23, 0.03);
+  --shadow-md: 0 4px 12px -2px rgba(28, 25, 23, 0.08), 0 2px 4px -1px rgba(28, 25, 23, 0.04);
+  --shadow-lg: 0 10px 24px -4px rgba(28, 25, 23, 0.10), 0 4px 8px -2px rgba(28, 25, 23, 0.04);
+  --shadow-xl: 0 20px 40px -6px rgba(28, 25, 23, 0.14);
 
   --elevation-1: var(--shadow-sm);
   --elevation-2: var(--shadow-md);
   --elevation-3: var(--shadow-lg);
+
+  /* ==========================================================================
+     LAYER 3: COMPONENT TOKENS (Component-Specific Specifications)
+     ========================================================================== */
+  --header-height:       56px;
+  --reading-progress-h:  3px;
+  --panel-padding:       16px;
+
+  /* Button Tokens */
+  --btn-height-sm:       28px;
+  --btn-height-md:       34px;
+  --btn-height-lg:       40px;
+  --btn-radius:          var(--radius-sm);
+
+  /* Input & Select Tokens */
+  --input-height:        32px;
+  --input-radius:        var(--radius-sm);
+  --input-bg:            var(--surface);
+  --input-border:        var(--border-strong);
+  
+  /* Card Tokens */
+  --card-radius:         var(--radius-md);
+  --card-padding:        var(--space-4);
+  --card-bg:             var(--surface);
+  --card-border:         var(--border);
+  --card-shadow:         var(--shadow-sm);
+
+  /* Chip Tokens */
+  --chip-radius:         var(--radius-xs);
+  --chip-bg:             var(--surface);
+  --chip-border:         var(--border);
 }
 
-/* ----------------------------------------------------------------------------
-   6. FONT SCALE VARIATIONS
-   ---------------------------------------------------------------------------- */
+/* ==========================================================================
+   LAYER 2: SEMANTIC TOKENS — DARK THEME (Nocturne Obsidian & Gilt Spark)
+   ========================================================================== */
+:root[data-theme="dark"],
+:host([data-theme="dark"]) {
+  /* Canvas & Surface Layers */
+  --color-paper:          var(--primitive-obsidian-900);
+  --color-paper-2:        var(--primitive-obsidian-850);
+  --color-paper-elevated: var(--primitive-obsidian-800);
+  
+  --bg:                   var(--color-paper);
+  --surface:              var(--color-paper-elevated);
+  --surface-raised:       var(--primitive-obsidian-750);
+  --surface-muted:        var(--color-paper-2);
+  --surface-hover:        rgba(251, 146, 60, 0.08);
+  --color-bg:             var(--color-paper);
+  --color-bg-elevated:    var(--color-paper-elevated);
+  --color-bg-muted:       var(--color-paper-2);
+  --color-bg-hover:       var(--surface-hover);
+
+  /* Ink & Typography */
+  --color-ink:            #F7F4EE;
+  --color-ink-2:          #D4CEC3;
+  --color-ink-tertiary:   #9C9589;
+  --text:                 var(--color-ink);
+  --text-secondary:       var(--color-ink-2);
+  --text-tertiary:        var(--color-ink-tertiary);
+  --color-text-primary:   var(--color-ink);
+  --color-text-secondary: var(--color-ink-2);
+  --color-text-tertiary:  var(--color-ink-tertiary);
+  --color-text-inverse:   var(--primitive-obsidian-950);
+  --color-on-brand:       var(--primitive-obsidian-950);
+
+  /* Rule Lines & Borders */
+  --color-rule:           rgba(255, 255, 255, 0.08);
+  --color-rule-strong:    rgba(255, 255, 255, 0.16);
+  --border:               var(--color-rule);
+  --border-strong:        var(--color-rule-strong);
+  --border-light:         rgba(255, 255, 255, 0.05);
+  --color-border:         var(--color-rule);
+  --color-border-strong:  var(--color-rule-strong);
+  --color-border-focus:   var(--primitive-terracotta-400);
+
+  /* Brand Accents */
+  --color-accent:         var(--primitive-terracotta-400);
+  --color-accent-hover:   var(--primitive-terracotta-300);
+  --color-accent-light:   rgba(251, 146, 60, 0.15);
+  --color-accent-subtle:  rgba(251, 146, 60, 0.08);
+  --accent-primary:       var(--color-accent);
+  --accent-secondary:     var(--color-accent-hover);
+  --accent-light:         var(--color-accent-light);
+  --accent-muted:         var(--color-accent-light);
+  --accent-subtle:        var(--color-accent-subtle);
+  --color-brand:          var(--color-accent);
+  --color-brand-hover:    var(--color-accent-hover);
+  --color-brand-light:    var(--color-accent-light);
+  --color-brand-muted:    var(--color-accent-light);
+
+  /* Focus & Interactive */
+  --color-focus:          var(--primitive-terracotta-400);
+  --color-focus-ring:     0 0 0 3px rgba(251, 146, 60, 0.35);
+  --focus-ring:           var(--color-focus-ring);
+
+  /* Feedback & Status */
+  --color-success:        #34D399;
+  --color-success-hover:  #6EE7B7;
+  --color-success-light:  rgba(52, 211, 153, 0.15);
+  --success:              var(--color-success);
+  --success-light:        var(--color-success-light);
+
+  --color-warning:        #FBBF24;
+  --color-warning-hover:  #FDE68A;
+  --color-warning-light:  rgba(251, 191, 36, 0.15);
+  --warning:              var(--color-warning);
+  --warning-light:        var(--color-warning-light);
+
+  --color-error:          #FB7185;
+  --color-error-hover:    #FDA4AF;
+  --color-error-light:    rgba(251, 113, 133, 0.15);
+  --error:                var(--color-error);
+  --error-light:          var(--color-error-light);
+
+  /* Elevation Shadows (Dark ambiance with soft glow) */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 16px -2px rgba(0, 0, 0, 0.65), 0 2px 5px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.75), 0 4px 8px -2px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 24px 48px -8px rgba(0, 0, 0, 0.85);
+
+  --elevation-1: var(--shadow-sm);
+  --elevation-2: var(--shadow-md);
+  --elevation-3: var(--shadow-lg);
+
+  /* Layer 3 Component Overrides for Dark Mode */
+  --input-bg:            var(--primitive-obsidian-850);
+  --input-border:        var(--border-strong);
+  --card-bg:             var(--surface);
+  --card-border:         rgba(255, 255, 255, 0.08);
+  --chip-bg:             var(--surface);
+  --chip-border:         var(--border);
+}
+
+/* ==========================================================================
+   DYNAMIC FONT SCALE MULTIPLIERS
+   ========================================================================== */
 :root[data-font-scale="sm"] { --font-scale-multiplier: 0.90; }
-:root[data-font-scale="md"] { --font-scale-multiplier: 1; }
+:root[data-font-scale="md"] { --font-scale-multiplier: 1.00; }
 :root[data-font-scale="lg"] { --font-scale-multiplier: 1.12; }
 :root[data-font-scale="xl"] { --font-scale-multiplier: 1.25; }

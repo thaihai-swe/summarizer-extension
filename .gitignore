@@ -3,6 +3,9 @@
 .hallmark/
 _site/
 dist/
+.output/
+output/
 
 .wxt/
 node_modules/
+.agents/

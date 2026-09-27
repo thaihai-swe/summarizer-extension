@@ -21,9 +21,10 @@
                 <div class="hero-title-row">
                     <div class="brand-lockup">
                         <span class="brand-mark" aria-hidden="true">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                                <circle cx="12" cy="12" r="4"/>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 5.5C2 5.5 6 4 12 6.5C18 4 22 5.5 22 5.5V19.5C22 19.5 18 18 12 20.5C6 18 2 19.5 2 19.5V5.5Z" />
+                                <path d="M12 6.5V20.5" />
+                                <path d="M12 2L13.2 4.2L15.5 5L13.2 5.8L12 8L10.8 5.8L8.5 5L10.8 4.2Z" fill="currentColor" stroke="none" />
                             </svg>
                         </span>
                         <div>
@@ -106,20 +107,38 @@
 
             <section class="workspace">
                 <div id="empty-state" class="empty-state">
-                    <svg class="empty-illustration" viewBox="0 0 120 120" fill="none" aria-hidden="true">
-                        <rect x="18" y="24" width="84" height="72" rx="14" stroke="currentColor" stroke-width="3" />
-                        <path d="M34 48h52M34 64h40M34 80h28" stroke="currentColor" stroke-width="3"
-                            stroke-linecap="round" />
-                        <circle cx="86" cy="80" r="14" fill="currentColor" opacity="0.12" />
-                        <path d="M80 80h12M86 74v12" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-                    </svg>
-                    <p class="empty-kicker">Precision studio</p>
-                    <h2>Ready when you are</h2>
-                    <p>Open a page, video, lesson, or selected passage. DeepDigest will turn it into a structured reading brief.</p>
+                    <div class="empty-illustration-wrap">
+                        <svg class="empty-illustration" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+                            <circle cx="60" cy="60" r="46" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.3" />
+                            <circle cx="60" cy="60" r="32" fill="currentColor" opacity="0.04" />
+                            <!-- Open Folio -->
+                            <path d="M 28 78 C 38 72 50 72 60 76 C 70 72 82 72 92 78 V 46 C 82 40 70 40 60 44 C 50 40 38 40 28 46 Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" />
+                            <path d="M 60 44 V 76" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M 36 56 C 44 54 52 54 55 56" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5" />
+                            <path d="M 84 56 C 76 54 68 54 65 56" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5" />
+                            <!-- Distillation Star -->
+                            <path d="M 60 20 C 61 27 65 31 72 32 C 65 33 61 37 60 44 C 59 37 55 33 48 32 C 55 31 59 27 60 20 Z" fill="currentColor" opacity="0.9" />
+                            <circle cx="60" cy="32" r="2" fill="var(--color-bg, #fff)" />
+                            <!-- Satellite sparks -->
+                            <circle cx="36" cy="30" r="1.8" fill="currentColor" opacity="0.6" />
+                            <circle cx="84" cy="28" r="1.5" fill="currentColor" opacity="0.5" />
+                        </svg>
+                    </div>
+                    <p class="empty-kicker">Precision Reading Studio</p>
+                    <h2>Deep comprehension at your fingertips</h2>
+                    <p class="empty-description">Navigate to any webpage, YouTube video, PDF, or course lesson. DeepDigest extracts the essence and structures it into actionable insights.</p>
+
+                    <div class="empty-capabilities" aria-label="Supported content types">
+                        <span class="capability-pill">YouTube & Timestamps</span>
+                        <span class="capability-pill">Articles & News</span>
+                        <span class="capability-pill">Research PDFs</span>
+                        <span class="capability-pill">Course Lessons</span>
+                    </div>
+
                     <ul class="empty-steps" aria-label="How to start">
-                        <li><span class="empty-step-index">1</span><span>Choose a mode</span></li>
-                        <li><span class="empty-step-index">2</span><span>Set language if needed</span></li>
-                        <li><span class="empty-step-index">3</span><span>Click Generate</span></li>
+                        <li><span class="empty-step-index">1</span><span>Choose your analytical mode</span></li>
+                        <li><span class="empty-step-index">2</span><span>Adjust coverage or language</span></li>
+                        <li><span class="empty-step-index">3</span><span>Click Generate or press <kbd class="kbd-shortcut">⌘⇧S</kbd></span></li>
                     </ul>
                 </div>
 

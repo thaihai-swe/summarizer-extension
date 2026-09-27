@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#241E1A" />
+      <stop offset="50%" stop-color="#161311" />
+      <stop offset="100%" stop-color="#0D0B0A" />
+    </linearGradient>
+
+    <!-- Ambient Center Glow -->
+    <radialGradient id="ambientGlow" cx="50%" cy="46%" r="52%">
+      <stop offset="0%" stop-color="#EA580C" stop-opacity="0.4" />
+      <stop offset="50%" stop-color="#9A3412" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#161311" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Brand Spark Gradient -->
+    <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A" />
+      <stop offset="30%" stop-color="#FB923C" />
+      <stop offset="85%" stop-color="#EA580C" />
+      <stop offset="100%" stop-color="#C2410C" />
+    </linearGradient>
+
+    <!-- Page Gradients -->
+    <linearGradient id="pageLeftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E7E1D7" />
+    </linearGradient>
+
+    <linearGradient id="pageRightGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FAF7F2" />
+      <stop offset="100%" stop-color="#D6CEBE" />
+    </linearGradient>
+
+    <!-- Spark Glow Filter -->
+    <filter id="sparkGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Base Squircle -->
+  <rect x="0" y="0" width="128" height="128" rx="28" fill="url(#bgGrad)" />
+  <rect x="0" y="0" width="128" height="128" rx="28" fill="url(#ambientGlow)" />
+  <rect x="0.75" y="0.75" width="126.5" height="126.5" rx="27.25" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1.5" />
+
+  <!-- Open Folio Book Base -->
+  <g id="book-folio" transform="translate(0, 4)">
+    <!-- Left Wing -->
+    <path d="M 64 92 C 50 85 32 85 20 89 C 20 64 20 54 20 54 C 32 50 50 50 64 57 Z"
+          fill="url(#pageLeftGrad)" />
+    <!-- Left Accent Rib -->
+    <path d="M 28 66 C 38 64 50 64 56 67" stroke="#A8A29E" stroke-width="3" stroke-linecap="round" opacity="0.45" />
+
+    <!-- Right Wing -->
+    <path d="M 64 92 C 78 85 96 85 108 89 C 108 64 108 54 108 54 C 96 50 78 50 64 57 Z"
+          fill="url(#pageRightGrad)" />
+    <!-- Right Accent Rib -->
+    <path d="M 100 66 C 90 64 78 64 72 67" stroke="#A8A29E" stroke-width="3" stroke-linecap="round" opacity="0.45" />
+
+    <!-- Central Spine Keel -->
+    <path d="M 64 57 L 64 92" stroke="#78716C" stroke-width="2.5" stroke-linecap="round" opacity="0.7" />
+  </g>
+
+  <!-- Radiant AI Spark / Distillation Core -->
+  <g id="ai-spark" filter="url(#sparkGlow)">
+    <!-- 4-point Diamond Star -->
+    <path d="M 64 16 C 65.5 32 73 39.5 89 41 C 73 42.5 65.5 50 64 66 C 62.5 50 55 42.5 39 41 C 55 39.5 62.5 32 64 16 Z"
+          fill="url(#sparkGrad)" />
+    <!-- High-intensity Core Light -->
+    <circle cx="64" cy="41" r="3.8" fill="#FFFFFF" />
+  </g>
+
+  <!-- Constellation Accent Sparks -->
+  <circle cx="32" cy="33" r="2.4" fill="#FDBA74" opacity="0.85" />
+  <circle cx="96" cy="31" r="2.2" fill="#FDE047" opacity="0.85" />
+</svg>

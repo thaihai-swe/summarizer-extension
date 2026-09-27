@@ -19,7 +19,7 @@ export default defineConfig({
   manifest: ({ browser }) => ({
     name: "DeepDigest",
     description: "Deep, structured summaries of YouTube videos, webpages, courses, PDFs, academic papers, and selected text.",
-    version: "0.1.0",
+    version: "0.1.1",
     permissions: ["storage", "tabs", "activeTab", "scripting", "contextMenus"],
     host_permissions: hostPermissions,
     action: {
