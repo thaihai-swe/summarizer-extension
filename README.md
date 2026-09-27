@@ -56,6 +56,7 @@ Start with the full index: [docs/README.md](docs/README.md)
 
 **Developer docs**
 - [Architecture](docs/ARCHITECTURE.md)
+- [Design System](docs/DESIGN_SYSTEM.md)
 - [Workflow](docs/WORKFLOW.md)
 - [Content Pipeline](docs/CONTENT_PIPELINE.md)
 - [API](docs/API.md)
@@ -65,6 +66,7 @@ Start with the full index: [docs/README.md](docs/README.md)
 - [Testing](docs/TESTING.md)
 - [Maintenance](docs/MAINTENANCE.md)
 - [Debugging](docs/DEBUGGING.md)
+- [Changelog](CHANGELOG.md)
 
 ## Current Architecture
 

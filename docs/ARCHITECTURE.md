@@ -82,13 +82,15 @@ per-tab result state.
 - `lib/summary-quality.js`: section contract scoring, Deep/Long repair prompt, merge of repaired sections
 - `lib/settings-schema.js`: single source of truth for defaults, valid enums, and normalization
 
-### UI and persistence
+### UI, Design System, and Persistence
 
+- `tokens.css`: master 3-layer design system tokens (Primitives, Semantics, Components) powering light/dark themes and dynamic font scaling
+- `public/icons/icon.svg`: master vector asset for the brand identity (Illuminated Folio & Distillation Spark)
 - `lib/storage.js`: cached browser-local settings with serialized writes and schema normalization
 - `lib/sidepanel/state.js`, `lib/sidepanel/render.js`: side-panel state/render helpers
 - `lib/sidepanel/toc.js`: Deep/Long result table of contents and scroll tracking
 - `lib/transcript-export.js`: timestamped transcript copy and SRT serialization
-- `lib/ui/theme.js`: theme support
+- `lib/ui/theme.js`: theme normalization, dynamic font scaling, and shared CSS token injection
 - `entrypoints/sidepanel/index.html`, `entrypoints/sidepanel/style.css`: side-panel/sidebar markup and styles
 - `entrypoints/options/index.html`, `entrypoints/options/style.css`: options page markup and styles
 

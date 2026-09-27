@@ -1,6 +1,6 @@
 # User Guide
 
-DeepDigest creates structured summaries from webpages, YouTube videos, course lessons, PDFs, academic papers, and selected text. The side panel is the primary interface. Both the side panel and settings page use a high-density reading studio design with a Warm Book & Library palette, keyboard-navigable tabs, visible focus, and reduced-motion support.
+DeepDigest creates structured summaries from webpages, YouTube videos, course lessons, PDFs, academic papers, and selected text. The side panel is the primary interface. Both the side panel and settings page use a high-density **Precision Studio** design with a Warm Parchment & Nocturne Obsidian palette, 3-layer design tokens, glassmorphic header, custom SVG controls, keyboard-navigable tabs, visible high-contrast focus, and full reduced-motion support.
 
 ## Custom Prompt Presets
 

@@ -102,12 +102,12 @@
 
       <div class="container hero-container">
         <div class="hero-badges">
-          <span class="hero-badge hero-badge-accent">
+          <a href="https://addons.mozilla.org/en-US/firefox/addon/deepdigest/" target="_blank" rel="noreferrer" class="hero-badge hero-badge-accent" style="text-decoration:none;">
             <span class="pulse-dot" aria-hidden="true"></span>
-            Chrome Extension Case Study
-          </span>
-          <span class="hero-badge">Manifest V3 · Vanilla JS</span>
-          <span class="hero-badge">Zero Build Tooling</span>
+            Now on Firefox Add-ons
+          </a>
+          <span class="hero-badge">Chrome &amp; Firefox MV3</span>
+          <span class="hero-badge">Side Panel &amp; Sidebar</span>
         </div>
 
         <h1 class="hero-title" id="hero-title">
@@ -120,17 +120,17 @@
         </p>
 
         <div class="hero-actions">
-          <a href="#demo" class="btn-action btn-action-primary">
-            <span>Try the interactive demo</span>
+          <a href="https://addons.mozilla.org/en-US/firefox/addon/deepdigest/" target="_blank" rel="noreferrer" class="btn-action btn-action-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span>Get for Firefox</span>
+          </a>
+          <a href="#demo" class="btn-action btn-action-secondary">
+            <span>Try interactive demo</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
-          <a href="#install" class="btn-action btn-action-secondary">
+          <a href="#install" class="btn-action btn-action-ghost">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Install free</span>
-          </a>
-          <a href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer" class="btn-action btn-action-ghost">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            <span>View source</span>
+            <span>Install options</span>
           </a>
         </div>
 
@@ -1138,15 +1138,39 @@ You are an expert analytical research assistant. Your task is to transform the p
       </div>
     </section>
 
-    <!-- LOCAL INSTALLATION -->
+    <!-- INSTALLATION -->
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="container">
         <div class="section-header">
-          <div class="section-tag">Free to load unpacked · no store listing yet</div>
-          <h2 class="section-title" id="install-title">Load DeepDigest locally in Chrome in a few minutes.</h2>
+          <div class="section-tag">Official Store &amp; Local Install</div>
+          <h2 class="section-title" id="install-title">Get DeepDigest on Firefox or load locally in Chrome.</h2>
           <p class="section-lead">
-            Open source, vanilla JavaScript, no build step. Clone the repo, enable Developer mode, and load the folder that contains <code>manifest.json</code>.
+            Install with 1-click directly from the official Firefox Add-ons store, or load unpacked in Chrome developer mode in just a few minutes.
           </p>
+        </div>
+
+        <!-- Firefox Add-ons Official Store Banner -->
+        <div class="firefox-store-card" style="margin-bottom: 32px; padding: 24px; border-radius: var(--radius-lg, 16px); background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 16px; min-width: 0;">
+            <div style="width: 52px; height: 52px; border-radius: 12px; background: #FF7139; display: grid; place-items: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(255, 113, 57, 0.35);">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                <path d="M2 12h20"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-size: 11px; font-family: var(--font-mono); font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px;">Official Store Release</div>
+              <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: var(--text-primary);">Firefox Add-ons Store</h3>
+              <p style="margin: 4px 0 0; font-size: 13.5px; color: var(--text-secondary); line-height: 1.4;">Published and verified on Mozilla Add-ons (AMO). One-click install with automatic updates.</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <a href="https://addons.mozilla.org/en-US/firefox/addon/deepdigest/" target="_blank" rel="noreferrer" class="btn-action btn-action-primary btn-action-lg">
+              <span>Install for Firefox</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
         </div>
 
         <ol class="install-steps">
@@ -1174,7 +1198,7 @@ You are an expert analytical research assistant. Your task is to transform the p
             <span class="install-num">3</span>
             <div>
               <h3>Load unpacked</h3>
-              <p>Click <strong>Load unpacked</strong> and select the <code>summarizer-extension</code> directory — the one that contains <code>manifest.json</code>.</p>
+              <p>Click <strong>Load unpacked</strong> and select the <code>.output/chrome-mv3</code> directory.</p>
             </div>
           </li>
           <li class="install-step">
@@ -1187,8 +1211,10 @@ You are an expert analytical research assistant. Your task is to transform the p
         </ol>
 
         <div class="install-actions">
-          <a class="btn-action btn-action-primary" href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer">View source on GitHub</a>
-          <a class="btn-action btn-action-secondary" href="https://github.com/thaihai-swe/browser-extensions/archive/refs/heads/main.zip">Download ZIP</a>
+          <a class="btn-action btn-action-primary" href="https://addons.mozilla.org/en-US/firefox/addon/deepdigest/" target="_blank" rel="noreferrer">
+            <span>Install on Firefox Store ↗</span>
+          </a>
+          <a class="btn-action btn-action-secondary" href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer">View source on GitHub</a>
           <a class="btn-action btn-action-ghost" href="../docs/SETUP.md">Full setup guide</a>
         </div>
         <p class="install-note">Gemini, OpenAI, or a local endpoint needs configuration in Options. Local models run without a cloud key. Provider usage may incur charges from that provider, not from this project.</p>
@@ -1328,11 +1354,15 @@ You are an expert analytical research assistant. Your task is to transform the p
         </p>
 
         <div class="cta-actions-row">
-          <a href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer" class="btn-action btn-action-primary btn-action-lg">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            <span>Explore GitHub Repository</span>
+          <a href="https://addons.mozilla.org/en-US/firefox/addon/deepdigest/" target="_blank" rel="noreferrer" class="btn-action btn-action-primary btn-action-lg">
+            <span>Install on Firefox Store</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
-          <a href="#top" class="btn-action btn-action-secondary btn-action-lg">
+          <a href="https://github.com/thaihai-swe/browser-extensions/tree/main/summarizer-extension" target="_blank" rel="noreferrer" class="btn-action btn-action-secondary btn-action-lg">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>Explore GitHub</span>
+          </a>
+          <a href="#top" class="btn-action btn-action-ghost btn-action-lg">
             <span>Back to Top</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
           </a>
@@ -1348,14 +1378,15 @@ You are an expert analytical research assistant. Your task is to transform the p
       <div class="footer-left">
         <div class="footer-logo">
           <span class="logo-mark small">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-              <circle cx="12" cy="12" r="4"/>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 5.5C2 5.5 6 4 12 6.5C18 4 22 5.5 22 5.5V19.5C22 19.5 18 18 12 20.5C6 18 2 19.5 2 19.5V5.5Z" />
+              <path d="M12 6.5V20.5" />
+              <path d="M12 2L13.2 4.2L15.5 5L13.2 5.8L12 8L10.8 5.8L8.5 5L10.8 4.2Z" fill="currentColor" stroke="none" />
             </svg>
           </span>
           <span class="logo-text">Deep<span class="logo-accent">Digest</span></span>
         </div>
-        <p class="footer-subtext">Engineered for Chrome Side Panel · Pure JavaScript</p>
+        <p class="footer-subtext">Engineered for Chrome Side Panel &amp; Firefox Sidebar · Pure JavaScript</p>
       </div>
 
       <div class="footer-nav">
